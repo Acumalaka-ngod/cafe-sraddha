@@ -365,4 +365,8 @@ $this->db->select('YEAR(tanggal) as year, MONTH(tanggal) as month, COUNT(id_bara
         $this->session->set_flashdata('message', 'Barang keluar berhasil diupdate. Stok disesuaikan.');
         redirect('dashboard_tokokue/lihat_barangkeluar');
     }
+
+    public function login(){
+        $this->load->view('admin/login');
+    }
 }
