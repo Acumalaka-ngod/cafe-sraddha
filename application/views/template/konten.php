@@ -8,31 +8,30 @@
             <div class="row">
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">Total Kue: <?php echo $total_produk; ?></div>
+                        Total Menu: <?php echo $total_menu; ?>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_produk'); ?>">Lihat Produk</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_menu'); ?>">Lihat Menu</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-warning text-white mb-4">
-                        <div class="card-body">Total Customer: <?php echo $total_customer; ?></div>
+Total User: <?php echo $total_user; ?>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_customer'); ?>">Lihat Customer</a>
+href="<?php echo site_url('dashboard_cafe/lihat_user'); ?>">Lihat User</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-success text-white mb-4">
-                        <div class="card-body">Total Barang Keluar: <?php echo $total_barang_keluar; ?></div>
+                        Total Transaksi: <?php echo $total_transaksi; ?>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_barangkeluar'); ?>">Lihat Barang
-                                Keluar</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Transaksi</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
@@ -40,10 +39,11 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-danger text-white mb-4">
                         <div class="card-body">Total Pendapatan: Rp
-                            <?php echo number_format($total_pendapatan, 0, ',', '.'); ?></div>
+                            <?php echo number_format($total_pendapatan, 0, ',', '.'); ?>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_barangkeluar'); ?>">Lihat Detail</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Detail</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <i class="fas fa-chart-bar me-1"></i>
-                            Barang keluar
+                            Transaksi
                         </div>
                         <div class="card-body">
                             <canvas id="myBarChart" width="100%" height="40"></canvas>
@@ -152,7 +152,7 @@
                                             ctxBar.fillStyle = "#6c757d";
                                             ctxBar.textAlign = "center";
                                             ctxBar.textBaseline = "middle";
-                                            ctxBar.fillText("No data barang keluar tersedia", canvas.width / 2, canvas.height / 2);
+                                            ctxBar.fillText("No data transaksi tersedia", canvas.width / 2, canvas.height / 2);
                                         }
                                     };
                                     document.head.appendChild(script);
@@ -165,7 +165,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    Data Barang Keluar
+                    Data Transaksi
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple">
@@ -190,7 +190,7 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <?php foreach ($barang_keluar as $bk): ?>
+                            <?php foreach ($transaksi as $tr): ?>
                                 <tr>
                                     <td><?php echo $bk->no_transaksi; ?></td>
                                     <td><?php echo date('d/m/Y', strtotime($bk->tanggal)); ?></td>

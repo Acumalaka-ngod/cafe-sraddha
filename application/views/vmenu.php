@@ -9,17 +9,18 @@
             <?php endif; ?>
             <div class="card mx-3 mt-3">
                 <div class="card-header">
-                    <a href="<?php echo site_url('dashboard_tokokue/tambah_produk') ?>"
-                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah Produk</a>
+                    <a href="<?php echo site_url('dashboard_cafe/tambah_menu') ?>"
+                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah Menu</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
+
                                     <th>No</th>
-                                    <th>Kode Produk</th>
-                                    <th>Nama Produk</th>
+                                    <th>Nama Menu</th>
+                                    <th>Kategori</th>
                                     <th>Stok</th>
                                     <th>Deskripsi</th>
                                     <th>Harga</th>
@@ -30,23 +31,24 @@
                             <tbody>
                                 <?php
                                 $no = 1;
-                                foreach ($produk as $p) {
+                                foreach ($menu as $m) {
                                     ?>
                                     <tr>
-                                        <td><?php echo $no++ ?></th>
-                                        <td><?php echo $p->kode_produk ?></td>
-                                        <td><?php echo $p->nama_produk ?></td>
-                                        <td><?php echo $p->stok ?></td>
-                                        <td><?php echo $p->deskripsi ?></td>
-                                        <td><?php echo "Rp. " . number_format($p->harga, 0, ',', '.'); ?></td>
-                                        <td><img src="<?php echo base_url('/assets/uploads/' . $p->gambar) ?>" width="100"
-                                                height="70"></td>
+
+                                        <td><?php echo $no++ ?></td>
+                                        <td><?php echo $m->nama_menu ?></td>
+                                        <td><?php echo $m->kategori ?></td>
+                                        <td><?php echo $m->stok ?></td>
+                                        <td><?php echo $m->deskripsi ?></td>
+                                        <td><?php echo "Rp. " . number_format($m->harga, 0, ',', '.'); ?></td>
+                                        <td><img src="<?php echo base_url('/assets/uploads/' . $m->gambar) ?>" width="100"
+                                                height="100"></td>
                                         <td>
-                                            <a href="<?php echo site_url('dashboard_tokokue/edit_produk/' . $p->id_produk) ?>"
-                                                class="btn btn-warning btn-sm" title="Edit Produk"><i
+                                            <a href="<?php echo site_url('dashboard_cafe/edit_menu/' . $m->id_menu) ?>"
+                                                class="btn btn-warning btn-sm" title="Edit Menu"><i
                                                     class="fas fa-pencil"></i> </a>
-                                            <a href="<?php echo site_url('dashboard_tokokue/hapus_produk/' . $p->id_produk) ?>"
-                                                class="btn btn-danger btn-sm" title="Hapus Produk" onclick="return confirm('Yakin ingin menghapus produk ini?')"><i
+                                            <a href="<?php echo site_url('dashboard_cafe/hapus_menu/' . $m->id_menu) ?>"
+                                                class="btn btn-danger btn-sm" title="Hapus Menu" onclick="return confirm('Yakin ingin menghapus menu ini?')"><i
                                                     class="fas fa-trash"></i> </a>
                                         </td>
                                     </tr>

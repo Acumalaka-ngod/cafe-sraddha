@@ -14,10 +14,9 @@
                 </div>
             <?php endif; ?>
             <div class="card mx-3 mt-3">
-
                 <div class="card-header">
-                    <a href="<?php echo site_url('dashboard_tokokue/tambah_barangkeluar') ?>"
-                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah barang keluar</a>
+                    <a href="<?php echo site_url('dashboard_cafe/tambah_transaksi') ?>"
+                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -25,32 +24,37 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>NO Transaksi</th>
+                                    <th>ID Transaksi</th>
                                     <th>Tanggal</th>
-                                    <th>Customer</th>
-                                    <th>Produk</th>
-                                    <th>Jumlah barang</th>
+                                    <th>Pegawai</th>
+                                    <th>Menu</th>
+                                    <th>No Meja</th>
+                                    <th>Metode Pembayaran</th>
+                                    <th>Total Harga</th>
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $no = 1;
-                                foreach ($barang_keluar as $b) {
+                                foreach ($transaksi as $t) {
                                     ?>
                                     <tr>
-                                        <td><?php echo $no++ ?></th>
-                                        <td><?php echo $b->no_transaksi ?></td>
-                                        <td><?php echo date('d/m/Y', strtotime($b->tanggal)); ?></td>
-                                        <td><?php echo htmlspecialchars($b->nama_customer ?? ''); ?></td>
-                                        <td><?php echo htmlspecialchars($b->nama_produk ?? ''); ?></td>
-                                        <td><?php echo $b->jumlah_barang ?></td>
+                                        <td><?php echo $no++ ?></td>
+                                        <td><?php echo $t->id_transaksi ?></td>
+                                        <td><?php echo date('d/m/Y', strtotime($t->tanggal)); ?></td>
+                                        <td><?php echo htmlspecialchars($t->nama_user ?? ''); ?></td>
+                                        <td><?php echo htmlspecialchars($t->nama_menu ?? ''); ?></td>
+                                        <td><?php echo $t->no_meja ?></td>
+                                        <td><?php echo $t->metode_pembayaran ?></td>
+                                        <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
                                         <td>
-                                            <a href="<?php echo site_url('dashboard_tokokue/edit_barangkeluar/' . $b->id_barang_keluar) ?>"
-                                                class="btn btn-warning btn-sm" title="Edit barangkeluar"><i
+                                            <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi) ?>"
+                                                class="btn btn-warning btn-sm" title="Edit Transaksi"><i
                                                     class="fas fa-pencil"></i> </a>
-                                            <a href="<?php echo site_url('dashboard_tokokue/hapus_barangkeluar/' . $b->id_barang_keluar) ?>"
-                                                class="btn btn-danger btn-sm" title="Hapus barang keluar"
-                                                onclick="return confirm('Yakin ingin menghapus barang keluar ini?')"><i
+                                            <a href="<?php echo site_url('dashboard_cafe/hapus_transaksi/' . $t->id_transaksi) ?>"
+                                                class="btn btn-danger btn-sm" title="Hapus Transaksi"
+                                                onclick="return confirm('Yakin ingin menghapus transaksi ini?')"><i
                                                     class="fas fa-trash"></i> </a>
                                         </td>
                                     </tr>
@@ -60,12 +64,9 @@
                     </div>
                 </div>
     </main>
-    <!-- Pustaka DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-
-    <!-- Script JS DataTable -->
     <script>
         $(document).ready(function () {
             $('#dataTable').DataTable({
@@ -74,8 +75,9 @@
                     "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Indonesian.json"
                 },
                 columnDefs: [
-                    { orderable: false, targets: [0, 6] }
+                    { orderable: false, targets: -1 }
                 ]
             });
         });
     </script>
+

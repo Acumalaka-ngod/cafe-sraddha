@@ -1,0 +1,2 @@
+# TODO: Fix Database Error - Unknown column 't.id_user' - COMPLETED\n\n## Steps:\n- [x] Step 1: Edit application/models/Transaksi_model.php to fix JOIN (user -> pegawai, id_user -> id_pegawai)\n- [x] Step 2: Edit application/controllers/Dashboard_cafe.php index() method to fix identical JOIN\n- [ ] Step 3: Test Dashboard_cafe/index() loads without error\n- [ ] Step 4: Verify transaksi list shows nama_user correctly\n- [ ] Step 5: attempt_completion
+
