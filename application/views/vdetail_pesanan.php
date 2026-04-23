@@ -15,8 +15,8 @@
             <?php endif; ?>
             <div class="card mx-3 mt-3">
                 <div class="card-header">
-                    <a href="<?php echo site_url('dashboard_cafe/tambah_transaksi') ?>"
-                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah Transaksi</a>
+                    <a href="<?php echo site_url('dashboard_cafe/tambah_detail_pesanan') ?>"
+                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah Detail Pesanan</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -24,35 +24,37 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Tanggal</th>
+                                    <th>ID Pesanan</th>
+                                    <th>ID Menu</th>
                                     <th>Menu</th>
-                                    <th>Jumlah dipesan</th>
                                     <th>No Meja</th>
-                                    <th>Metode Pembayaran</th>
+                                    <th>Jumlah</th>
                                     <th>Total</th>
+                                    <th>Metode Pembayaran</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $no = 1;
-                                foreach ($transaksi as $t) {
+                                foreach ($detail_pesanan as $dp) {
                                 ?>
                                     <tr>
                                         <td><?php echo $no++ ?></td>
-                                        <td><?php echo date('d/m/Y', strtotime($t->tanggal)); ?></td>
-                                        <td><?php echo $t->nama_menu ?></td>
-                                        <td><?php echo $t->jumlah_dipesan ?></td>
-                                        <td><?php echo $t->no_meja ?></td>
-                                        <td><?php echo $t->metode_pembayaran ?></td>
-                                        <td>Rp <?php echo number_format($t->total, 0, ',', '.'); ?></td>
+                                        <td><?php echo $dp->id_pesanan ?></td>
+                                        <td><?php echo $dp->id_menu ?></td>
+                                        <td><?php echo $dp->menu_dipesan ?></td>
+                                        <td><?php echo $dp->no_meja ?></td>
+                                        <td><?php echo $dp->jumlah_dipesan ?></td>
+                                        <td>Rp <?php echo number_format($dp->total_pembayaran, 0, ',', '.'); ?></td>
+                                        <td><?php echo ucfirst($dp->metode_pembayaran) ?></td>
                                         <td>
-                                            <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi) ?>"
-                                                class="btn btn-warning btn-sm" title="Edit Transaksi"><i
+                                            <a href="<?php echo site_url('dashboard_cafe/edit_detail_pesanan/' . $dp->id_detail) ?>"
+                                                class="btn btn-warning btn-sm" title="Edit"><i
                                                     class="fas fa-pencil"></i> </a>
-                                            <a href="<?php echo site_url('dashboard_cafe/hapus_transaksi/' . $t->id_transaksi) ?>"
-                                                class="btn btn-danger btn-sm" title="Hapus Transaksi"
-                                                onclick="return confirm('Yakin ingin menghapus transaksi ini?')"><i
+                                            <a href="<?php echo site_url('dashboard_cafe/hapus_detail_pesanan/' . $dp->id_detail_pesanan) ?>"
+                                                class="btn btn-danger btn-sm" title="Hapus"
+                                                onclick="return confirm('Yakin ingin menghapus?')"><i
                                                     class="fas fa-trash"></i> </a>
                                         </td>
                                     </tr>
@@ -61,6 +63,8 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
     </main>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

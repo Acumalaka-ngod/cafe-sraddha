@@ -15,13 +15,18 @@ class Menu_model extends CI_Model
 
 	function hapus_data($id_menu)
 	{
-		// Delete child records in transaksi first
-		$this->db->where('menu_dipesan', $id_menu); // assuming menu_dipesan references id_menu or adjust
-		$this->db->delete('transaksi');
+		// Delete related records first
+		$this->db->delete('transaksi', ['id_menu' => $id_menu]);
+		$this->db->delete('detail_pesanan', ['id_menu' => $id_menu]);
 		
-		// Then delete the menu
-		$this->db->where('id_menu', $id_menu);
-		$this->db->delete('menu');
+		// Get image to delete
+		$menu = $this->db->get_where('menu', ['id_menu' => $id_menu])->row();
+		if ($menu && $menu->gambar && file_exists('./assets/uploads/' . $menu->gambar)) {
+			unlink('./assets/uploads/' . $menu->gambar);
+		}
+		
+		// Delete menu
+		return $this->db->delete('menu', ['id_menu' => $id_menu]);
 	}
 
 	function edit_data($where, $table)

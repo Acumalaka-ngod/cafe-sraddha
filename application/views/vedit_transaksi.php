@@ -16,15 +16,7 @@
                             <label>Tanggal</label>
                             <input type="date" class="form-control" name="tanggal" value="<?php echo date('Y-m-d', strtotime($tr->tanggal)) ?>" required>
                         </div>
-                        <div class="form-group">
-                            <label>Pegawai</label>
-                            <select name="pegawai" class="form-control" required>
-                                <option value="">-- Pilih Pegawai --</option>
-                                <?php foreach ($pegawai as $pg) { ?>
-                                    <option value="<?= $pg->id_pegawai ?>" <?= $pg->id_pegawai == $tr->id_pegawai ? 'selected' : '' ?>><?= $pg->nama ?></option>
-                                <?php } ?>
-                            </select>
-                        </div>
+
                         <div class="form-group">
                             <label>Meja</label>
                             <select name="meja" class="form-control" required>
@@ -35,21 +27,17 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>No Meja</label>
-                            <input type="text" class="form-control" name="no_meja" value="<?php echo $tr->no_meja ?>" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Menu</label>
+                            <label>Menu Saat ini: <?php echo $tr->nama_menu; ?></label>
                             <select name="menu" class="form-control" required>
                                 <option value="">-- Pilih Menu --</option>
                                 <?php foreach ($menu as $m) { ?>
-                                    <option value="<?= $m->id_menu ?>" <?= $m->id_menu == $tr->menu_dipesan ? 'selected' : '' ?>><?= $m->nama_menu ?> (Rp <?= number_format($m->harga,0,',','.') ?>)</option>
+                                    <option value="<?= $m->id_menu ?>" <?= $m->id_menu == $tr->id_menu ? 'selected' : '' ?>><?= $m->nama_menu ?> (Rp <?= number_format($m->harga,0,',','.') ?>)</option>
                                 <?php } ?>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Jumlah (approx from total)</label>
-                            <input type="number" class="form-control" name="jumlah" value="1" required min="1">
+                            <label>Jumlah</label>
+                            <input type="number" class="form-control" name="jumlah_dipesan" value="<?= $tr->jumlah_dipesan ?>" required min="1" id="jumlah_dipesan">
                         </div>
                         <div class="form-group">
                             <label>Metode Pembayaran</label>

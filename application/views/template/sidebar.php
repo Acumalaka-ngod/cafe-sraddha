@@ -15,17 +15,21 @@
                         Menu
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">Lihat
-                                menu</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_meja') ?>">Lihat
-                                meja</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">Lihat
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">Lihat
+                            menu</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_meja') ?>">Lihat
+                            meja</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">Lihat
                             user</a>
-                            <a class="nav-link"
-                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>">Lihat
-                                transaksi</a>
-                        </nav>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_pesanan') ?>">Lihat
+                            pesanan</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_pesanan') ?>">Lihat Detail
+                            pesanan</a>
+                        <a class="nav-link"
+                            href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>">Lihat
+                            transaksi</a>
+                    </nav>
                     <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
                         aria-expanded="false" aria-controls="collapsePages">
                         <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>

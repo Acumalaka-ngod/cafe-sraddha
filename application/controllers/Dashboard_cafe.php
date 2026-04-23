@@ -7,9 +7,9 @@ class Dashboard_cafe extends CI_Controller
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('menu_model');
+        $this->load->model('Menu_model');
         $this->load->model('User_model');
-        $this->load->model('Transaksi_model');
+        $this->load->model('Pesanan_model');
         $this->load->model('Meja_model');
         $this->load->helper('url');
     }
@@ -245,7 +245,7 @@ class Dashboard_cafe extends CI_Controller
     {
         $this->load->library('session');
         $data['transaksi'] = $this->Transaksi_model->lihat_data()->result();
-        $data['user'] = $this->user_model->lihat_data()->result();
+        $data['user'] = $this->User_model->lihat_data()->result();
         $data['meja'] = $this->Meja_model->lihat_data()->result();
         $data['message'] = $this->session->flashdata('message');
         $data['error'] = $this->session->flashdata('error');
@@ -263,9 +263,8 @@ class Dashboard_cafe extends CI_Controller
 
         if ($this->menu_model->kurangi_stok($id_menu, $jumlah)) {
             // Get harga from menu
-            $this->db->select('harga');
-            $this->db->where('id_menu', $id_menu);
-            $harga = $this->db->get('menu')->row()->harga;
+            $harga_result = $this->db->select('harga')->where('id_menu', $id_menu)->get('menu')->row();
+            $harga = $harga_result ? $harga_result->harga : 0;
             $total_harga = $jumlah * $harga;
 
             $data = array(
@@ -315,7 +314,7 @@ class Dashboard_cafe extends CI_Controller
     public function tambah_transaksi()
     {
         $data['menu'] = $this->menu_model->lihat_data()->result();
-        $data['user'] = $this->user_model->lihat_data()->result();
+        $data['user'] = $this->User_model->lihat_data()->result();
         $data['meja'] = $this->Meja_model->lihat_data()->result();
 
         $this->load->view('template/head');
@@ -349,10 +348,9 @@ class Dashboard_cafe extends CI_Controller
         $new_id_user = $this->input->post('user');
         $new_metode = $this->input->post('metode_pembayaran');
 
-        // Adjust stok for old/new
         $old_record = $this->db->get_where('transaksi', array('id_transaksi' => $id))->row();
         if ($old_record) {
-            $this->menu_model->tambah_stok($old_record->menu_dipesan, 1); // approx reverse
+            $this->menu_model->tambah_stok($old_record->menu_dipesan, 1);
         }
 
         $harga = $this->db->select('harga')->where('id_menu', $new_id_menu)->get('menu')->row()->harga;
@@ -406,5 +404,123 @@ class Dashboard_cafe extends CI_Controller
         redirect('dashboard_cafe/lihat_meja');
     }
 
-    // Add edit/hapus meja similarly...
+    public function hapus_meja($id_meja)
+    {
+        $this->Meja_model->hapus_data($id_meja);
+        redirect('dashboard_cafe/lihat_meja');
+    }
+
+    public function edit_meja($id_meja)
+    {
+        $where = array('id_meja' => $id_meja);
+        $data['meja'] = $this->Meja_model->edit_data($where, 'meja')->result();
+        $this->load->view("template/head");
+        $this->load->view("template/navbar");
+        $this->load->view("template/sidebar");
+        $this->load->view("vedit_meja", $data);
+        $this->load->view("template/footer");
+    }
+
+    public function update_meja()
+    {
+        $id_meja = $this->input->post('id_meja');
+        $no_meja = $this->input->post('no_meja');
+        $data = array(
+            'no_meja' => $no_meja,
+        );
+
+        $where = array('id_meja' => $id_meja);
+        $this->Meja_model->update_data($where, $data, 'meja');
+        redirect('dashboard_cafe/lihat_meja');
+    }
+
+	public function lihat_pesanan()
+	{
+		$data['pesanan'] = $this->Pesanan_model->lihat_data()->result();
+		$this->load->view('template/head');
+		$this->load->view('template/navbar');
+		$this->load->view('template/sidebar');
+		$this->load->view('vpesanan', $data);
+		$this->load->view('template/footer');
+	}
+
+    public function tambah_pesanan()
+    {
+        $data['menu'] = $this->menu_model->lihat_data()->result();
+        $data['meja'] = $this->Meja_model->lihat_data()->result();
+
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vtambah_pesanan', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function simpan_pesanan()
+    {
+        $id_menu = $this->input->post('menu');
+        $jumlah = (int) $this->input->post('jumlah');
+
+        if ($this->menu_model->kurangi_stok($id_menu, $jumlah)) {
+            $this->db->select('harga');
+            $this->db->where('id_menu', $id_menu);
+            $harga = $this->db->get('menu')->row()->harga;
+            $total_harga = $jumlah * $harga;
+
+            $data = array(
+                'id_meja' => $this->input->post('meja'),
+                'tanggal' => $this->input->post('tanggal'),
+                'total_harga' => $total_harga,
+                'id_user' => $this->input->post('user'),
+                'menu_dipesan' => $id_menu,
+                'metode_pembayaran' => $this->input->post('metode_pembayaran'),
+                'no_meja' => $this->input->post('no_meja'),
+            );
+
+            $this->Transaksi_model->simpan_data($data);
+            $this->load->library('session');
+            $this->session->set_flashdata('message', 'Pesanan berhasil disimpan. Stok menu dikurangi.');
+            redirect('dashboard_cafe/lihat_pesanan');
+        } else {
+            $this->load->library('session');
+            $this->session->set_flashdata('error', 'Stok menu tidak mencukupi!');
+            redirect('dashboard_cafe/tambah_pesanan');
+        }
+    }
+
+    public function hapus_pesanan($id)
+    {
+        $this->db->select('menu_dipesan');
+        $this->db->where('id_transaksi', $id);
+        $record = $this->db->get('transaksi')->row();
+
+        if ($record) {
+            $this->db->select('harga');
+            $this->db->where('id_menu', $record->menu_dipesan);
+            $harga = $this->db->get('menu')->row()->harga;
+            $jumlah_approx = ceil($record->total_harga / $harga);
+            $this->menu_model->tambah_stok($record->menu_dipesan, $jumlah_approx);
+        }
+
+        $this->Transaksi_model->hapus_data($id);
+
+        $this->load->library('session');
+        $this->session->set_flashdata('message', 'Pesanan berhasil dihapus. Stok menu ditambahkan kembali.');
+        redirect('dashboard_cafe/lihat_pesanan');
+    }
+
+    public function edit_pesanan($id)
+    {
+        $where = array('id_transaksi' => $id);
+        $data['tr'] = $this->db->get_where('transaksi', $where)->row();
+        $data['menu'] = $this->menu_model->lihat_data()->result();
+        $data['user'] = $this->user_model->lihat_data()->result();
+        $data['meja'] = $this->Meja_model->lihat_data()->result();
+
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vedit_pesanan', $data);
+        $this->load->view('template/footer');
+    }
 }

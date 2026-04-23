@@ -7,7 +7,7 @@
                         class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
                 </div>
                 <div class="card-body">
-                    <form action="<?php echo site_url('dashboard_cafe/simpan_menu') ?>" method="post">
+                    <form action="<?php echo site_url('dashboard_cafe/simpan_menu') ?>" method="post" enctype="multipart/form-data">
                         <div class="form-group">
 
 
@@ -32,16 +32,28 @@
                             <input type="text" class="form-control" id="harga" name="harga" required>
                         </div>
                         <div class="form-group">
-                            <label for="gambar">Gambar Produk</label>
-                            <input type="file" name="gambar" class="form-control"></br>
+                            <label for="gambar">Gambar Menu</label>
+                            <input type="file" name="gambar" id="gambar" class="form-control" accept="image/*" onchange="previewImage(event)">
+                            </br>
+                            <img id="preview" class="mt-2" style="max-width: 200px; max-height: 200px; display: none;">
                         </div>
                         <div class="form-group"></br>
                             <button type="submit" class="btn btn-primary">Tambah</button>
                             <button type="reset" class="btn btn-secondary">Batal</button>
                         </div>
                     </form>
+                    <script>
+                    function previewImage(event) {
+                        const reader = new FileReader();
+                        reader.onload = function() {
+                            const preview = document.getElementById('preview');
+                            preview.src = reader.result;
+                            preview.style.display = 'block';
+                        }
+                        reader.readAsDataURL(event.target.files[0]);
+                    }
+                    </script>
                 </div>
             </div>
         </div>
     </main>
-

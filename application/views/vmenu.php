@@ -7,6 +7,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
             <?php endif; ?>
+            <?php if(isset($error) && $error): ?>
+            <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+                <?php echo $error; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+            <?php endif; ?>
             <div class="card mx-3 mt-3">
                 <div class="card-header">
                     <a href="<?php echo site_url('dashboard_cafe/tambah_menu') ?>"
@@ -17,7 +23,6 @@
                         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-
                                     <th>No</th>
                                     <th>Nama Menu</th>
                                     <th>Kategori</th>
@@ -34,7 +39,6 @@
                                 foreach ($menu as $m) {
                                     ?>
                                     <tr>
-
                                         <td><?php echo $no++ ?></td>
                                         <td><?php echo $m->nama_menu ?></td>
                                         <td><?php echo $m->kategori ?></td>
@@ -57,6 +61,8 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
     </main>
     <!-- Pustaka DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
