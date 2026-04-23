@@ -4,9 +4,8 @@
             <div class="sb-sidenav-menu">
                 <div class="nav">
                     <div class="sb-sidenav-menu-heading">Core</div>
-                    <a class="nav-link" href="<?php echo site_url('dashboard_tokokue') ?>">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"
-                                href="<?php echo site_url('dashboard_tokokue') ?>"></i></div>
+                    <a class="nav-link" href="<?php echo site_url('dashboard_cafe') ?>">
+                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                         Dashboard
                     </a>
                     <div class="sb-sidenav-menu-heading">Interface</div>
@@ -16,20 +15,21 @@
                         Menu
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne"
-                        data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_tokokue/lihat_produk') ?>">Lihat
-                                produk</a>
-                            <!-- <a class="nav-link" href="<?php echo site_url('dashboard_tokokue/tambah_produk') ?>">Tambah
-                                produk</a> -->
-                            <a class="nav-link" href="<?php echo site_url('dashboard_tokokue/lihat_customer') ?>">Lihat
-                                customer</a>
-                            <a class="nav-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_barangkeluar') ?>">Lihat
-                                barang keluar</a>
-                        </nav>
-                    </div>
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">Lihat
+                            menu</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_meja') ?>">Lihat
+                            meja</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">Lihat
+                            user</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_pesanan') ?>">Lihat
+                            pesanan</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_pesanan') ?>">Lihat Detail
+                            pesanan</a>
+                        <a class="nav-link"
+                            href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>">Lihat
+                            transaksi</a>
+                    </nav>
                     <!-- <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
                         aria-expanded="false" aria-controls="collapsePages">
                         <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>

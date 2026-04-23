@@ -1,22 +1,22 @@
 <?php 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Customer_model extends CI_Model
+class User_model extends CI_Model
 {
 	function lihat_data()
 	{
-		return $this->db->get('customer'); 
+		return $this->db->get('user'); 
 	}
 	function simpan_data($data)
 	{
-		$ins=$this->db->insert('customer',$data);
+		$ins=$this->db->insert('user',$data);
 		return $ins;
 	}
 
-	function hapus_data($id_customer)
+	function hapus_data($id_user)
 	{
-		$this->db->where('id_customer',$id_customer);
-		$this->db->delete('customer');
+		$this->db->where('id_user',$id_user);
+		$this->db->delete('user');
 	}
 
 	function edit_data($where, $table)

@@ -8,31 +8,36 @@
             <div class="row">
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">Total Kue: <?php echo $total_produk; ?></div>
+                        <div class="card-body">
+                            Total Menu: <?php echo $total_menu; ?>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_produk'); ?>">Lihat Produk</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_menu'); ?>">Lihat Menu</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-warning text-white mb-4">
-                        <div class="card-body">Total Customer: <?php echo $total_customer; ?></div>
+                        <div class="card-body">
+                            Total User: <?php echo $total_user; ?>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_customer'); ?>">Lihat Customer</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_user'); ?>">Lihat User</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-success text-white mb-4">
-                        <div class="card-body">Total Barang Keluar: <?php echo $total_barang_keluar; ?></div>
+                        <div class="card-body">
+                            Total Transaksi: <?php echo $total_transaksi; ?>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_barangkeluar'); ?>">Lihat Barang
-                                Keluar</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Transaksi</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
@@ -40,10 +45,11 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="card bg-danger text-white mb-4">
                         <div class="card-body">Total Pendapatan: Rp
-                            <?php echo number_format($total_pendapatan, 0, ',', '.'); ?></div>
+                            <?php echo number_format($total_pendapatan, 0, ',', '.'); ?>
+                        </div>
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_tokokue/lihat_barangkeluar'); ?>">Lihat Detail</a>
+                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Detail</a>
                             <div class="small text-white"><i class="fas fa-angle-right"></i></div>
                         </div>
                     </div>
@@ -59,19 +65,20 @@
                         <div class="card-body">
                             <canvas id="myAreaChart" width="100%" height="40"></canvas>
                             <script>
-                                (function () {
+                                (function() {
                                     var script = document.createElement('script');
                                     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js';
-                                    script.onload = function () {
+                                    script.onload = function() {
                                         Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
                                         Chart.defaults.global.defaultFontColor = '#292b2c';
 
                                         var canvas = document.getElementById("myAreaChart");
                                         var ctxArea = canvas.getContext('2d');
                                         var salesData = <?php echo json_encode($monthly_sales ?? []); ?>;
-                                        var labels = [], areaData = [];
+                                        var labels = [],
+                                            areaData = [];
                                         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                        salesData.forEach(function (row) {
+                                        salesData.forEach(function(row) {
                                             labels.push(monthNames[row.month - 1] + (row.year ? " " + row.year : ""));
                                             areaData.push(row.sales || 0);
                                         });
@@ -79,18 +86,42 @@
                                             labels.push("");
                                             areaData.push(0);
                                         }
-                                        var allZeroArea = areaData.every(function (v) { return v == 0; });
+                                        var allZeroArea = areaData.every(function(v) {
+                                            return v == 0;
+                                        });
 
                                         if (!allZeroArea) {
                                             new Chart(canvas, {
                                                 type: 'line',
                                                 data: {
                                                     labels: labels,
-                                                    datasets: [{ label: "Penjualan", data: areaData, borderColor: "rgba(2,117,216,1)", backgroundColor: "rgba(2,117,216,0.2)", lineTension: 0.3 }]
+                                                    datasets: [{
+                                                        label: "Penjualan",
+                                                        data: areaData,
+                                                        borderColor: "rgba(2,117,216,1)",
+                                                        backgroundColor: "rgba(2,117,216,0.2)",
+                                                        lineTension: 0.3
+                                                    }]
                                                 },
                                                 options: {
-                                                    scales: { yAxes: [{ ticks: { min: 0, callback: function (v) { return 'Rp ' + v.toLocaleString(); } } }], xAxes: [{ ticks: { maxTicksLimit: 12 } }] },
-                                                    legend: { display: false }
+                                                    scales: {
+                                                        yAxes: [{
+                                                            ticks: {
+                                                                min: 0,
+                                                                callback: function(v) {
+                                                                    return 'Rp ' + v.toLocaleString();
+                                                                }
+                                                            }
+                                                        }],
+                                                        xAxes: [{
+                                                            ticks: {
+                                                                maxTicksLimit: 12
+                                                            }
+                                                        }]
+                                                    },
+                                                    legend: {
+                                                        display: false
+                                                    }
                                                 }
                                             });
                                         } else {
@@ -111,21 +142,22 @@
                     <div class="card mb-4">
                         <div class="card-header">
                             <i class="fas fa-chart-bar me-1"></i>
-                            Barang keluar
+                            Transaksi
                         </div>
                         <div class="card-body">
                             <canvas id="myBarChart" width="100%" height="40"></canvas>
                             <script>
-                                (function () {
+                                (function() {
                                     var script = document.createElement('script');
                                     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js';
-                                    script.onload = function () {
+                                    script.onload = function() {
                                         var canvas = document.getElementById("myBarChart");
                                         var ctxBar = canvas.getContext('2d');
                                         var purchasesData = <?php echo json_encode($monthly_purchases ?? []); ?>;
-                                        var labels = [], barData = [];
+                                        var labels = [],
+                                            barData = [];
                                         var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                        purchasesData.forEach(function (row) {
+                                        purchasesData.forEach(function(row) {
                                             labels.push(monthNames[row.month - 1] + (row.year ? " " + row.year : ""));
                                             barData.push(row.count || 0);
                                         });
@@ -133,18 +165,37 @@
                                             labels.push("");
                                             barData.push(0);
                                         }
-                                        var allZeroBar = barData.every(function (v) { return v == 0; });
+                                        var allZeroBar = barData.every(function(v) {
+                                            return v == 0;
+                                        });
 
                                         if (!allZeroBar) {
                                             new Chart(canvas, {
                                                 type: 'bar',
                                                 data: {
                                                     labels: labels,
-                                                    datasets: [{ label: "Barang Keluar", data: barData, backgroundColor: "rgba(2,117,216,1)" }]
+                                                    datasets: [{
+                                                        label: "Barang Keluar",
+                                                        data: barData,
+                                                        backgroundColor: "rgba(2,117,216,1)"
+                                                    }]
                                                 },
                                                 options: {
-                                                    scales: { yAxes: [{ ticks: { min: 0 } }], xAxes: [{ ticks: { maxTicksLimit: 12 } }] },
-                                                    legend: { display: false }
+                                                    scales: {
+                                                        yAxes: [{
+                                                            ticks: {
+                                                                min: 0
+                                                            }
+                                                        }],
+                                                        xAxes: [{
+                                                            ticks: {
+                                                                maxTicksLimit: 12
+                                                            }
+                                                        }]
+                                                    },
+                                                    legend: {
+                                                        display: false
+                                                    }
                                                 }
                                             });
                                         } else {
@@ -152,7 +203,7 @@
                                             ctxBar.fillStyle = "#6c757d";
                                             ctxBar.textAlign = "center";
                                             ctxBar.textBaseline = "middle";
-                                            ctxBar.fillText("No data barang keluar tersedia", canvas.width / 2, canvas.height / 2);
+                                            ctxBar.fillText("No data transaksi tersedia", canvas.width / 2, canvas.height / 2);
                                         }
                                     };
                                     document.head.appendChild(script);
@@ -165,7 +216,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table me-1"></i>
-                    Data Barang Keluar
+                    Data Transaksi
                 </div>
                 <div class="card-body">
                     <table id="datatablesSimple">
@@ -190,7 +241,7 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            <?php foreach ($barang_keluar as $bk): ?>
+                            <?php foreach ($transaksi as $tr): ?>
                                 <tr>
                                     <td><?php echo $bk->no_transaksi; ?></td>
                                     <td><?php echo date('d/m/Y', strtotime($bk->tanggal)); ?></td>
