@@ -23,7 +23,7 @@
 
                 <div class="card-body">
 
-                    <!-- 🔥 TABLE DETAIL -->
+                    <!-- TABLE DETAIL -->
                     <div class="table-responsive">
                         <table class="table table-hover">
                             <thead>

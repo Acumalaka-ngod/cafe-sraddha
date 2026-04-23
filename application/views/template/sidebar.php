@@ -22,8 +22,8 @@
                             meja</a>
                         <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">Lihat
                             user</a>
-                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_transaksi') ?>">Lihat
-                            Detail transaksi</a>
+                        <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_transaksi') ?>">Lihat
+                            Detail transaksi</a> -->
                         <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_pesanan') ?>">Lihat Detail
                             pesanan</a> -->
                         <a class="nav-link"
