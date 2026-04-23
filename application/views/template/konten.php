@@ -223,35 +223,43 @@
                         <thead>
                             <tr>
                                 <th>No Transaksi</th>
-                                <th>Tanggal</th>
+                                <th>No Meja</th>
                                 <th>Customer</th>
-                                <th>Produk</th>
-                                <th>Jumlah</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
                                 <th>Total</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
-                        <tfoot>
+                        <!-- <tfoot>
                             <tr>
                                 <th>No Transaksi</th>
-                                <th>Tanggal</th>
+                                <th>No Meja</th>
                                 <th>Customer</th>
-                                <th>Produk</th>
-                                <th>Jumlah</th>
+                                <th>Tanggal</th>
+                                <th>Status</th>
                                 <th>Total</th>
+                                <th>Aksi</th>
+
                             </tr>
-                        </tfoot>
+                        </tfoot> -->
+
                         <tbody>
-                            <?php foreach ($transaksi as $tr): ?>
+                            <?php foreach ($transaksi as $t) : ?>
                                 <tr>
-                                    <td><?php echo $bk->no_transaksi; ?></td>
-                                    <td><?php echo date('d/m/Y', strtotime($bk->tanggal)); ?></td>
-                                    <td><?php echo $bk->nama_customer; ?></td>
-                                    <td><?php echo $bk->nama_produk; ?></td>
-                                    <td><?php echo $bk->jumlah_barang; ?></td>
-                                    <td>Rp <?php echo number_format($bk->jumlah_barang * $bk->harga, 0, ',', '.'); ?></td>
+                                    <td><?php echo $t->id_transaksi; ?></td>
+                                    <td><?php echo $t->no_meja; ?></td>
+                                    <td><?php echo $t->pemesan; ?></td>
+                                    <td><?php echo $t->tanggal; ?></td>
+                                    <td><?php echo $t->status_pesanan; ?></td>
+                                    <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
+                                    <td>
+                                        <a href="<?php echo site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi); ?>"
+                                            class="btn btn-info btn-sm">Detail</a>
                                 </tr>
                             <?php endforeach; ?>
                         </tbody>
+
                     </table>
                 </div>
             </div>

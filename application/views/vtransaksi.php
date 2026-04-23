@@ -25,10 +25,9 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Tanggal</th>
-                                    <th>Menu</th>
-                                    <th>Jumlah dipesan</th>
                                     <th>No Meja</th>
-                                    <th>Metode Pembayaran</th>
+                                    <th>Kasir</th>
+                                    <th>Status</th>
                                     <th>Total</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -41,11 +40,10 @@
                                     <tr>
                                         <td><?php echo $no++ ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($t->tanggal)); ?></td>
-                                        <td><?php echo $t->nama_menu ?></td>
-                                        <td><?php echo $t->jumlah_dipesan ?></td>
                                         <td><?php echo $t->no_meja ?></td>
-                                        <td><?php echo $t->metode_pembayaran ?></td>
-                                        <td>Rp <?php echo number_format($t->total, 0, ',', '.'); ?></td>
+                                        <td><?php echo $t->nama_user ?></td>
+                                        <td><?php echo $t->status_pesanan ?></td>
+                                        <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
                                         <td>
                                             <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi) ?>"
                                                 class="btn btn-warning btn-sm" title="Edit Transaksi"><i
