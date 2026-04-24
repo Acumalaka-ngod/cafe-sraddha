@@ -1,0 +1,60 @@
+body {
+	background: linear-gradient(135deg, #f5ebdd, #e6d3b3);
+	font-family: "Segoe UI", sans-serif;
+	min-height: 100vh;
+}
+
+.login-wrapper {
+	min-height: 100vh;
+}
+
+.login-card {
+	background: rgba(255, 255, 255, 0.7);
+	backdrop-filter: blur(15px);
+	border-radius: 25px;
+	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+	padding: 40px;
+	transition: 0.3s;
+}
+
+.login-card:hover {
+	transform: translateY(-5px);
+}
+
+.logo {
+	width: 140px;
+}
+
+.title {
+	color: #7b4b2a;
+	font-weight: 600;
+	letter-spacing: 1px;
+}
+
+.form-control {
+	border-radius: 12px;
+	padding: 12px;
+}
+
+.form-control:focus {
+	border-color: #c8a27a;
+	box-shadow: 0 0 0 0.2rem rgba(200, 162, 122, 0.25);
+}
+
+.btn-cozi {
+	background: linear-gradient(135deg, #7b4b2a, #9c6b3f);
+	color: white;
+	border-radius: 12px;
+	padding: 12px;
+	font-weight: 500;
+	transition: 0.3s;
+}
+
+.btn-cozi:hover {
+	transform: scale(1.03);
+	background: linear-gradient(135deg, #5f3a21, #7b4b2a);
+}
+
+.footer-text {
+	font-size: 13px;
+}

@@ -1,0 +1,28 @@
+/* FORCE sidebar not overlap content
+@media (min-width: 992px) {
+  #layoutSidenav {
+    position: fixed !important;
+    width: 280px !important;
+    z-index: 1030 !important;
+  }
+  
+  #layoutSidenav_content {
+    margin-left: 80px !important;
+    padding-top: 50px;
+    padding-left: 1px !important;
+    padding-right: 1.5rem !important;
+  }
+  
+  .sb-topnav {
+    z-index: 1031 !important;
+    padding-left: 80px !important;
+  }
+  
+  body.sb-nav-fixed #layoutSidenav_content {
+    margin-left: 230px !important;
+  }
+  
+  body {
+    overflow-x: hidden;
+  }
+} */
