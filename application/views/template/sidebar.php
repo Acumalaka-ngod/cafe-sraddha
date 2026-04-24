@@ -22,10 +22,17 @@
                             meja</a>
                         <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">Lihat
                             user</a>
+<<<<<<< HEAD
                         <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_transaksi') ?>">Lihat
                             Detail transaksi</a> -->
                         <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_pesanan') ?>">Lihat Detail
                             pesanan</a> -->
+=======
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_pesanan') ?>">Lihat
+                            pesanan</a>
+                        <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_detail_pesanan') ?>">Lihat Detail
+                            pesanan</a>
+>>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
                         <a class="nav-link"
                             href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>">Lihat
                             transaksi</a>

@@ -23,7 +23,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
+<<<<<<< HEAD
 $config['base_url'] = 'http://localhost/pwl24/cafe-sraddha-main/';
+=======
+$config['base_url'] = 'http://localhost/PWL24/cafe-sraddha/';
+>>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
 
 /*
 |--------------------------------------------------------------------------
@@ -387,7 +391,11 @@ $config['sess_driver'] = 'files';
 $config['sess_cookie_name'] = 'ci_session';
 $config['sess_samesite'] = 'Lax';
 $config['sess_expiration'] = 7200;
+<<<<<<< HEAD
 $config['sess_save_path'] = sys_get_temp_dir();
+=======
+$config['sess_save_path'] = NULL;
+>>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
 $config['sess_regenerate_destroy'] = FALSE;

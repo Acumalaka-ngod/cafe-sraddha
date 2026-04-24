@@ -223,6 +223,7 @@
                         <thead>
                             <tr>
                                 <th>No Transaksi</th>
+<<<<<<< HEAD
                                 <th>No Meja</th>
                                 <th>Customer</th>
                                 <th>Tanggal</th>
@@ -260,6 +261,37 @@
                             <?php endforeach; ?>
                         </tbody>
 
+=======
+                                <th>Tanggal</th>
+                                <th>Customer</th>
+                                <th>Produk</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>No Transaksi</th>
+                                <th>Tanggal</th>
+                                <th>Customer</th>
+                                <th>Produk</th>
+                                <th>Jumlah</th>
+                                <th>Total</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <?php foreach ($transaksi as $tr): ?>
+                                <tr>
+                                    <td><?php echo $bk->no_transaksi; ?></td>
+                                    <td><?php echo date('d/m/Y', strtotime($bk->tanggal)); ?></td>
+                                    <td><?php echo $bk->nama_customer; ?></td>
+                                    <td><?php echo $bk->nama_produk; ?></td>
+                                    <td><?php echo $bk->jumlah_barang; ?></td>
+                                    <td>Rp <?php echo number_format($bk->jumlah_barang * $bk->harga, 0, ',', '.'); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+>>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
                     </table>
                 </div>
             </div>

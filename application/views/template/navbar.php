@@ -19,7 +19,11 @@
                         <li><a class="dropdown-item" href="#!">Settings</a></li>
                         <li><a class="dropdown-item" href="#!">Activity Log</a></li>
                         <li><hr class="dropdown-divider" /></li>
+<<<<<<< HEAD
                         <li><a class="dropdown-item" href="<?php echo site_url('dashboard_cafe/logout') ?>">Logout</a></li>
+=======
+                        <li><a class="dropdown-item" href="#!">Logout</a></li>
+>>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
                     </ul>
                 </li>
             </ul>
