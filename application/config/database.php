@@ -78,11 +78,7 @@ $db['default'] = array(
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
-<<<<<<< HEAD
 	'database' => 'sraddha_coffee',
-=======
-'database' => 'sraddha_coffee',
->>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,

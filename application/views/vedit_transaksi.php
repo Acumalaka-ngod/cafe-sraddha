@@ -1,7 +1,6 @@
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
-<<<<<<< HEAD
 
             <div class="card mx-4 mt-3">
                 <div class="card-header">
@@ -42,7 +41,6 @@
                         <div class="form-group mb-3">
                             <label>Metode Pembayaran</label>
                             <select name="metode_pembayaran" class="form-control" required>
-=======
             <div class="card mx-4 mt-3">
                 <div class="card-header">
                     <a href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>"
@@ -85,12 +83,11 @@
                             <label>Metode Pembayaran</label>
                             <select name="metode_pembayaran" class="form-control" required>
                                 <option value="">-- Pilih --</option>
->>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
                                 <option value="Tunai" <?= $tr->metode_pembayaran == 'Tunai' ? 'selected' : '' ?>>Tunai</option>
                                 <option value="QRIS" <?= $tr->metode_pembayaran == 'QRIS' ? 'selected' : '' ?>>QRIS</option>
                             </select>
                         </div>
-<<<<<<< HEAD
+
 
                         <!-- METODE -->
                         <div class="form-group mb-3">
@@ -152,13 +149,13 @@
                         </div>
                     </form>
                     <?php endif; ?>
->>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897
+
                 </div>
             </div>
         </div>
     </main>
 
-<<<<<<< HEAD
+
     <script>
         let cart = [];
 
@@ -240,5 +237,3 @@
             );
         });
     </script>
-=======
->>>>>>> 2e20cddf34c6fcf448714230eba0b44f83c5b897

@@ -46,12 +46,14 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#dataTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Indonesian.json"
-                }
-            });
+        $('#dataTable').DataTable({
+            responsive: true,
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Indonesian.json"
+            },
+            columnDefs: [{
+                orderable: false,
+                targets: -1
+            }]
         });
     </script>
-

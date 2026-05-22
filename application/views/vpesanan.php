@@ -16,7 +16,9 @@
             <div class="card mx-3 mt-3">
                 <div class="card-header">
                     <a href="<?php echo site_url('dashboard_cafe/tambah_pesanan') ?>"
-                        class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah pesanan</a>
+                        class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-plus"></i> Tambah pesanan
+                    </a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -24,30 +26,34 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>No Meja</th>                                    
-                                    <th>Menu</th>                                    
+                                    <th>No Meja</th>
+                                    <th>Menu</th>
                                     <th>Jumlah</th>
-                                    <th>Aksi</th>
+                                    <th style="white-space: nowrap; width: 80px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
                                 $no = 1;
                                 foreach ($pesanan as $p) {
-                                ?>
+                                    ?>
                                     <tr>
                                         <td><?php echo $no++ ?></td>
                                         <td><?php echo $p->no_meja ?></td>
-										<td><?php echo isset($p->nama_menu) ? $p->nama_menu : 'N/A'; ?></td>
-										<td><?php echo isset($p->jumlah) ? $p->jumlah : 'N/A'; ?></td>
-                                        <td>
-											<a href="<?php echo site_url('dashboard_cafe/edit_pesanan/' . (isset($p->id_pesanan) ? $p->id_pesanan : $p->id_transaksi)) ?>"
-                                                class="btn btn-warning btn-sm" title="Edit pesanan"><i
-                                                    class="fas fa-pencil"></i> </a>
-											<a href="<?php echo site_url('dashboard_cafe/hapus_pesanan/' . (isset($p->id_pesanan) ? $p->id_pesanan : $p->id_transaksi)) ?>"
-                                                class="btn btn-danger btn-sm" title="Hapus pesanan"
-                                                onclick="return confirm('Yakin ingin menghapus pesanan ini?')"><i
-                                                    class="fas fa-trash"></i> </a>
+                                        <td><?php echo isset($p->nama_menu) ? $p->nama_menu : 'N/A'; ?></td>
+                                        <td><?php echo isset($p->jumlah) ? $p->jumlah : 'N/A'; ?></td>
+                                        <td style="white-space: nowrap;">
+                                            <div class="d-flex gap-1">
+                                                <a href="<?php echo site_url('dashboard_cafe/edit_pesanan/' . (isset($p->id_pesanan) ? $p->id_pesanan : $p->id_transaksi)) ?>"
+                                                    class="btn btn-warning btn-sm" title="Edit pesanan">
+                                                    <i class="fas fa-pencil"></i>
+                                                </a>
+                                                <a href="<?php echo site_url('dashboard_cafe/hapus_pesanan/' . (isset($p->id_pesanan) ? $p->id_pesanan : $p->id_transaksi)) ?>"
+                                                    class="btn btn-danger btn-sm" title="Hapus pesanan"
+                                                    onclick="return confirm('Yakin ingin menghapus pesanan ini?')">
+                                                    <i class="fas fa-trash"></i>
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -55,12 +61,23 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
     </main>
+
+    <style>
+        #dataTable td:last-child,
+        #dataTable th:last-child {
+            white-space: nowrap;
+            width: 1%;
+        }
+    </style>
+
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('#dataTable').DataTable({
                 responsive: true,
                 "language": {
@@ -72,4 +89,5 @@
                 }]
             });
         });
-    </script>            
+    </script>
+</div>
