@@ -590,5 +590,6 @@ class Dashboard_cafe extends CI_Controller
         $this->edit_transaksi($id);
     }
 
+    
 }
 

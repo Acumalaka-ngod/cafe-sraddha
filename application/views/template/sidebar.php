@@ -20,7 +20,12 @@
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">Lihat
                                 menu</a>
-                            
+                            <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Coffee</a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Non Coffee</a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Manual Brew</a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Chocolate</a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Tea</a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Snacks</a> -->
                         </nav>
                     </div>
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
@@ -51,7 +56,7 @@
                     </div>
                     <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages2"
                         aria-expanded="false" aria-controls="collapsePages2">
-                        <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fa-solid fa-money-bill"></i></div>
                         Transaksi
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
@@ -74,8 +79,8 @@
                 </div>
             </div>
             <div class="sb-sidenav-footer">
-                <div class="small">Logged in as:</div>
-                Start Bootstrap
+                <div class="small"></div>
+                &copy; Cafe Sraddha
             </div>
         </nav>
     </div>

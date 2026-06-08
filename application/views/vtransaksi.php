@@ -28,7 +28,7 @@
                                     <th>No</th>
                                     <th>Tanggal</th>
                                     <th>No Meja</th>
-                                    <th>Nama User</th>
+                                    <th>Kasir</th>
                                     <th>Status Pesanan</th>
                                     <th>Metode Pembayaran</th>
                                     <th>Total</th>
@@ -49,8 +49,8 @@
                                         <td><?php echo $t->metode_pembayaran; ?></td>
                                         <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
                                         <td>
-                                            <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi) ?>" class="btn btn-warning btn-sm" title="Edit Transaksi">
-                                                <i class="fas fa-pencil"></i>
+                                            <a href="<?php echo site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi) ?>" class="btn btn-info btn-sm" title="Lihat Detail Transaksi">
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             <a href="<?php echo site_url('dashboard_cafe/hapus_transaksi/' . $t->id_transaksi) ?>" class="btn btn-danger btn-sm" title="Hapus Transaksi" onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
                                                 <i class="fas fa-trash"></i>
