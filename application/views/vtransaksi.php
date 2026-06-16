@@ -16,16 +16,15 @@
 
             <div class="card mx-3 mt-3">
                 <div class="card-header">
-                    <a href="<?php echo site_url('dashboard_cafe/tambah_transaksi') ?>" class="btn btn-outline-primary btn-sm">
-                        <i class="fas fa-plus"></i> Tambah Transaksi
-                    </a>
+                    <!-- Bikin kaporan erkap bulanan/tahunan -->
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>No</th>
+                                    <th>NO</th>
+                                    <th>No Pesanan</th>
                                     <th>Tanggal</th>
                                     <th>No Meja</th>
                                     <th>Kasir</th>
@@ -42,6 +41,7 @@
                                 ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
+                                        <td><?php echo "SHD - ".$t->no_pesanan; ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($t->tanggal)); ?></td>
                                         <td><?php echo $t->no_meja; ?></td>
                                         <td><?php echo $t->nama_user; ?></td>
@@ -50,8 +50,9 @@
                                         <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
                                         <td>
                                             <a href="<?php echo site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi) ?>" class="btn btn-info btn-sm" title="Lihat Detail Transaksi">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
+                                                <i class="fas fa-eye"></i></a>
+                                            <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi) ?>" class="btn btn-warning btn-sm" title="Edit Transaksi">
+                                                <i class="fas fa-pencil"></i></a>
                                             <a href="<?php echo site_url('dashboard_cafe/hapus_transaksi/' . $t->id_transaksi) ?>" class="btn btn-danger btn-sm" title="Hapus Transaksi" onclick="return confirm('Yakin ingin menghapus transaksi ini?')">
                                                 <i class="fas fa-trash"></i>
                                             </a>

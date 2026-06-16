@@ -19,7 +19,7 @@
                         data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
                             <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">Lihat
-                                menu</a>
+                                menu cafe</a>
                             <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Coffee</a>
                             <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Non Coffee</a>
                             <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Manual Brew</a>

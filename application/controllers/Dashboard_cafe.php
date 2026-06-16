@@ -84,7 +84,7 @@ class Dashboard_cafe extends CI_Controller
         $data['monthly_purchases'] = $this->db->get()->result_array();
 
         // Ringkasan transaksi (ambil header)
-        $this->db->select('t.id_transaksi, mj.no_meja, t.pemesan, t.tanggal, t.status_pesanan, t.total_harga');
+        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.total_harga');
         $this->db->from('transaksi t');
         $this->db->join('meja mj', 't.id_meja = mj.id_meja', 'left');
         $this->db->limit(10);
@@ -342,7 +342,6 @@ class Dashboard_cafe extends CI_Controller
         $data_transaksi = [
             'id_user' => $id_user,
             'id_meja' => $this->input->post('meja'),
-            'pemesan' => $this->input->post('pemesan') ?: 'Walk-in',
             'tanggal' => date('Y-m-d H:i:s'),
             'metode_pembayaran' => $this->input->post('metode_pembayaran'),
             'status_pembayaran' => 'paid',
@@ -413,11 +412,20 @@ class Dashboard_cafe extends CI_Controller
     public function update_transaksi()
     {
         $id = $this->input->post('id_transaksi');
+        $status = $this->input->post('status_pesanan');
+        $cart_raw = $this->input->post('cart_data');
+        $cart = $cart_raw ? json_decode($cart_raw, true) : null;
 
-        $cart = json_decode($this->input->post('cart_data'), true);
+        if ((!$cart || count($cart) == 0) && $status) {
+            $this->db->update('transaksi', ['status_pesanan' => $status], ['id_transaksi' => $id]);
+            echo '<script>alert("Status transaksi berhasil diperbarui!"); window.location="' . site_url('dashboard_cafe/lihat_transaksi') . '";</script>';
+            exit;
+        }
+
         if (!$cart || count($cart) == 0) {
             show_error('Cart kosong');
         }
+
 
         // Balik stok detail lama
         $old_detail = $this->db->get_where('detail_transaksi', ['id_transaksi' => $id])->result();
@@ -439,7 +447,6 @@ class Dashboard_cafe extends CI_Controller
         // Update header transaksi
         $data_transaksi = [
             'id_meja' => $this->input->post('meja'),
-            'pemesan' => $this->input->post('pemesan'),
             'metode_pembayaran' => $this->input->post('metode_pembayaran'),
             'status_pesanan' => $this->input->post('status_pesanan'),
             'total_harga' => $total_harga
@@ -589,7 +596,6 @@ class Dashboard_cafe extends CI_Controller
     {
         $this->edit_transaksi($id);
     }
-
     
 }
 

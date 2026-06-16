@@ -50,7 +50,7 @@
                         <div class="card-footer d-flex align-items-center justify-content-between">
                             <a class="small text-white stretched-link"
                                 href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Detail</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                            <div class="small text-white"><i class="fas fa- angle-right"></i></div>
                         </div>
                     </div>
                 </div>
@@ -224,7 +224,6 @@
                             <tr>
                                 <th>No Transaksi</th>
                                 <th>No Meja</th>
-                                <th>Customer</th>
                                 <th>Tanggal</th>
                                 <th>Status</th>
                                 <th>Total</th>
@@ -249,17 +248,15 @@
                                 <tr>
                                     <td><?php echo $t->id_transaksi; ?></td>
                                     <td><?php echo $t->no_meja; ?></td>
-                                    <td><?php echo $t->pemesan; ?></td>
                                     <td><?php echo $t->tanggal; ?></td>
                                     <td><?php echo $t->status_pesanan; ?></td>
                                     <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
                                     <td>
-                                        <a href="<?php echo site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi); ?>"
-                                            class="btn btn-info btn-sm">Detail</a>
+                                        <a href="<?php echo site_url('dashboard_cafe/update_transaksi/' . $t->id_transaksi); ?>"
+                                            class="btn btn-info btn-sm">Update Status</a>
                                 </tr>
                             <?php endforeach; ?>
-                        </tbody>
-
+                            </tbody>
                     </table>
                 </div>
             </div>

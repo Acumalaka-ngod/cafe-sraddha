@@ -18,8 +18,12 @@
                             </thead>
                             <tbody>
                                 <?php
+                                // Batasan: meja hanya sampai max 20
                                 $no = 1;
                                 foreach ($meja as $mj) {
+                                    if ((int) $mj->no_meja > 20) {
+                                        continue;
+                                    }
                                     ?>
                                     <tr>
                                         <td><?php echo $no++ ?></td>
