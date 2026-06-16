@@ -13,16 +13,16 @@
     <link rel="stylesheet" href="<?php echo base_url('assets/css/vmenu.css') ?>">
 </head>
 
-<style>
+<!-- <style>
 
-</style>
+</style> -->
 
 <body>
 
 
     <div class="container-fluid p-0">
 
-        <!-- Header -->
+        <!-- Header  -->
         <div class="header-wrapper py-1">
 
             <header class="d-flex justify-content-between align-items-center py-3 px-3">
@@ -300,7 +300,7 @@
         <!-- End of Non Coffee -->
 
         <!-- Cart Checkout -->
-        <div class="checkout-cart">
+        <div class="checkout-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
             <div class="checkout-icon">
                 <i class="fa fa-shopping-cart"></i>
             </div>
@@ -311,19 +311,21 @@
             </div>
 
             <div class="checkout-action">
-                <a href="#" class="btn-checkout">Checkout</a>
+                <button
+                    type="button"
+                    class="btn-checkout"
+                    data-bs-toggle="modal"
+                    data-bs-target="#cartModal">
+                    Checkout
+                </button>
             </div>
         </div>
 
 
 
-
-
-
-
         <!-- Detail Menu/Modal -->
         <div class="modal fade" id="detailMenuModal" tabindex="-1">
-            <div class="modal-dialog modal-dialog-bottom modal-fullscreen-sm-down">
+            <div class="modal-dialog modal-dialog-bottom modal-fullscreen-sm-down modal-dialog-scrollable">
                 <div class="modal-content custom-modal">
 
                     <form action="<?= base_url('customer/add_to_cart') ?>" method="post">
@@ -333,12 +335,12 @@
                         <input type="hidden" name="menu_name" value="MALA">
                         <input type="hidden" name="menu_price" value="28000">
                         <input type="hidden" name="qty" id="qty" value="1">
-
-                        <div class="modal-img">
-                            <img src="<?php echo base_url('assets/assets/img/mala.png') ?>" alt="Menu Image" class="img-fluid">
-                        </div>
-
                         <div class="modal-body p-0">
+
+                            <div class="modal-img">
+                                <img src="<?php echo base_url('assets/assets/img/mala.png') ?>" alt="Menu Image" class="img-fluid">
+                            </div>
+
 
                             <div class="menu-detail-card">
                                 <h3 class="menu-detail-title mb-1">
@@ -467,16 +469,16 @@
 
                                 </div>
 
-                                <div class="footer-btn-add">
+                                <!-- <div class="footer-btn-add"> -->
 
-                                    <button type="submit" class="btn btn-tambah w-100">
-                                        Tambah ke Pesanan -
-                                        <span class="footer-total-price">
-                                            Rp 30.000
-                                        </span>
-                                    </button>
+                                <button type="submit" class="btn btn-tambah w-100">
+                                    Tambah ke Pesanan -
+                                    <span class="footer-total-price">
+                                        Rp 30.000
+                                    </span>
+                                </button>
 
-                                </div>
+                                <!-- </div> -->
 
                             </div>
 
@@ -487,7 +489,253 @@
                 </div>
             </div>
         </div>
+
+
+        <!-- Modal Cart -->
+        <div class="modal fade" id="cartModal" tabindex="-1" aria-labelledby="cartModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-bottom modal-fullscreen-sm-down modal-dialog-scrollable">
+                <div class="modal-content">
+
+                    <form id="checkoutForm" action="/checkout" method="POST">
+
+                        <!-- Header -->
+                        <div class="modal-header">
+                            <button
+                                type="button"
+                                class="modal-back-btn"
+                                data-bs-dismiss="modal"
+                                aria-label="Close">
+
+                                <i class="fa-solid fa-arrow-left"></i>
+
+                            </button>
+                            <h5 class="modal-title text-center" id="cartModalLabel">
+                                Pesanan
+                            </h5>
+                        </div>
+
+                        <!-- Body -->
+                        <div class="modal-body">
+
+                            <!-- Nomor Meja -->
+                            <div class="mb-4">
+                                <label class="table-label">Nomor meja</label>
+
+                                <div class="table-number-box">
+                                    <img src="assets/assets/icons/tableIcons.svg"
+                                        alt="Table Icon"
+                                        class="table-icon">
+
+                                    <span>01</span>
+
+                                    <input type="hidden" name="table_number" value="01">
+                                </div>
+                            </div>
+
+                            <!-- Item Pesanan -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h6 class="mb-0 item-dipesan">
+                                    Item yang Dipesan (1)
+                                </h6>
+
+                                <button type="button" class="btn-tambah-pesanan" data-bs-dismiss="modal">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Tambah Pesanan</span>
+                                </button>
+                            </div>
+
+                            <!-- Item -->
+                            <div class="cart-items">
+                                <div class="cart-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">MALA</h6>
+                                            <small class="text-muted">Tidak ada catatan</small>
+                                            <div class="fw-bold mt-1">Rp25.000</div>
+                                        </div>
+
+                                        <div class="qty-control">
+                                            <button type="button" class="qty-btn">−</button>
+                                            <span class="qty-value">1</span>
+                                            <button type="button" class="qty-btn">+</button>
+
+                                            <input type="hidden" name="items[0][id]" value="1">
+                                            <input type="hidden" name="items[0][qty]" value="1">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cart-item">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h6 class="mb-1">MALA</h6>
+                                            <small class="text-muted">Tidak ada catatan</small>
+                                            <div class="fw-bold mt-1">Rp25.000</div>
+                                        </div>
+
+                                        <div class="qty-control">
+                                            <button type="button" class="qty-btn">−</button>
+                                            <span class="qty-value">1</span>
+                                            <button type="button" class="qty-btn">+</button>
+
+                                            <input type="hidden" name="items[0][id]" value="1">
+                                            <input type="hidden" name="items[0][qty]" value="1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="divider-line"></div>
+
+                                <!-- Rincian Pembayaran -->
+                                <div class="payment-summary-card">
+                                    <h5 class="payment-title">
+                                        Rincian Pembayaran
+                                    </h5>
+
+                                    <div class="summary-row">
+                                        <div>
+                                            <span class="summary-label">Subtotal</span>
+                                            <span class="summary-sub">(1 menu)</span>
+                                        </div>
+                                        <span class="summary-price">Rp25.000</span>
+                                    </div>
+
+                                    <div class="summary-divider"></div>
+
+                                    <div class="summary-row">
+                                        <span class="summary-label">Biaya Layanan</span>
+                                        <span class="summary-price">Rp1.000</span>
+                                    </div>
+
+                                    <div class="summary-row total-row">
+                                        <span class="summary-label">Total</span>
+                                        <span class="total-price">Rp26.000</span>
+                                    </div>
+
+                                    <input type="hidden" name="subtotal" value="25000">
+                                    <input type="hidden" name="service_fee" value="1000">
+                                    <input type="hidden" name="total" value="26000">
+                                </div>
+
+                                <!-- Metode Pembayaran -->
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Metode Pembayaran
+                                    </label>
+
+                                    <div class="row g-3">
+
+                                        <!-- QRIS -->
+                                        <div class="col-6 col-md-6">
+                                            <input type="radio"
+                                                class="btn-check"
+                                                name="payment_method"
+                                                id="paymentQris"
+                                                value="qris"
+                                                required>
+
+                                            <label class="payment-card" for="paymentQris">
+
+                                                <div class="payment-icon">
+                                                    <img src="<?= base_url('assets/assets/icons/paymentIcons.svg') ?>"
+                                                        alt="QRIS">
+                                                </div>
+
+                                                <div class="payment-label">
+                                                    QRIS
+                                                </div>
+
+                                            </label>
+                                        </div>
+
+                                        <!-- Bayar di Kasir -->
+                                        <div class="col-6 col-md-6">
+                                            <input type="radio"
+                                                class="btn-check"
+                                                name="payment_method"
+                                                id="paymentCashier"
+                                                value="cashier"
+                                                required>
+
+                                            <label class="payment-card" for="paymentCashier">
+
+                                                <div class="payment-icon">
+                                                    <img src="<?= base_url('assets/assets/icons/payIcons.svg') ?>"
+                                                        alt="Bayar di Kasir">
+                                                </div>
+
+                                                <div class="payment-label">
+                                                    Bayar di Kasir
+                                                </div>
+
+                                            </label>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Catatan -->
+                                <!-- <div class="mb-3">
+                                    <label class="form-label">Catatan Pesanan</label>
+                                    <textarea class="form-control"
+                                        name="notes"
+                                        rows="3"
+                                        placeholder="Tambahkan catatan jika ada"></textarea>
+                                </div> -->
+
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="checkout-footer-card">
+
+                                <div class="checkout-footer-info">
+                                    <span class="checkout-footer-label">
+                                        Total Pembayaran
+                                    </span>
+
+                                    <h4 class="checkout-footer-total">
+                                        Rp26.000
+                                    </h4>
+                                </div>
+
+                                <button type="submit" class="btn checkout-footer-btn">
+                                    Bayar
+                                </button>
+
+                            </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const checkoutCart = document.querySelector('.checkout-cart');
+
+            const modals = [
+                document.getElementById('cartModal'),
+                document.getElementById('detailMenuModal')
+            ];
+
+            modals.forEach(modal => {
+                if (!modal) return;
+
+                modal.addEventListener('shown.bs.modal', () => {
+                    checkoutCart.classList.add('hide');
+                });
+
+                modal.addEventListener('hidden.bs.modal', () => {
+                    checkoutCart.classList.remove('hide');
+                });
+            });
+
+        });
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
