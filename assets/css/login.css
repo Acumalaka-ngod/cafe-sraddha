@@ -1,5 +1,5 @@
 body {
-	background: linear-gradient(135deg, #f5ebdd, #e6d3b3);
+	background: linear-gradient(135deg, #F3E7D3, #E7D9C7);
 	font-family: "Segoe UI", sans-serif;
 	min-height: 100vh;
 }
@@ -9,16 +9,17 @@ body {
 }
 
 .login-card {
-	background: rgba(255, 255, 255, 0.7);
-	backdrop-filter: blur(15px);
+	background: #FAF7F2;
 	border-radius: 25px;
-	box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 15px 40px rgba(62, 42, 30, 0.1);
 	padding: 40px;
 	transition: 0.3s;
+	border: 1px solid #E7D9C7;
 }
 
 .login-card:hover {
 	transform: translateY(-5px);
+	box-shadow: 0 20px 50px rgba(62, 42, 30, 0.15);
 }
 
 .logo {
@@ -26,35 +27,42 @@ body {
 }
 
 .title {
-	color: #7b4b2a;
-	font-weight: 600;
+	color: #3E2A1E;
+	font-weight: 700;
 	letter-spacing: 1px;
+	font-size: 24px;
 }
 
 .form-control {
 	border-radius: 12px;
 	padding: 12px;
+	border-color: #E7D9C7;
+	background: #F3E7D3;
 }
 
 .form-control:focus {
-	border-color: #c8a27a;
-	box-shadow: 0 0 0 0.2rem rgba(200, 162, 122, 0.25);
+	border-color: #9B673A;
+	box-shadow: 0 0 0 0.2rem rgba(155, 103, 58, 0.25);
+	background: #FAF7F2;
 }
 
 .btn-cozi {
-	background: linear-gradient(135deg, #7b4b2a, #9c6b3f);
+	background: #9B673A;
 	color: white;
 	border-radius: 12px;
 	padding: 12px;
-	font-weight: 500;
+	font-weight: 600;
 	transition: 0.3s;
+	border: none;
 }
 
 .btn-cozi:hover {
 	transform: scale(1.03);
-	background: linear-gradient(135deg, #5f3a21, #7b4b2a);
+	background: #7F522C;
+	box-shadow: 0 4px 15px rgba(155, 103, 58, 0.3);
 }
 
 .footer-text {
 	font-size: 13px;
+	color: #7C6A5B !important;
 }

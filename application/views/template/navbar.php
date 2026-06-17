@@ -1,26 +1,43 @@
 <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Navbar Brand-->
-            <a class="navbar-brand ps-3" href="index.html">CAFE SRADDHA</a>
-            <!-- Sidebar Toggle-->
-            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i class="fas fa-bars"></i></button>
-            <!-- Navbar Search-->
-            <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0">
-                <div class="input-group">
-                    <input class="form-control" type="text" placeholder="Search for..." aria-label="Search for..." aria-describedby="btnNavbarSearch" />
-                    <button class="btn btn-primary" id="btnNavbarSearch" type="button"><i class="fas fa-search"></i></button>
+    <nav class="sb-topnav navbar navbar-expand">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand ps-2 fw-bold" href="index.html">
+                <i class="fas fa-mug-hot me-2"></i>Sraddha Coffee
+            </a>
+            <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">
+                <i class="fas fa-bars" style="color: #7C6A5B;"></i>
+            </button>
+
+            <form class="d-none d-md-inline-block ms-auto me-3">
+                <div class="search-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input class="form-control py-2" type="text" placeholder="Cari pesanan, menu..." />
                 </div>
             </form>
-            <!-- Navbar-->
-            <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+
+            <ul class="navbar-nav">
+                <li class="nav-item dropdown position-relative me-2">
+                    <a class="nav-link" href="#" role="button">
+                        <i class="fas fa-bell fs-6"></i>
+                        <span class="notif-badge"></span>
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">Settings</a></li>
-                        <li><a class="dropdown-item" href="#!">Activity Log</a></li>
-                        <li><hr class="dropdown-divider" /></li>
-                        <li><a class="dropdown-item" href="<?php echo site_url('dashboard_cafe/logout') ?>">Logout</a></li>
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <div style="width: 32px; height: 32px; border-radius: 10px; background-color: #9B673A; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 600;">
+                            <?= strtoupper(substr($this->session->userdata('nama') ?? 'A', 0, 1)) ?>
+                        </div>
+                        <span class="d-none d-md-inline" style="color: #3E2A1E; font-weight: 500; font-size: 14px;">
+                            <?= $this->session->userdata('nama') ?? 'Admin' ?>
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 16px; border: 1px solid #E7D9C7; box-shadow: 0 8px 30px rgba(62,42,30,0.1);">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user fa-fw me-2"></i>Profile</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog fa-fw me-2"></i>Pengaturan</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="<?php echo site_url('dashboard_cafe/logout') ?>"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Logout</a></li>
                     </ul>
                 </li>
             </ul>
-        </nav>
+        </div>
+    </nav>

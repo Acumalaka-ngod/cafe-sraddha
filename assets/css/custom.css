@@ -1,0 +1,582 @@
+/* ============================================
+   SRADDHA COFFEE - Premium Custom Theme
+   ============================================ */
+
+:root {
+  --primary: #9B673A;
+  --primary-hover: #7F522C;
+  --primary-light: rgba(155, 103, 58, 0.1);
+  --sidebar-bg: #8B5A2B;
+  --sidebar-hover: #A87442;
+  --bg-main: #F3E7D3;
+  --card-bg: #FAF7F2;
+  --border: #E7D9C7;
+  --text: #3E2A1E;
+  --text-secondary: #7C6A5B;
+  --success: #5A8F5A;
+  --danger: #C45A4A;
+  --warning: #D39D38;
+  --info: #7A9AAB;
+
+  --bs-primary: #9B673A;
+  --bs-primary-rgb: 155, 103, 58;
+  --bs-secondary: #7C6A5B;
+  --bs-secondary-rgb: 124, 106, 91;
+  --bs-body-bg: #F3E7D3;
+  --bs-body-color: #3E2A1E;
+  --bs-card-bg: #FAF7F2;
+  --bs-card-color: #3E2A1E;
+  --bs-border-color: #E7D9C7;
+  --bs-link-color: #9B673A;
+  --bs-link-hover-color: #7F522C;
+  --bs-link-color-rgb: 155, 103, 58;
+}
+
+body, #layoutSidenav_content {
+  background-color: var(--bg-main) !important;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sb-sidenav-dark {
+  background-color: var(--sidebar-bg) !important;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-weight: 500;
+  padding: 12px 20px;
+  margin: 2px 10px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link:hover {
+  background-color: var(--sidebar-hover) !important;
+  color: #FFFFFF !important;
+  transform: translateX(4px);
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .nav-link.active {
+  background-color: var(--sidebar-hover) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.sb-sidenav-dark .sb-sidenav-menu .sb-sidenav-menu-heading {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 16px 20px 8px;
+}
+
+.sb-sidenav-dark .sb-sidenav-footer {
+  background-color: rgba(0, 0, 0, 0.15) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 13px;
+}
+
+.sb-nav-link-icon {
+  margin-right: 12px;
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+
+.sb-sidenav-menu-nested .nav-link {
+  padding: 8px 20px 8px 52px !important;
+  font-size: 13px !important;
+  margin: 1px 10px !important;
+}
+
+/* ============================================
+   NAVBAR / TOPBAR
+   ============================================ */
+.sb-topnav {
+  background-color: var(--card-bg) !important;
+  box-shadow: 0 2px 20px rgba(62, 42, 30, 0.06);
+  height: 64px;
+}
+
+.sb-topnav .navbar-brand {
+  color: var(--text) !important;
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: 0.5px;
+}
+
+.sb-topnav .nav-link {
+  color: var(--text-secondary) !important;
+}
+
+.sb-topnav .nav-link:hover {
+  color: var(--primary) !important;
+}
+
+.navbar-nav .nav-link {
+  padding: 8px 16px !important;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: var(--primary-light) !important;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+.card {
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 4px 20px rgba(62, 42, 30, 0.04);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 30px rgba(62, 42, 30, 0.08);
+}
+
+.card-header {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--border) !important;
+  padding: 16px 24px !important;
+  border-radius: 20px 20px 0 0 !important;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.card-body {
+  padding: 24px;
+}
+
+/* Stat Cards */
+.stat-card {
+  border-radius: 20px !important;
+  border: 1px solid var(--border) !important;
+  padding: 24px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(62, 42, 30, 0.1);
+}
+
+.stat-card .stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 16px;
+}
+
+.stat-card .stat-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.stat-card .stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 4px 0;
+}
+
+.stat-card .stat-change {
+  font-size: 12px;
+  margin-top: 8px;
+}
+
+/* Stat Card Colors - Coffee Palette */
+.stat-icon-primary {
+  background-color: rgba(155, 103, 58, 0.12) !important;
+  color: #9B673A !important;
+}
+
+.stat-icon-dark {
+  background-color: rgba(107, 79, 52, 0.12) !important;
+  color: #6B4F34 !important;
+}
+
+.stat-icon-sidebar {
+  background-color: rgba(139, 90, 43, 0.12) !important;
+  color: #8B5A2B !important;
+}
+
+.stat-icon-hover {
+  background-color: rgba(168, 116, 66, 0.12) !important;
+  color: #A87442 !important;
+}
+
+/* Action Button Icons */
+.btn i, .btn .fas, .btn .far, .btn .fab {
+  color: #FFFFFF !important;
+}
+
+.btn-danger i, .btn-danger .fas {
+  color: #FFFFFF !important;
+}
+
+/* Hapus: pastikan ikon trash tetap putih */
+.btn-danger i.fas.fa-trash,
+.btn-danger .fa-trash {
+  color: #FFFFFF !important;
+}
+
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.btn-primary {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #FFFFFF !important;
+  border-radius: 12px;
+  padding: 10px 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+  color: #FFFFFF !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(155, 103, 58, 0.3);
+}
+
+.btn-outline-primary {
+  color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  border-radius: 12px;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--primary) !important;
+  color: #FFFFFF !important;
+}
+
+.btn-success {
+  background-color: var(--success) !important;
+  border-color: var(--success) !important;
+  border-radius: 10px;
+}
+
+.btn-success:hover {
+  background-color: #4A7A4A !important;
+  border-color: #4A7A4A !important;
+}
+
+.btn-info {
+  background-color: var(--info) !important;
+  border-color: var(--info) !important;
+  color: #fff !important;
+  border-radius: 10px;
+}
+
+.btn-warning {
+  background-color: var(--warning) !important;
+  border-color: var(--warning) !important;
+  color: #fff !important;
+  border-radius: 10px;
+}
+
+.btn-danger {
+  background-color: var(--danger) !important;
+  border-color: var(--danger) !important;
+  border-radius: 10px;
+}
+
+.btn-sm {
+  border-radius: 10px;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+
+/* ============================================
+   BADGES
+   ============================================ */
+.badge {
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+}
+
+.badge.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.badge.bg-success {
+  background-color: var(--success) !important;
+}
+
+.badge.bg-warning {
+  background-color: var(--warning) !important;
+  color: #fff !important;
+}
+
+.badge.bg-danger {
+  background-color: var(--danger) !important;
+}
+
+.badge.bg-info {
+  background-color: var(--info) !important;
+}
+
+/* ============================================
+   TABLES
+   ============================================ */
+.table {
+  color: var(--text) !important;
+  margin-bottom: 0;
+}
+
+.table thead th {
+  background-color: rgba(231, 217, 199, 0.3) !important;
+  border-bottom: 1px solid var(--border) !important;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+}
+
+.table td {
+  padding: 12px 16px;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(231, 217, 199, 0.5);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(155, 103, 58, 0.04) !important;
+}
+
+.table-bordered, .table th, .table td {
+  border-color: var(--border) !important;
+}
+
+/* ============================================
+   PAGINATION
+   ============================================ */
+.page-item.active .page-link {
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  border-radius: 10px;
+}
+
+.page-link {
+  color: var(--primary) !important;
+  border-radius: 10px;
+  margin: 0 2px;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+.form-control, .form-select {
+  border-radius: 12px;
+  border-color: var(--border);
+  padding: 10px 16px;
+  color: var(--text);
+  background-color: var(--card-bg);
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 0.2rem rgba(155, 103, 58, 0.15);
+}
+
+/* ============================================
+   LINKS
+   ============================================ */
+a {
+  color: var(--primary) !important;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--primary-hover) !important;
+}
+
+/* ============================================
+   DATA TABLES
+   ============================================ */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: #FFFFFF !important;
+  border-radius: 10px;
+}
+
+/* ============================================
+   CHART
+   ============================================ */
+.chart-container {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+/* ============================================
+   WIDGET PRODUK TERLARIS
+   ============================================ */
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(231, 217, 199, 0.5);
+  transition: all 0.2s;
+}
+
+.product-item:last-child {
+  border-bottom: none;
+}
+
+.product-item:hover {
+  transform: translateX(4px);
+}
+
+.product-item .product-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  object-fit: cover;
+  background-color: var(--bg-main);
+}
+
+.product-item .product-info h6 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+
+.product-item .product-info small {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* ============================================
+   GREETING
+   ============================================ */
+.greeting-section {
+  padding: 8px 0;
+}
+
+.greeting-section h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.greeting-section p {
+  color: var(--text-secondary);
+  font-size: 15px;
+  margin: 0;
+}
+
+/* ============================================
+   SEARCH BAR
+   ============================================ */
+.search-wrapper {
+  position: relative;
+}
+
+.search-wrapper .form-control {
+  border-radius: 30px;
+  padding-left: 40px;
+  background-color: var(--bg-main);
+  border: 1px solid transparent;
+  width: 300px;
+}
+
+.search-wrapper .form-control:focus {
+  background-color: var(--card-bg);
+  border-color: var(--border);
+}
+
+.search-wrapper .search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+/* ============================================
+   NOTIFICATION
+   ============================================ */
+.notif-badge {
+  position: absolute;
+  top: 2px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--danger);
+  border-radius: 50%;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .search-wrapper .form-control {
+    width: 100%;
+  }
+}
+
+/* ============================================
+   BG COLORS
+   ============================================ */
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+.bg-success {
+  background-color: var(--success) !important;
+}
+
+.bg-warning {
+  background-color: var(--warning) !important;
+}
+
+.bg-danger {
+  background-color: var(--danger) !important;
+}
+
+.bg-info {
+  background-color: var(--info) !important;
+}
+
+/* ============================================
+   TEXT COLORS
+   ============================================ */
+.text-primary {
+  color: var(--primary) !important;
+}
+
+.text-secondary {
+  color: var(--text-secondary) !important;
+}

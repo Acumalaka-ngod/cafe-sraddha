@@ -3,84 +3,77 @@
         <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
             <div class="sb-sidenav-menu">
                 <div class="nav">
-                    <div class="sb-sidenav-menu-heading">Core</div>
+                    <div class="sb-sidenav-menu-heading">Menu Utama</div>
                     <a class="nav-link" href="<?php echo site_url('dashboard_cafe') ?>">
-                        <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                        <div class="sb-nav-link-icon"><i class="fas fa-th-large"></i></div>
                         Dashboard
                     </a>
-                    <div class="sb-sidenav-menu-heading">Interface</div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
-                        aria-expanded="false" aria-controls="collapseLayouts">
-                        <div class="sb-nav-link-icon"><i class="fa-solid fa-mug-saucer"></i></i></div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMenu"
+                        aria-expanded="false" aria-controls="collapseMenu">
+                        <div class="sb-nav-link-icon"><i class="fas fa-mug-hot"></i></div>
                         Menu
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapseLayouts" aria-labelledby="headingTwo"
+                    <div class="collapse" id="collapseMenu" aria-labelledby="headingTwo"
                         data-bs-parent="#sidenavAccordion">
                         <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">Lihat
-                                menu cafe</a>
-                            <!-- <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Coffee</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Non Coffee</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Manual Brew</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Chocolate</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Tea</a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/#') ?>">Snacks</a> -->
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">
+                                <i class="fas fa-list me-2"></i>Daftar Menu
+                            </a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/tambah_menu') ?>">
+                                <i class="fas fa-plus me-2"></i>Tambah Menu
+                            </a>
                         </nav>
                     </div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
-                        aria-expanded="false" aria-controls="collapsePages">
-                        <div class="sb-nav-link-icon"><i class="fa-solid fa-book-open"></i></div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMeja"
+                        aria-expanded="false" aria-controls="collapseMeja">
+                        <div class="sb-nav-link-icon"><i class="fas fa-chair"></i></div>
                         Meja
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapsePages" aria-labelledby="headingTwo"
+                    <div class="collapse" id="collapseMeja" aria-labelledby="headingTwo"
                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_meja') ?>">Lihat
-                                meja</a>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_meja') ?>">
+                                <i class="fas fa-list me-2"></i>Daftar Meja
+                            </a>
                         </nav>
                     </div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages1"
-                        aria-expanded="false" aria-controls="collapsePages1">
-                        <div class="sb-nav-link-icon"><i class="fa-solid fa-user"></i></div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUser"
+                        aria-expanded="false" aria-controls="collapseUser">
+                        <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
                         User
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapsePages1" aria-labelledby="headingTwo"
+                    <div class="collapse" id="collapseUser" aria-labelledby="headingTwo"
                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">Lihat
-                                user</a>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_user') ?>">
+                                <i class="fas fa-list me-2"></i>Daftar User
+                            </a>
                         </nav>
                     </div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages2"
-                        aria-expanded="false" aria-controls="collapsePages2">
-                        <div class="sb-nav-link-icon"><i class="fa-solid fa-money-bill"></i></div>
+                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseTransaksi"
+                        aria-expanded="false" aria-controls="collapseTransaksi">
+                        <div class="sb-nav-link-icon"><i class="fas fa-receipt"></i></div>
                         Transaksi
                         <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                     </a>
-                    <div class="collapse" id="collapsePages2" aria-labelledby="headingTwo"
+                    <div class="collapse" id="collapseTransaksi" aria-labelledby="headingTwo"
                         data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>">Lihat
-                                transaksi</a>
+                        <nav class="sb-sidenav-menu-nested nav">
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_transaksi') ?>">
+                                <i class="fas fa-list me-2"></i>Daftar Transaksi
+                            </a>
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/laporan_bulanan') ?>">
+                                <i class="fas fa-chart-bar me-2"></i>Laporan
+                            </a>
                         </nav>
                     </div>
-                    <!-- <div class="sb-sidenav-menu-heading">Addons</div>
-                    <a class="nav-link" href="charts.html">
-                        <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
-                        Charts
-                    </a>
-                    <a class="nav-link" href="tables.html">
-                        <div class="sb-nav-link-icon"><i class="fas fa-table"></i></div>
-                        Tables
-                    </a> -->
                 </div>
             </div>
-            <div class="sb-sidenav-footer">
-                <div class="small"></div>
-                &copy; Cafe Sraddha
+            <div class="sb-sidenav-footer text-center">
+                <small>&copy; 2026 Sraddha Coffee</small>
             </div>
         </nav>
     </div>
