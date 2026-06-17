@@ -53,3 +53,5 @@ $route['default_controller'] = 'dashboard_cafe/login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['menu'] = 'customers/Menu';
+$route['menu/set_meja/(:num)'] = 'customers/Menu/set_meja/$1';
+$route['menu/test'] = 'customers/Menu/test';

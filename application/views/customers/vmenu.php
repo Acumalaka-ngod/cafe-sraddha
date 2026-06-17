@@ -67,8 +67,9 @@
                 <div class="card-body py-1">
 
                     <h5 class="table-title text-center">
-                        Nomor Meja: 1
+                        Nomor Meja: <?= $this->session->userdata('no_meja'); ?>
                     </h5>
+                    
                 </div>
             </div>
         </div>
@@ -125,54 +126,26 @@
 
             <div class="menu-scroll">
                 <!-- Menu Card -->
-                <div class="card menu-card">
-                    <img src="<?php echo base_url('assets/assets/img/mala.png') ?>" class="card-img-top menu-image" alt="Menu">
-                    <div class="card-body">
-                        <h5 class="menu-title mb-1">
-                            MALA
-                        </h5>
-                        <p class="menu-price">
-                            Rp 28.000
-                        </p>
+                <?php foreach ($menu_andalan as $m): ?>
+                    <div class="card menu-card">
+                        <img src="<?= base_url('assets/uploads/' . $m->gambar) ?>" class="card-img-top menu-image" alt="Menu">
+                        <div class="card-body" data-bs-toggle="modal" data-bs-target="#detailMenuModal">
+                            <h5 class="menu-title mb-1">
+                                <?= $m->nama_menu ?>
+                            </h5>
+                            <p class="menu-price">
+                                Rp <?= number_format($m->harga, 0, ',', '.') ?>
+                            </p>
+
+                        </div>
                         <div class="card-body p-1">
-                            <button class=" btn-tambah w-100" data-bs-toggle="modal" data-bs-target="#detailMenuModal">
+                            <button class=" btn-tambah w-100">
                                 Tambah
                             </button>
                         </div>
                     </div>
-                </div>
-                <div class="card menu-card">
-                    <img src="<?php echo base_url('assets/assets/img/mala.png') ?>" class="card-img-top menu-image" alt="Menu">
-                    <div class="card-body">
-                        <h5 class="menu-title mb-1">
-                            MALA
-                        </h5>
-                        <p class="menu-price">
-                            Rp 28.000
-                        </p>
-                        <div class="card-body p-1">
-                            <button class=" btn-tambah w-100" data-bs-toggle="modal" data-bs-target="#detailMenuModal">
-                                Tambah
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="card menu-card">
-                    <img src="<?php echo base_url('assets/assets/img/mala.png') ?>" class="card-img-top menu-image" alt="Menu">
-                    <div class="card-body">
-                        <h5 class="menu-title mb-1">
-                            MALA
-                        </h5>
-                        <p class="menu-price">
-                            Rp 28.000
-                        </p>
-                        <div class="card-body p-1">
-                            <button class=" btn-tambah w-100" data-bs-toggle="modal" data-bs-target="#detailMenuModal">
-                                Tambah
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <?php endforeach; ?>
+            </div>
         </section>
         <!-- End of Menu Andalan -->
 
