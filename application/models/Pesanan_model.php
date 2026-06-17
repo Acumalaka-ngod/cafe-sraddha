@@ -7,7 +7,7 @@ class Pesanan_model extends CI_Model
 	{
 		$this->db->select('p.*, m.nama_menu, mj.no_meja');
 		$this->db->from('pesanan p');
-$this->db->join('menu m', 'p.menu = m.id_menu', 'left');
+		$this->db->join('menu m', 'p.menu = m.id_menu', 'left');
 		$this->db->join('meja mj', 'p.id_meja = mj.id_meja', 'left');
 		return $this->db->get();
 	}

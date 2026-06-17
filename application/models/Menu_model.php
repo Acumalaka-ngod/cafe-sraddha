@@ -15,9 +15,16 @@ class Menu_model extends CI_Model
 
 	function hapus_data($id_menu)
 	{
-		// Delete related records first
-		$this->db->delete('transaksi', ['id_menu' => $id_menu]);
-		$this->db->delete('detail_pesanan', ['id_menu' => $id_menu]);
+		// Delete related records first.
+		// Relasi menu -> transaksi terjadi lewat detail_transaksi (bukan kolom id_menu di tabel transaksi).
+		$this->db->delete('detail_transaksi', ['id_menu' => $id_menu]);
+		// detail_pesanan tidak selalu ada di skema DB target, jadi buat aman.
+		// Jika tabel tidak ada, operasi ini akan tetap gagal dengan error DB.
+		// Untuk menghindari error, kita hanya jalankan penghapusan ketika tabel ada.
+		$tables = $this->db->query("SHOW TABLES LIKE 'detail_pesanan'")->num_rows();
+		if ($tables > 0) {
+			$this->db->delete('detail_pesanan', ['id_menu' => $id_menu]);
+		}
 		
 		// Get image to delete
 		$menu = $this->db->get_where('menu', ['id_menu' => $id_menu])->row();

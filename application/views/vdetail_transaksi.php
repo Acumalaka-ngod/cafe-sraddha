@@ -32,7 +32,7 @@
                                     <th>Menu</th>
                                     <th>Jumlah</th>
                                     <th>Harga</th>
-                                    <th>Subtotal</th>
+                                    <!-- <th>Subtotal</th> -->
                                 </tr>
                             </thead>
 
@@ -43,7 +43,7 @@
                                         <td><?= $d->nama_menu ?></td>
                                         <td><?= $d->jumlah ?></td>
                                         <td><?= $d->harga ?></td>
-                                        <td><?= $d->subtotal ?></td>
+                                        <!-- <td><?= $d->subtotal ?></td> -->
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
