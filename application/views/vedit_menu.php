@@ -18,9 +18,16 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Kategori</label>
-                                    <input type="text" class="form-control" name="kategori"
-                                        value="<?php echo $m->kategori ?>">
+                                    <select class="form-control" name="kategori" required>
+                                        <option value="Coffee" <?php echo ($m->kategori === 'Coffee') ? 'selected' : ''; ?>>Coffee</option>
+                                        <option value="Non Coffee" <?php echo ($m->kategori === 'Non Coffee') ? 'selected' : ''; ?>>Non Coffee</option>
+                                        <option value="Manual Brew" <?php echo ($m->kategori === 'Manual Brew') ? 'selected' : ''; ?>>Manual Brew</option>
+                                        <option value="Tea" <?php echo ($m->kategori === 'Tea') ? 'selected' : ''; ?>>Tea</option>
+                                        <option value="Chocolate" <?php echo ($m->kategori === 'Chocolate') ? 'selected' : ''; ?>>Chocolate</option>
+                                    </select>
+
                                 </div>
+
                                 <div class="form-group">
                                     <label>Stok</label>
                                     <input type="number" class="form-control" name="stok" value="<?php echo $m->stok ?>">

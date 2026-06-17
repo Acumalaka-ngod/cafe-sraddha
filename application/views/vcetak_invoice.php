@@ -125,13 +125,30 @@
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($detail as $d): ?>
+            <?php foreach ($detail as $d): 
+                $addons = json_decode($d->addons ?? 'null', true);
+                $addon_text = '';
+                $addon_total = 0;
+                if ($addons) {
+                    $parts = [];
+                    foreach ($addons as $a) {
+                        $parts[] = $a['nama'] . ($a['harga'] > 0 ? ' (+Rp ' . number_format($a['harga'], 0, ',', '.') . ')' : '');
+                        $addon_total += $a['harga'];
+                    }
+                    $addon_text = implode(', ', $parts);
+                }
+            ?>
             <tr>
                 <td><?= $d->nama_menu ?></td>
                 <td class="text-center"><?= $d->jumlah ?></td>
                 <td class="text-right">Rp <?= number_format($d->harga, 0, ',', '.') ?></td>
-                <td class="text-right">Rp <?= number_format($d->subtotal, 0, ',', '.') ?></td>
+                <td class="text-right">Rp <?= number_format($d->subtotal + ($addon_total * $d->jumlah), 0, ',', '.') ?></td>
             </tr>
+            <?php if ($addon_text): ?>
+            <tr>
+                <td colspan="4" style="font-size:16px; color:#555; padding-left:10px;"><em>+ <?= $addon_text ?></em></td>
+            </tr>
+            <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
     </table>
