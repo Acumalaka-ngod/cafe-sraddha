@@ -1,264 +1,245 @@
-<div id="layoutSidenav_content">
+<div id="layoutSidenav_content" style="background-color: #F3E7D3;">
     <main>
-        <div class="container-fluid px-4">
-            <h1 class="mt-4">Dashboard admin</h1>
-            <ol class="breadcrumb mb-4">
-                <li class="breadcrumb-item active">cafe sraddha</li>
-            </ol>
-            <div class="row">
+        <div class="container-fluid px-4 py-4">
+
+            <!-- Greeting Section -->
+            <div class="greeting-section mb-4">
+                <h2>Selamat Datang, <?= $this->session->userdata('nama') ?? 'Admin' ?> ☕</h2>
+                <p>Pantau perkembangan bisnis Sraddha Coffee hari ini.</p>
+            </div>
+
+            <!-- Stat Cards -->
+            <div class="row g-4 mb-4">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-primary text-white mb-4">
-                        <div class="card-body">
-                            Total Menu: <?php echo $total_menu; ?>
+                    <div class="card stat-card h-100">
+                        <div class="stat-icon stat-icon-primary">
+                            <i class="fas fa-coins"></i>
                         </div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_cafe/lihat_menu'); ?>">Lihat Menu</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        <div class="stat-label">Total Penjualan</div>
+                        <div class="stat-value">Rp <?= number_format($total_pendapatan ?? 0, 0, ',', '.') ?></div>
+                        <div class="stat-change" style="color: #7C6A5B;">
+                            <i class="fas fa-arrow-up me-1"></i>Hari ini: Rp <?= number_format($pendapatan_hari_ini ?? 0, 0, ',', '.') ?>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-warning text-white mb-4">
-                        <div class="card-body">
-                            Total User: <?php echo $total_user; ?>
+                    <div class="card stat-card h-100">
+                        <div class="stat-icon stat-icon-dark">
+                            <i class="fas fa-shopping-cart"></i>
                         </div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_cafe/lihat_user'); ?>">Lihat User</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="card bg-success text-white mb-4">
-                        <div class="card-body">
-                            Total Transaksi: <?php echo $total_transaksi; ?>
-                        </div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Transaksi</a>
-                            <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                        <div class="stat-label">Total Pesanan</div>
+                        <div class="stat-value"><?= number_format($total_transaksi ?? 0, 0, ',', '.') ?></div>
+                        <div class="stat-change" style="color: #7C6A5B;">
+                            <i class="fas fa-clock me-1"></i>Hari ini: <?= $pesanan_hari_ini ?? 0 ?> pesanan
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-3 col-md-6">
-                    <div class="card bg-danger text-white mb-4">
-                        <div class="card-body">Total Pendapatan: Rp
-                            <?php echo number_format($total_pendapatan, 0, ',', '.'); ?>
+                    <div class="card stat-card h-100">
+                        <div class="stat-icon stat-icon-sidebar">
+                            <i class="fas fa-book"></i>
                         </div>
-                        <div class="card-footer d-flex align-items-center justify-content-between">
-                            <a class="small text-white stretched-link"
-                                href="<?php echo site_url('dashboard_cafe/lihat_transaksi'); ?>">Lihat Detail</a>
-                            <div class="small text-white"><i class="fas fa- angle-right"></i></div>
+                        <div class="stat-label">Total Meja</div>
+                        <div class="stat-value"><?= number_format($total_meja ?? 0, 0, ',', '.') ?></div>
+
+                        <div class="stat-change" style="color: #7C6A5B;">
+                            <i class="fas fa-book-check me-1"></i>Terdaftar
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card stat-card h-100">
+                        <div class="stat-icon stat-icon-hover">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="stat-label">Total Produk</div>
+                        <div class="stat-value"><?= number_format($total_menu ?? 0, 0, ',', '.') ?></div>
+                        <div class="stat-change" style="color: #7C6A5B;">
+                            <i class="fas fa-box me-1"></i>Menu tersedia
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xl-6">
-                    <div class="card mb-4">
-                        <div class="card-header">
-                            <i class="fas fa-chart-area me-1"></i>
-                            Pendapatan
+
+            <!-- Chart & Produk Terlaris -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-8">
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-chart-line me-2" style="color: #9B673A;"></i>Grafik Penjualan</span>
+                            <span class="badge bg-primary">Tahunan</span>
                         </div>
                         <div class="card-body">
-                            <canvas id="myAreaChart" width="100%" height="40"></canvas>
-                            <script>
-                                (function() {
-                                    var script = document.createElement('script');
-                                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js';
-                                    script.onload = function() {
-                                        Chart.defaults.global.defaultFontFamily = '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-                                        Chart.defaults.global.defaultFontColor = '#292b2c';
-
-                                        var canvas = document.getElementById("myAreaChart");
-                                        var ctxArea = canvas.getContext('2d');
-                                        var salesData = <?php echo json_encode($monthly_sales ?? []); ?>;
-                                        var labels = [],
-                                            areaData = [];
-                                        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                        salesData.forEach(function(row) {
-                                            labels.push(monthNames[row.month - 1] + (row.year ? " " + row.year : ""));
-                                            areaData.push(row.sales || 0);
-                                        });
-                                        while (labels.length < 12) {
-                                            labels.push("");
-                                            areaData.push(0);
-                                        }
-                                        var allZeroArea = areaData.every(function(v) {
-                                            return v == 0;
-                                        });
-
-                                        if (!allZeroArea) {
-                                            new Chart(canvas, {
-                                                type: 'line',
-                                                data: {
-                                                    labels: labels,
-                                                    datasets: [{
-                                                        label: "Penjualan",
-                                                        data: areaData,
-                                                        borderColor: "rgba(2,117,216,1)",
-                                                        backgroundColor: "rgba(2,117,216,0.2)",
-                                                        lineTension: 0.3
-                                                    }]
-                                                },
-                                                options: {
-                                                    scales: {
-                                                        yAxes: [{
-                                                            ticks: {
-                                                                min: 0,
-                                                                callback: function(v) {
-                                                                    return 'Rp ' + v.toLocaleString();
-                                                                }
-                                                            }
-                                                        }],
-                                                        xAxes: [{
-                                                            ticks: {
-                                                                maxTicksLimit: 12
-                                                            }
-                                                        }]
-                                                    },
-                                                    legend: {
-                                                        display: false
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            ctxArea.font = "16px Arial";
-                                            ctxArea.fillStyle = "#6c757d";
-                                            ctxArea.textAlign = "center";
-                                            ctxArea.textBaseline = "middle";
-                                            ctxArea.fillText("No data penjualan tersedia", canvas.width / 2, canvas.height / 2);
-                                        }
-                                    };
-                                    document.head.appendChild(script);
-                                })();
-                            </script>
+                            <div class="chart-container">
+                                <canvas id="salesChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-xl-6">
-                    <div class="card mb-4">
+                <div class="col-xl-4">
+                    <div class="card h-100">
                         <div class="card-header">
-                            <i class="fas fa-chart-bar me-1"></i>
-                            Transaksi
+                            <i class="fas fa-fire me-2" style="color: #D39D38;"></i>Produk Terlaris
                         </div>
                         <div class="card-body">
-                            <canvas id="myBarChart" width="100%" height="40"></canvas>
-                            <script>
-                                (function() {
-                                    var script = document.createElement('script');
-                                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js';
-                                    script.onload = function() {
-                                        var canvas = document.getElementById("myBarChart");
-                                        var ctxBar = canvas.getContext('2d');
-                                        var purchasesData = <?php echo json_encode($monthly_purchases ?? []); ?>;
-                                        var labels = [],
-                                            barData = [];
-                                        var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                        purchasesData.forEach(function(row) {
-                                            labels.push(monthNames[row.month - 1] + (row.year ? " " + row.year : ""));
-                                            barData.push(row.count || 0);
-                                        });
-                                        while (labels.length < 12) {
-                                            labels.push("");
-                                            barData.push(0);
-                                        }
-                                        var allZeroBar = barData.every(function(v) {
-                                            return v == 0;
-                                        });
-
-                                        if (!allZeroBar) {
-                                            new Chart(canvas, {
-                                                type: 'bar',
-                                                data: {
-                                                    labels: labels,
-                                                    datasets: [{
-                                                        label: "Barang Keluar",
-                                                        data: barData,
-                                                        backgroundColor: "rgba(2,117,216,1)"
-                                                    }]
-                                                },
-                                                options: {
-                                                    scales: {
-                                                        yAxes: [{
-                                                            ticks: {
-                                                                min: 0
-                                                            }
-                                                        }],
-                                                        xAxes: [{
-                                                            ticks: {
-                                                                maxTicksLimit: 12
-                                                            }
-                                                        }]
-                                                    },
-                                                    legend: {
-                                                        display: false
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            ctxBar.font = "16px Arial";
-                                            ctxBar.fillStyle = "#6c757d";
-                                            ctxBar.textAlign = "center";
-                                            ctxBar.textBaseline = "middle";
-                                            ctxBar.fillText("No data transaksi tersedia", canvas.width / 2, canvas.height / 2);
-                                        }
-                                    };
-                                    document.head.appendChild(script);
-                                })();
-                            </script>
+                            <?php if (!empty($produk_terlaris)): ?>
+                                <?php $no = 1; foreach ($produk_terlaris as $p): ?>
+                                <div class="product-item">
+                                    <img src="<?= base_url('assets/uploads/' . ($p->gambar ?: 'default.png')) ?>"
+                                         class="product-img"
+                                         alt="<?= $p->nama_menu ?>"
+                                         onerror="this.src='https://via.placeholder.com/48/E7D9C7/7C6A5B?text=+'">
+                                    <div class="product-info flex-grow-1">
+                                        <h6><?= $p->nama_menu ?></h6>
+                                        <small><?= $p->total_terjual ?> terjual &middot; Rp <?= number_format($p->total_penjualan, 0, ',', '.') ?></small>
+                                    </div>
+                                    <span class="badge bg-primary">#<?= $no++ ?></span>
+                                </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="text-center py-4 text-secondary">
+                                    <i class="fas fa-inbox fa-2x mb-2"></i>
+                                    <p class="mb-0">Belum ada data penjualan</p>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Tabel Pesanan Terbaru -->
             <div class="card mb-4">
-                <div class="card-header">
-                    <i class="fas fa-table me-1"></i>
-                    Data Transaksi
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span><i class="fas fa-clock me-2" style="color: #9B673A;"></i>Pesanan Terbaru</span>
+                    <!-- <a href="<?= site_url('dashboard_cafe/lihat_transaksi') ?>" class="btn btn-outline-primary btn-sm">
+                        Lihat Semua <i class="fas fa-arrow-right ms-1"></i>
+                    </a> -->
                 </div>
-                <div class="card-body">
-                    <table id="datatablesSimple">
-                        <thead>
-                            <tr>
-                                <th>No Transaksi</th>
-                                <th>No Meja</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
-                        <!-- <tfoot>
-                            <tr>
-                                <th>No Transaksi</th>
-                                <th>No Meja</th>
-                                <th>Customer</th>
-                                <th>Tanggal</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                                <th>Aksi</th>
-
-                            </tr>
-                        </tfoot> -->
-
-                        <tbody>
-                            <?php foreach ($transaksi as $t) : ?>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
                                 <tr>
-                                    <td><?php echo $t->id_transaksi; ?></td>
-                                    <td><?php echo $t->no_meja; ?></td>
-                                    <td><?php echo $t->tanggal; ?></td>
-                                    <td><?php echo $t->status_pesanan; ?></td>
-                                    <td>Rp <?php echo number_format($t->total_harga, 0, ',', '.'); ?></td>
-                                    <td>
-                                        <a href="<?php echo site_url('dashboard_cafe/update_transaksi/' . $t->id_transaksi); ?>"
-                                            class="btn btn-info btn-sm">Update Status</a>
+                                    <th>Invoice</th>
+                                    <th>Meja</th>
+                                    <th>Tanggal</th>
+                                    <th>Status</th>
+                                    <th>Pembayaran</th>
+                                    <th class="text-end">Total</th>
+                                    <th>Aksi</th>
                                 </tr>
-                            <?php endforeach; ?>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($transaksi ?? [] as $t): ?>
+                                <tr>
+                                    <td><strong><?= $t->no_invoce ?: 'INV-' . str_pad($t->id_transaksi, 4, '0', STR_PAD_LEFT) ?></strong></td>
+                                    <td>Meja <?= $t->no_meja ?></td>
+                                    <td><?= date('d/m/Y H:i', strtotime($t->tanggal)) ?></td>
+                                    <td>
+                                        <?php if ($t->status_pesanan == 'selesai'): ?>
+                                            <span class="badge bg-success">Selesai</span>
+                                        <?php elseif ($t->status_pesanan == 'diproses'): ?>
+                                            <span class="badge bg-warning">Diproses</span>
+                                        <?php elseif ($t->status_pesanan == 'dibatalkan'): ?>
+                                            <span class="badge bg-danger">Dibatalkan</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-secondary"><?= $t->status_pesanan ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if ($t->status_pembayaran == 'paid'): ?>
+                                            <span class="badge bg-success">Lunas</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-warning">Pending</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="text-end fw-bold">Rp <?= number_format($t->total_harga, 0, ',', '.') ?></td>
+                                    <td>
+                                        <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi); ?>" class="btn btn-info btn-sm">
+                                            <i class="fas fa-sync"></i> Update Status
+                                        </a>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
                             </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
+
         </div>
     </main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+(function() {
+    var salesData = <?= json_encode($monthly_sales ?? []) ?>;
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+    var labels = [];
+    var values = [];
+
+    salesData.forEach(function(row) {
+        labels.push(monthNames[row.month - 1] + ' ' + row.year);
+        values.push(parseFloat(row.sales) || 0);
+    });
+
+    labels.reverse();
+    values.reverse();
+
+    if (values.length === 0) {
+        labels = monthNames;
+        values = new Array(12).fill(0);
+    }
+
+    var ctx = document.getElementById('salesChart').getContext('2d');
+    var gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    gradient.addColorStop(0, 'rgba(155, 103, 58, 0.3)');
+    gradient.addColorStop(1, 'rgba(155, 103, 58, 0.01)');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Penjualan',
+                data: values,
+                borderColor: '#9B673A',
+                backgroundColor: gradient,
+                borderWidth: 3,
+                pointBackgroundColor: '#9B673A',
+                pointBorderColor: '#FAF7F2',
+                pointBorderWidth: 3,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: 'rgba(231, 217, 199, 0.5)' },
+                    ticks: {
+                        callback: function(v) { return 'Rp ' + v.toLocaleString(); },
+                        color: '#7C6A5B'
+                    }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#7C6A5B' }
+                }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            }
+        }
+    });
+})();
+</script>

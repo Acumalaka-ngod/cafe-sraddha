@@ -67,7 +67,14 @@ class Dashboard_cafe extends CI_Controller
         $data['total_menu'] = $this->db->count_all('menu');
         $data['total_user'] = $this->db->count_all('user');
         $data['total_transaksi'] = $this->db->count_all('transaksi');
+        $data['total_meja'] = $this->db->count_all('meja');
         $data['total_pendapatan'] = $this->db->select('SUM(total_harga) as total')->from('transaksi')->get()->row()->total ?: 0;
+        $data['total_pelanggan'] = $this->db->count_all('transaksi');
+
+
+        $today = date('Y-m-d');
+        $data['pendapatan_hari_ini'] = $this->db->select('SUM(total_harga) as total')->from('transaksi')->where('DATE(tanggal)', $today)->get()->row()->total ?: 0;
+        $data['pesanan_hari_ini'] = $this->db->from('transaksi')->where('DATE(tanggal)', $today)->count_all_results();
 
         $this->db->select('YEAR(tanggal) as year, MONTH(tanggal) as month, SUM(total_harga) sales');
         $this->db->from('transaksi');
@@ -83,10 +90,20 @@ class Dashboard_cafe extends CI_Controller
         $this->db->limit(12);
         $data['monthly_purchases'] = $this->db->get()->result_array();
 
-        // Ringkasan transaksi (ambil header)
-        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.total_harga');
+        // Produk terlaris
+        $this->db->select('m.nama_menu, m.gambar, SUM(dt.jumlah) as total_terjual, SUM(dt.subtotal) as total_penjualan');
+        $this->db->from('detail_transaksi dt');
+        $this->db->join('menu m', 'dt.id_menu = m.id_menu');
+        $this->db->group_by('dt.id_menu');
+        $this->db->order_by('total_terjual', 'DESC');
+        $this->db->limit(5);
+        $data['produk_terlaris'] = $this->db->get()->result();
+
+        // Transaksi terbaru
+        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.status_pembayaran, t.total_harga, t.no_invoce');
         $this->db->from('transaksi t');
         $this->db->join('meja mj', 't.id_meja = mj.id_meja', 'left');
+        $this->db->order_by('t.tanggal', 'DESC');
         $this->db->limit(10);
         $data['transaksi'] = $this->db->get()->result();
 
@@ -300,12 +317,17 @@ class Dashboard_cafe extends CI_Controller
         $data['message'] = $this->session->flashdata('message');
         $data['error'] = $this->session->flashdata('error');
 
+        // Ringkasan total transaksi & total pendapatan
+        $data['total_transaksi'] = $this->db->count_all('transaksi');
+        $data['total_pendapatan'] = (float)($this->db->select('SUM(total_harga) as total')->from('transaksi')->get()->row()->total ?? 0);
+
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
         $this->load->view('vtransaksi', $data);
         $this->load->view('template/footer');
     }
+
 
     public function tambah_transaksi()
     {
@@ -417,8 +439,13 @@ class Dashboard_cafe extends CI_Controller
         $cart = $cart_raw ? json_decode($cart_raw, true) : null;
 
         if ((!$cart || count($cart) == 0) && $status) {
-            $this->db->update('transaksi', ['status_pesanan' => $status], ['id_transaksi' => $id]);
-            echo '<script>alert("Status transaksi berhasil diperbarui!"); window.location="' . site_url('dashboard_cafe/lihat_transaksi') . '";</script>';
+            $status_bayar = $this->input->post('status_pembayaran');
+            $data_update = ['status_pesanan' => $status];
+            if ($status_bayar) {
+                $data_update['status_pembayaran'] = $status_bayar;
+            }
+            $this->db->update('transaksi', $data_update, ['id_transaksi' => $id]);
+            echo '<script>alert("Status transaksi berhasil diperbarui!"); window.location="' . site_url('dashboard_cafe/') . '";</script>';
             exit;
         }
 
@@ -595,6 +622,58 @@ class Dashboard_cafe extends CI_Controller
     public function edit_pesanan($id)
     {
         $this->edit_transaksi($id);
+    }
+
+    // -------------------- Cetak Invoice --------------------
+    public function cetak_invoice($id)
+    {
+        $this->db->select('t.*, u.nama as nama_user, m.no_meja');
+        $this->db->from('transaksi t');
+        $this->db->join('user u', 't.id_user = u.id_user', 'left');
+        $this->db->join('meja m', 't.id_meja = m.id_meja', 'left');
+        $this->db->where('t.id_transaksi', $id);
+        $data['transaksi'] = $this->db->get()->row();
+
+        $this->db->select('d.*, mn.nama_menu');
+        $this->db->from('detail_transaksi d');
+        $this->db->join('menu mn', 'd.id_menu = mn.id_menu');
+        $this->db->where('d.id_transaksi', $id);
+        $data['detail'] = $this->db->get()->result();
+
+        $this->load->view('vcetak_invoice', $data);
+    }
+
+    // -------------------- Laporan Bulanan --------------------
+    public function laporan_bulanan()
+    {
+        $tanggal_mulai = $this->input->get('tanggal_mulai') ?: date('Y-m-01');
+        $tanggal_selesai = $this->input->get('tanggal_selesai') ?: date('Y-m-t');
+
+        $data['tanggal_mulai'] = $tanggal_mulai;
+        $data['tanggal_selesai'] = $tanggal_selesai;
+
+        $this->db->select('t.*, u.nama as nama_user, m.no_meja');
+        $this->db->from('transaksi t');
+        $this->db->join('user u', 't.id_user = u.id_user', 'left');
+        $this->db->join('meja m', 't.id_meja = m.id_meja', 'left');
+        $this->db->where('t.tanggal >=', $tanggal_mulai . ' 00:00:00');
+        $this->db->where('t.tanggal <=', $tanggal_selesai . ' 23:59:59');
+        $this->db->where('t.status_pembayaran', 'paid');
+        $this->db->order_by('t.tanggal', 'DESC');
+        $data['transaksi'] = $this->db->get()->result();
+
+        $this->db->select('SUM(total_harga) as total');
+        $this->db->from('transaksi');
+        $this->db->where('tanggal >=', $tanggal_mulai . ' 00:00:00');
+        $this->db->where('tanggal <=', $tanggal_selesai . ' 23:59:59');
+        $this->db->where('status_pembayaran', 'paid');
+        $data['total_pendapatan'] = $this->db->get()->row()->total ?: 0;
+
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vlaporan_bulanan', $data);
+        $this->load->view('template/footer');
     }
     
 }
