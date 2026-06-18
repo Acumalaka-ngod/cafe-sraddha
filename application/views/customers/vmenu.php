@@ -69,7 +69,7 @@
                     <h5 class="table-title text-center">
                         Nomor Meja: <?= $this->session->userdata('no_meja'); ?>
                     </h5>
-                    
+
                 </div>
             </div>
         </div>
@@ -139,9 +139,12 @@
 
                         </div>
                         <div class="card-body p-1">
-                            <button class=" btn-tambah w-100">
+                            <button class=" btn-tambah w-100" data-id="<?= $m->id_menu ?>">
                                 Tambah
                             </button>
+                            <!-- <button id="btnKosongkanCart" class="btn btn-danger">
+                                Kosongkan Cart
+                            </button> -->
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -273,14 +276,35 @@
         <!-- End of Non Coffee -->
 
         <!-- Cart Checkout -->
-        <div class="checkout-cart" data-bs-toggle="modal" data-bs-target="#cartModal">
+        <?php
+
+        $cart = $this->session->userdata('cart') ?? [];
+
+        $total_harga = 0;
+        $total_qty = 0;
+
+        foreach ($cart as $item) {
+
+            $total_qty += $item['qty'];
+
+            $total_harga +=
+                ((float)$item['harga'] * $item['qty']);
+        }
+        ?>
+
+        <div
+            id="checkoutCart"
+            class="checkout-cart <?= empty($cart) ? 'd-none' : '' ?>"
+            data-bs-toggle="modal"
+            data-bs-target="#cartModal">
+
             <div class="checkout-icon">
                 <i class="fa fa-shopping-cart"></i>
             </div>
 
             <div class="checkout-info">
                 <h5 class="checkout-title">Total</h5>
-                <h4 class="total-hrg">Rp50.000</h4>
+                <h4 class="total-hrg"> Rp<?= number_format($total_harga, 0, ',', '.') ?></h4>
             </div>
 
             <div class="checkout-action">
@@ -292,6 +316,7 @@
                     Checkout
                 </button>
             </div>
+
         </div>
 
 
@@ -685,7 +710,93 @@
 
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
+        // Cart
+        $(document).on('click', '.btn-tambah', function() {
+
+            let id_menu = $(this).data('id');
+
+            console.log('Klik Menu ID :', id_menu);
+
+            $.ajax({
+
+                url: "<?= base_url('tambah-cart') ?>",
+
+                type: "POST",
+
+                data: {
+                    id_menu: id_menu
+                },
+
+                dataType: "json",
+
+                beforeSend: function() {
+                    console.log('Mengirim request...');
+                },
+
+                success: function(res) {
+
+                    console.log('Response:', res);
+
+                    if (res.status) {
+
+                        $('#checkoutCart').removeClass('d-none');
+
+                        $('.total-hrg').text(
+                            'Rp' + res.total_harga
+                        );
+
+                    } else {
+
+                        console.log('Menu tidak ditemukan');
+
+                    }
+                },
+
+                error: function(xhr, status, error) {
+
+                    console.log('AJAX ERROR');
+                    console.log('Status:', status);
+                    console.log('Error:', error);
+                    console.log(xhr.responseText);
+
+                }
+
+            });
+
+        });
+
+        // Kosongkan Cart
+        // $(document).on('click', '#btnKosongkanCart', function() {
+
+        //     $.ajax({
+
+        //         url: "base_url('kosongkan-cart')",
+
+        //         type: "POST",
+
+        //         dataType: "json",
+
+        //         success: function(res) {
+
+        //             if (res.status) {
+
+        //                 $('#checkoutCart').addClass('d-none');
+
+        //                 $('.total-hrg').text('Rp0');
+
+        //                 console.log('Cart berhasil dikosongkan');
+
+        //             }
+
+        //         }
+
+        //     });
+
+        // });
+
+        // Modal
         document.addEventListener('DOMContentLoaded', function() {
 
             const checkoutCart = document.querySelector('.checkout-cart');

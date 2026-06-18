@@ -55,3 +55,5 @@ $route['translate_uri_dashes'] = FALSE;
 $route['menu'] = 'customers/Menu';
 $route['menu/set_meja/(:num)'] = 'customers/Menu/set_meja/$1';
 $route['menu/test'] = 'customers/Menu/test';
+$route['tambah-cart'] = 'customers/Menu/tambah_cart';
+// $route['kosongkan-cart'] = 'customers/Menu/kosongkan_cart';

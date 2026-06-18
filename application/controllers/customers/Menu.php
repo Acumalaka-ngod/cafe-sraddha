@@ -47,6 +47,72 @@ class Menu extends CI_Controller
         $data['menu'] = $this->Customer_model->get_menu()->result();
         $data['menu_andalan'] = $this->Customer_model->menu_andalan()->result();
 
+
         $this->load->view('customers/vmenu', $data);
     }
+
+    public function tambah_cart()
+    {
+        $id_menu = $this->input->post('id_menu');
+
+        $menu = $this->db
+            ->where('id_menu', $id_menu)
+            ->get('menu')
+            ->row();
+
+        if (!$menu) {
+            echo json_encode([
+                'status' => false
+            ]);
+            return;
+        }
+
+        $cart = $this->session->userdata('cart') ?? [];
+
+        if (isset($cart[$id_menu])) {
+
+            $cart[$id_menu]['qty']++;
+        } else {
+
+            $cart[$id_menu] = [
+                'id_menu' => $menu->id_menu,
+                'nama'    => $menu->nama_menu,
+                'harga'   => $menu->harga,
+                'qty'     => 1
+            ];
+        }
+
+        $this->session->set_userdata('cart', $cart);
+
+        $total_qty = 0;
+        $total_harga = 0;
+
+        foreach ($cart as $item) {
+
+            $total_qty += $item['qty'];
+
+            $total_harga +=
+                ($item['harga'] * $item['qty']);
+        }
+
+        echo json_encode([
+            'status' => true,
+            'total_qty' => $total_qty,
+            'total_harga' => number_format(
+                $total_harga,
+                0,
+                ',',
+                '.'
+            )
+        ]);
+    }
+
+    // public function kosongkan_cart()
+    // {
+    //     $this->session->unset_userdata('cart');
+
+    //     echo json_encode([
+    //         'status' => true
+    //     ]);
+    // }
 }
