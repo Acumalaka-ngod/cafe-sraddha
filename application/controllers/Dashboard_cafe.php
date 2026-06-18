@@ -12,6 +12,7 @@ class Dashboard_cafe extends CI_Controller
         $this->load->model('Pesanan_model');
         $this->load->model('Meja_model');
         $this->load->model('Transaksi_model');
+        $this->load->model('Addons_model');
 
         $this->load->helper('url');
         $this->load->library('session');
@@ -334,13 +335,15 @@ class Dashboard_cafe extends CI_Controller
         $data['menu'] = $this->Menu_model->lihat_data()->result();
         $data['user'] = $this->User_model->lihat_data()->result();
         $data['meja'] = $this->Meja_model->lihat_data()->result();
+        $data['addons'] = $this->Addons_model->get_all();
 
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
-        $this->load->view('vtambah_transaksi', $data);
+        $this->load->view('vtambah_pesanan', $data);
         $this->load->view('template/footer');
     }
+
 
     public function simpan_transaksi()
     {
@@ -359,6 +362,11 @@ class Dashboard_cafe extends CI_Controller
             $menu = $this->db->get_where('menu', ['id_menu' => $item['menu']])->row();
             if (!$menu) continue;
             $total_harga += $menu->harga * $item['jumlah'];
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $total_harga += ($addon['harga'] ?? 0) * $item['jumlah'];
+                }
+            }
         }
 
         $data_transaksi = [
@@ -379,13 +387,15 @@ class Dashboard_cafe extends CI_Controller
             if (!$menu) continue;
 
             $subtotal = $menu->harga * $item['jumlah'];
+            $addons_data = !empty($item['addons']) ? json_encode($item['addons']) : null;
 
             $data_detail = [
                 'id_transaksi' => $id_transaksi,
                 'id_menu' => $item['menu'],
                 'jumlah' => $item['jumlah'],
                 'harga' => $menu->harga,
-                'subtotal' => $subtotal
+                'subtotal' => $subtotal,
+                'addons' => $addons_data
             ];
 
             $this->db->insert('detail_transaksi', $data_detail);
@@ -423,6 +433,7 @@ class Dashboard_cafe extends CI_Controller
         $data['menu'] = $this->Menu_model->lihat_data()->result();
 
         $data['meja'] = $this->Meja_model->lihat_data()->result();
+        $data['addons'] = $this->Addons_model->get_all();
 
         $this->load->view('template/head');
         $this->load->view('template/navbar');
@@ -469,6 +480,11 @@ class Dashboard_cafe extends CI_Controller
             $menu = $this->db->get_where('menu', ['id_menu' => $item['menu']])->row();
             if (!$menu) continue;
             $total_harga += $menu->harga * $item['jumlah'];
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $total_harga += ($addon['harga'] ?? 0) * $item['jumlah'];
+                }
+            }
         }
 
         // Update header transaksi
@@ -487,13 +503,15 @@ class Dashboard_cafe extends CI_Controller
             if (!$menu) continue;
 
             $subtotal = $menu->harga * $item['jumlah'];
+            $addons_data = !empty($item['addons']) ? json_encode($item['addons']) : null;
 
             $this->db->insert('detail_transaksi', [
                 'id_transaksi' => $id,
                 'id_menu' => $item['menu'],
                 'jumlah' => $item['jumlah'],
                 'harga' => $menu->harga,
-                'subtotal' => $subtotal
+                'subtotal' => $subtotal,
+                'addons' => $addons_data
             ]);
 
             $this->Menu_model->kurangi_stok($item['menu'], $item['jumlah']);
@@ -600,11 +618,12 @@ class Dashboard_cafe extends CI_Controller
         // Samakan UI pesanan dengan transaksi
         $data['menu'] = $this->Menu_model->lihat_data()->result();
         $data['meja'] = $this->Meja_model->lihat_data()->result();
+        $data['addons'] = $this->Addons_model->get_all();
 
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
-        $this->load->view('vtambah_transaksi', $data);
+        $this->load->view('vtambah_pesanan', $data);
         $this->load->view('template/footer');
     }
 
@@ -674,6 +693,74 @@ class Dashboard_cafe extends CI_Controller
         $this->load->view('template/sidebar');
         $this->load->view('vlaporan_bulanan', $data);
         $this->load->view('template/footer');
+    }
+
+    // -------------------- Addons CRUD --------------------
+    public function lihat_addons()
+    {
+        $data['addons'] = $this->Addons_model->lihat_data()->result();
+        $data['message'] = $this->session->flashdata('message');
+
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vaddons', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function tambah_addons()
+    {
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vtambah_addons');
+        $this->load->view('template/footer');
+    }
+
+    public function simpan_addons()
+    {
+        $data = [
+            'nama_addon' => $this->input->post('nama_addon'),
+            'harga' => $this->input->post('harga') ?: 0,
+            'kategori' => $this->input->post('kategori') ?: null
+        ];
+
+        $this->Addons_model->simpan_data($data);
+        $this->session->set_flashdata('message', 'Addon berhasil ditambahkan!');
+        redirect('dashboard_cafe/lihat_addons');
+    }
+
+    public function hapus_addons($id)
+    {
+        $this->Addons_model->hapus_data($id);
+        $this->session->set_flashdata('message', 'Addon berhasil dihapus!');
+        redirect('dashboard_cafe/lihat_addons');
+    }
+
+    public function edit_addons($id)
+    {
+        $where = ['id_addon' => $id];
+        $data['addon'] = $this->Addons_model->edit_data($where)->result();
+
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vedit_addons', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function update_addons()
+    {
+        $id = $this->input->post('id_addon');
+        $data = [
+            'nama_addon' => $this->input->post('nama_addon'),
+            'harga' => $this->input->post('harga') ?: 0,
+            'kategori' => $this->input->post('kategori') ?: null
+        ];
+
+        $this->Addons_model->update_data(['id_addon' => $id], $data);
+        $this->session->set_flashdata('message', 'Addon berhasil diupdate!');
+        redirect('dashboard_cafe/lihat_addons');
     }
     
 }

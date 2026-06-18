@@ -83,14 +83,32 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $no = 1; foreach ($detail as $d): ?>
+                                <?php $no = 1; foreach ($detail as $d): 
+                                    $addons = json_decode($d->addons ?? 'null', true);
+                                    $addon_text = '';
+                                    $addon_total = 0;
+                                    if ($addons) {
+                                        $parts = [];
+                                        foreach ($addons as $a) {
+                                            $parts[] = $a['nama'] . ($a['harga'] > 0 ? ' (+Rp ' . number_format($a['harga'], 0, ',', '.') . ')' : '');
+                                            $addon_total += $a['harga'];
+                                        }
+                                        $addon_text = implode('<br>', $parts);
+                                    }
+                                ?>
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $d->nama_menu ?></td>
                                     <td class="text-center"><?= $d->jumlah ?></td>
                                     <td class="text-end">Rp <?= number_format($d->harga, 0, ',', '.') ?></td>
-                                    <td class="text-end">Rp <?= number_format($d->subtotal, 0, ',', '.') ?></td>
+                                    <td class="text-end">Rp <?= number_format($d->subtotal + ($addon_total * $d->jumlah), 0, ',', '.') ?></td>
                                 </tr>
+                                <?php if ($addon_text): ?>
+                                <tr class="table-light">
+                                    <td></td>
+                                    <td colspan="4"><small class="text-muted"><i class="fas fa-plus-circle"></i> <?= $addon_text ?></small></td>
+                                </tr>
+                                <?php endif; ?>
                                 <?php endforeach; ?>
                             </tbody>
                             <tfoot>

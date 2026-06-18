@@ -23,7 +23,7 @@
                         </div>
                         
                         <!-- Add Item Section -->
-                        <div class="row mb-4">
+                        <div class="row mb-3">
                             <div class="col-md-5">
                                 <label>Menu</label>
                                 <select id="cart_menu" class="form-control">
@@ -46,7 +46,13 @@
                                 </button>
                             </div>
                         </div>
-                        
+
+                        <!-- Addons Section -->
+                        <div id="addonSection" class="mb-3" style="display:none;">
+                            <label class="form-label fw-bold">Addons (Opsional)</label>
+                            <div id="addonCheckboxes" class="d-flex flex-wrap gap-3"></div>
+                        </div>
+
                         <!-- Cart Preview -->
                         <div class="card mb-4">
                             <div class="card-header">
@@ -58,6 +64,7 @@
                                         <tr>
                                             <th>Menu</th>
                                             <th>Jumlah</th>
+                                            <th>Addons</th>
                                             <th>Harga</th>
                                             <th>Total</th>
                                             <th>Aksi</th>
@@ -80,53 +87,84 @@
                     </form>
                     
                     <script>
+                    const allAddons = <?= json_encode($addons ?? []) ?>;
                     let cart = [];
-                    
-                    // Enable add button when selections made
-                    document.getElementById('cart_menu').addEventListener('change', toggleAddBtn);
+
+                    document.getElementById('cart_menu').addEventListener('change', function() {
+                        toggleAddBtn();
+                        renderAddonCheckboxes();
+                    });
                     document.getElementById('cart_qty').addEventListener('input', toggleAddBtn);
-                    
+
                     function toggleAddBtn() {
                         const menu = document.getElementById('cart_menu').value;
                         const qty = document.getElementById('cart_qty').value;
                         document.getElementById('addItemBtn').disabled = !menu || !qty || qty < 1;
                     }
-                    
-                    // Add item to cart
+
+                    function renderAddonCheckboxes() {
+                        const menuId = document.getElementById('cart_menu').value;
+                        const container = document.getElementById('addonCheckboxes');
+                        const section = document.getElementById('addonSection');
+                        if (!menuId || !allAddons.length) {
+                            section.style.display = 'none';
+                            return;
+                        }
+                        section.style.display = 'block';
+                        container.innerHTML = allAddons.map(a => `
+                            <label class="form-check-label d-flex align-items-center gap-1" style="cursor:pointer;">
+                                <input type="checkbox" class="form-check-input addon-cb" value="${a.id_addon}" data-nama="${a.nama_addon}" data-harga="${a.harga}">
+                                ${a.nama_addon} ${a.harga > 0 ? '(+Rp ' + a.harga.toLocaleString() + ')' : ''}
+                            </label>
+                        `).join('');
+                    }
+
+                    function getSelectedAddons() {
+                        const cbs = document.querySelectorAll('.addon-cb:checked');
+                        return Array.from(cbs).map(cb => ({
+                            id: parseInt(cb.value),
+                            nama: cb.dataset.nama,
+                            harga: parseInt(cb.dataset.harga)
+                        }));
+                    }
+
                     document.getElementById('addItemBtn').addEventListener('click', function() {
                         const menuId = document.getElementById('cart_menu').value;
                         const menuText = document.getElementById('cart_menu').options[document.getElementById('cart_menu').selectedIndex].text;
                         const qty = parseInt(document.getElementById('cart_qty').value);
                         const selectedOpt = document.querySelector('#cart_menu option[value="' + menuId + '"]');
                         const harga = selectedOpt ? parseInt(selectedOpt.dataset.harga) : 0;
-                        
+                        const addons = getSelectedAddons();
+                        const addonTotal = addons.reduce((sum, a) => sum + a.harga, 0) * qty;
+
                         const item = {
                             menu: menuId,
                             nama_menu: menuText,
                             jumlah: qty,
                             harga: harga,
-                            total: qty * harga
+                            total: qty * harga,
+                            addons: addons,
+                            total_addons: addonTotal
                         };
-                        
+
                         cart.push(item);
                         renderCart();
                         clearInputs();
                         toggleSubmitBtn();
                     });
-                    
-                    // Remove item
+
                     function removeItem(index) {
                         cart.splice(index, 1);
                         renderCart();
                         toggleSubmitBtn();
                     }
-                    
+
                     function renderCart() {
                         const tbody = document.querySelector('#cartTable tbody');
                         const emptyMsg = document.getElementById('emptyCart');
                         const count = document.getElementById('cartCount');
                         const clearBtn = document.getElementById('clearCartBtn');
-                        
+
                         if (cart.length === 0) {
                             tbody.innerHTML = '';
                             emptyMsg.style.display = 'block';
@@ -134,28 +172,30 @@
                             clearBtn.style.display = 'none';
                             return;
                         }
-                        
+
                         emptyMsg.style.display = 'none';
                         clearBtn.style.display = 'inline-block';
                         count.textContent = `(${cart.length} items)`;
-                        
+
                         tbody.innerHTML = cart.map((item, index) => `
                             <tr>
                                 <td>${item.nama_menu}</td>
                                 <td>${item.jumlah}</td>
+                                <td>${item.addons && item.addons.length ? item.addons.map(a => a.nama + (a.harga > 0 ? ' (+Rp ' + a.harga.toLocaleString() + ')' : '')).join('<br>') : '-'}</td>
                                 <td>Rp ${item.harga.toLocaleString()}</td>
-                                <td>Rp ${item.total.toLocaleString()}</td>
+                                <td>Rp ${(item.total + (item.total_addons || 0)).toLocaleString()}</td>
                                 <td><button type="button" class="btn btn-sm btn-danger" onclick="removeItem(${index})">Hapus</button></td>
                             </tr>
                         `).join('');
                     }
-                    
+
                     function clearInputs() {
                         document.getElementById('cart_menu').value = '';
                         document.getElementById('cart_qty').value = '1';
+                        document.getElementById('addonSection').style.display = 'none';
                         toggleAddBtn();
                     }
-                    
+
                     function clearAll() {
                         cart = [];
                         renderCart();
@@ -164,13 +204,12 @@
                         document.getElementById('cart_data').value = '';
                         toggleSubmitBtn();
                     }
-                    
+
                     function toggleSubmitBtn() {
                         const meja = document.getElementById('meja').value;
                         document.getElementById('submitBtn').disabled = !meja || cart.length === 0;
                     }
-                    
-                    // Form submit
+
                     document.getElementById('pesananForm').addEventListener('submit', function(e) {
                         if (cart.length === 0) {
                             e.preventDefault();
@@ -179,11 +218,11 @@
                         }
                         document.getElementById('cart_data').value = JSON.stringify(cart.map(item => ({
                             menu: item.menu,
-                            jumlah: item.jumlah
+                            jumlah: item.jumlah,
+                            addons: item.addons || []
                         })));
                     });
-                    
-                    // Meja change
+
                     function setNoMeja() {
                         const mejaSelect = document.getElementById('meja');
                         const noMejaInput = document.getElementById('no_meja');
@@ -195,7 +234,7 @@
                         }
                         toggleSubmitBtn();
                     }
-                    
+
                     document.getElementById('clearCartBtn').addEventListener('click', function() {
                         cart = [];
                         renderCart();
