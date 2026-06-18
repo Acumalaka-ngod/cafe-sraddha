@@ -237,6 +237,38 @@ body, #layoutSidenav_content {
   color: #FFFFFF !important;
 }
 
+/* Tombol: pastikan TEX konten button (bukan ikon) tetap putih */
+.btn,
+.btn-primary,
+.btn-danger,
+.btn-info,
+.btn-success,
+.btn-warning,
+.btn-outline-primary {
+  color: #FFFFFF !important;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus,
+.btn-info:hover,
+.btn-info:active,
+.btn-info:focus,
+.btn-success:hover,
+.btn-success:active,
+.btn-success:focus,
+.btn-warning:hover,
+.btn-warning:active,
+.btn-warning:focus,
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:focus {
+  color: #FFFFFF !important;
+}
+
 
 /* ============================================
    BUTTONS
@@ -249,6 +281,13 @@ body, #layoutSidenav_content {
   padding: 10px 20px;
   font-weight: 600;
   transition: all 0.3s ease;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:visited {
+  color: #FFFFFF !important;
 }
 
 .btn-primary:hover,
@@ -301,6 +340,14 @@ body, #layoutSidenav_content {
   background-color: var(--danger) !important;
   border-color: var(--danger) !important;
   border-radius: 10px;
+  color: #FFFFFF !important;
+}
+
+.btn-danger:hover,
+.btn-danger:active,
+.btn-danger:focus,
+.btn-danger:visited {
+  color: #FFFFFF !important;
 }
 
 .btn-sm {

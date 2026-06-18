@@ -18,14 +18,14 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Kategori</label>
-                                    <select class="form-control" name="kategori" required>
-                                        <option value="Coffee" <?php echo ($m->kategori === 'Coffee') ? 'selected' : ''; ?>>Coffee</option>
-                                        <option value="Non Coffee" <?php echo ($m->kategori === 'Non Coffee') ? 'selected' : ''; ?>>Non Coffee</option>
-                                        <option value="Manual Brew" <?php echo ($m->kategori === 'Manual Brew') ? 'selected' : ''; ?>>Manual Brew</option>
-                                        <option value="Tea" <?php echo ($m->kategori === 'Tea') ? 'selected' : ''; ?>>Tea</option>
-                                        <option value="Chocolate" <?php echo ($m->kategori === 'Chocolate') ? 'selected' : ''; ?>>Chocolate</option>
+                                    <select class="form-control" name="id_kategori" required>
+                                        <option value="">-- Pilih Kategori --</option>
+                                        <?php foreach ($kategori_list as $k): ?>
+                                            <option value="<?= $k->id_kategori ?>" <?= ($m->id_kategori == $k->id_kategori) ? 'selected' : '' ?>>
+                                                <?= $k->kategori ?>
+                                            </option>
+                                        <?php endforeach; ?>
                                     </select>
-
                                 </div>
 
                                 <div class="form-group">

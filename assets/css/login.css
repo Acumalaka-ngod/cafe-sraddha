@@ -23,7 +23,8 @@ body {
 }
 
 .logo {
-	width: 140px;
+	width: 380px;
+	height: auto;
 }
 
 .title {

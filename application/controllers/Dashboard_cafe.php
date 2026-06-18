@@ -129,10 +129,11 @@ class Dashboard_cafe extends CI_Controller
 
     public function tambah_menu()
     {
+        $data['kategori_list'] = $this->db->get('kategori')->result();
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
-        $this->load->view('vtambah_menu');
+        $this->load->view('vtambah_menu', $data);
         $this->load->view('template/footer');
     }
 
@@ -154,16 +155,19 @@ class Dashboard_cafe extends CI_Controller
         }
 
         $nam = $this->input->post('nama_menu');
-        $kat = $this->input->post('kategori');
+        $id_kat = $this->input->post('id_kategori');
         $stk = $this->input->post('stok');
         $des = $this->input->post('deskripsi');
         $har = $this->input->post('harga');
         $file = $this->upload->data();
         $gam = $file['file_name'];
 
+        $kat_row = $this->db->get_where('kategori', ['id_kategori' => $id_kat])->row();
+
         $this->Menu_model->simpan_data([
             'nama_menu' => $nam,
-            'kategori' => $kat,
+            'id_kategori' => $id_kat,
+            'kategori' => $kat_row ? $kat_row->kategori : $id_kat,
             'stok' => $stk,
             'deskripsi' => $des,
             'harga' => $har,
@@ -184,6 +188,7 @@ class Dashboard_cafe extends CI_Controller
     {
         $where = ['id_menu' => $idmenu];
         $data['menu'] = $this->Menu_model->edit_data($where, 'menu')->result();
+        $data['kategori_list'] = $this->db->get('kategori')->result();
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
@@ -195,10 +200,13 @@ class Dashboard_cafe extends CI_Controller
     {
         $id_menu = $this->input->post('id_menu');
         $nama = $this->input->post('nama_menu');
-        $kat = $this->input->post('kategori');
+        $id_kat = $this->input->post('id_kategori');
         $stok = $this->input->post('stok');
         $des = $this->input->post('deskripsi');
         $harga = $this->input->post('harga');
+
+        $kat_row = $this->db->get_where('kategori', ['id_kategori' => $id_kat])->row();
+        $kat_nama = $kat_row ? $kat_row->kategori : $id_kat;
 
         if (!empty($_FILES['gambar']['name'])) {
             $config['upload_path'] = 'assets/uploads/';
@@ -213,7 +221,8 @@ class Dashboard_cafe extends CI_Controller
 
                 $data = [
                     'nama_menu' => $nama,
-                    'kategori' => $kat,
+                    'id_kategori' => $id_kat,
+                    'kategori' => $kat_nama,
                     'stok' => $stok,
                     'deskripsi' => $des,
                     'harga' => $harga,
@@ -222,7 +231,8 @@ class Dashboard_cafe extends CI_Controller
             } else {
                 $data = [
                     'nama_menu' => $nama,
-                    'kategori' => $kat,
+                    'id_kategori' => $id_kat,
+                    'kategori' => $kat_nama,
                     'stok' => $stok,
                     'deskripsi' => $des,
                     'harga' => $harga
@@ -231,7 +241,8 @@ class Dashboard_cafe extends CI_Controller
         } else {
             $data = [
                 'nama_menu' => $nama,
-                'kategori' => $kat,
+                'id_kategori' => $id_kat,
+                'kategori' => $kat_nama,
                 'stok' => $stok,
                 'deskripsi' => $des,
                 'harga' => $harga
@@ -387,18 +398,27 @@ class Dashboard_cafe extends CI_Controller
             if (!$menu) continue;
 
             $subtotal = $menu->harga * $item['jumlah'];
-            $addons_data = !empty($item['addons']) ? json_encode($item['addons']) : null;
 
             $data_detail = [
                 'id_transaksi' => $id_transaksi,
                 'id_menu' => $item['menu'],
                 'jumlah' => $item['jumlah'],
                 'harga' => $menu->harga,
-                'subtotal' => $subtotal,
-                'addons' => $addons_data
+                'subtotal' => $subtotal
             ];
 
             $this->db->insert('detail_transaksi', $data_detail);
+            $id_detail = $this->db->insert_id();
+
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $this->db->insert('detail_addons', [
+                        'id_detail' => $id_detail,
+                        'id_addon' => $addon['id']
+                    ]);
+                }
+            }
+
             $this->Menu_model->kurangi_stok($item['menu'], $item['jumlah']);
         }
 
@@ -503,16 +523,24 @@ class Dashboard_cafe extends CI_Controller
             if (!$menu) continue;
 
             $subtotal = $menu->harga * $item['jumlah'];
-            $addons_data = !empty($item['addons']) ? json_encode($item['addons']) : null;
 
             $this->db->insert('detail_transaksi', [
                 'id_transaksi' => $id,
                 'id_menu' => $item['menu'],
                 'jumlah' => $item['jumlah'],
                 'harga' => $menu->harga,
-                'subtotal' => $subtotal,
-                'addons' => $addons_data
+                'subtotal' => $subtotal
             ]);
+            $id_detail = $this->db->insert_id();
+
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $this->db->insert('detail_addons', [
+                        'id_detail' => $id_detail,
+                        'id_addon' => $addon['id']
+                    ]);
+                }
+            }
 
             $this->Menu_model->kurangi_stok($item['menu'], $item['jumlah']);
         }
@@ -535,6 +563,20 @@ class Dashboard_cafe extends CI_Controller
         $this->db->join('menu m', 'd.id_menu = m.id_menu');
         $this->db->where('d.id_transaksi', $id);
         $data['detail'] = $this->db->get()->result();
+
+        // Ambil addons dari pivot
+        $detail_ids = array_map(function($d) { return $d->id_detail; }, $data['detail']);
+        $data['addon_map'] = [];
+        if (!empty($detail_ids)) {
+            $this->db->select('da.id_detail, a.nama_addon, a.harga');
+            $this->db->from('detail_addons da');
+            $this->db->join('addons a', 'da.id_addon = a.id_addon');
+            $this->db->where_in('da.id_detail', $detail_ids);
+            $addons = $this->db->get()->result();
+            foreach ($addons as $a) {
+                $data['addon_map'][$a->id_detail][] = $a;
+            }
+        }
 
         $this->load->view('template/head');
         $this->load->view('template/navbar');
@@ -658,6 +700,20 @@ class Dashboard_cafe extends CI_Controller
         $this->db->join('menu mn', 'd.id_menu = mn.id_menu');
         $this->db->where('d.id_transaksi', $id);
         $data['detail'] = $this->db->get()->result();
+
+        // Ambil addons dari pivot
+        $detail_ids = array_map(function($d) { return $d->id_detail; }, $data['detail']);
+        $data['addon_map'] = [];
+        if (!empty($detail_ids)) {
+            $this->db->select('da.id_detail, a.nama_addon, a.harga');
+            $this->db->from('detail_addons da');
+            $this->db->join('addons a', 'da.id_addon = a.id_addon');
+            $this->db->where_in('da.id_detail', $detail_ids);
+            $addons = $this->db->get()->result();
+            foreach ($addons as $a) {
+                $data['addon_map'][$a->id_detail][] = $a;
+            }
+        }
 
         $this->load->view('vcetak_invoice', $data);
     }

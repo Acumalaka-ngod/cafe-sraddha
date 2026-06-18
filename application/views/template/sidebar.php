@@ -20,8 +20,8 @@
                             <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_menu') ?>">
                                 <i class="fas fa-list me-2"></i>Daftar Menu
                             </a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/tambah_menu') ?>">
-                                <i class="fas fa-plus me-2"></i>Tambah Menu
+                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_addons') ?>">
+                                <i class="fas fa-list me-2"></i>Daftar Addons
                             </a>
                         </nav>
                     </div>
@@ -70,23 +70,7 @@
                             </a>
                         </nav>
                     </div>
-                    <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseAddons"
-                        aria-expanded="false" aria-controls="collapseAddons">
-                        <div class="sb-nav-link-icon"><i class="fas fa-puzzle-piece"></i></div>
-                        Addons
-                        <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
-                    </a>
-                    <div class="collapse" id="collapseAddons" aria-labelledby="headingTwo"
-                        data-bs-parent="#sidenavAccordion">
-                        <nav class="sb-sidenav-menu-nested nav">
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/lihat_addons') ?>">
-                                <i class="fas fa-list me-2"></i>Daftar Addons
-                            </a>
-                            <a class="nav-link" href="<?php echo site_url('dashboard_cafe/tambah_addons') ?>">
-                                <i class="fas fa-plus me-2"></i>Tambah Addon
-                            </a>
-                        </nav>
-                    </div>
+
                 </div>
             </div>
             <div class="sb-sidenav-footer text-center">

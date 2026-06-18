@@ -43,7 +43,7 @@
                         <div class="stat-value"><?= number_format($total_meja ?? 0, 0, ',', '.') ?></div>
 
                         <div class="stat-change" style="color: #7C6A5B;">
-                            <i class="fas fa-book-check me-1"></i>Terdaftar
+                            <i class="fas fa-book me-1"></i>Terdaftar
                         </div>
                     </div>
                 </div>

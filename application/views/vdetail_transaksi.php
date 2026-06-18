@@ -72,11 +72,12 @@
 
                     <h6 class="mb-3">Pesanan</h6>
                     <div class="table-responsive">
-                        <table class="table table-hover table-bordered">
+                            <table class="table table-hover table-bordered">
                             <thead class="table-light">
                                 <tr>
                                     <th>No</th>
                                     <th>Menu</th>
+                                    <th>Addons</th>
                                     <th class="text-center">Jumlah</th>
                                     <th class="text-end">Harga</th>
                                     <th class="text-end">Subtotal</th>
@@ -84,14 +85,14 @@
                             </thead>
                             <tbody>
                                 <?php $no = 1; foreach ($detail as $d): 
-                                    $addons = json_decode($d->addons ?? 'null', true);
-                                    $addon_text = '';
+                                    $addon_list = $addon_map[$d->id_detail] ?? [];
+                                    $addon_text = '-';
                                     $addon_total = 0;
-                                    if ($addons) {
+                                    if ($addon_list) {
                                         $parts = [];
-                                        foreach ($addons as $a) {
-                                            $parts[] = $a['nama'] . ($a['harga'] > 0 ? ' (+Rp ' . number_format($a['harga'], 0, ',', '.') . ')' : '');
-                                            $addon_total += $a['harga'];
+                                        foreach ($addon_list as $a) {
+                                            $parts[] = $a->nama_addon . ($a->harga > 0 ? ' (+Rp ' . number_format($a->harga, 0, ',', '.') . ')' : '');
+                                            $addon_total += $a->harga;
                                         }
                                         $addon_text = implode('<br>', $parts);
                                     }
@@ -99,21 +100,16 @@
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $d->nama_menu ?></td>
+                                    <td><?= $addon_text ?></td>
                                     <td class="text-center"><?= $d->jumlah ?></td>
                                     <td class="text-end">Rp <?= number_format($d->harga, 0, ',', '.') ?></td>
                                     <td class="text-end">Rp <?= number_format($d->subtotal + ($addon_total * $d->jumlah), 0, ',', '.') ?></td>
                                 </tr>
-                                <?php if ($addon_text): ?>
-                                <tr class="table-light">
-                                    <td></td>
-                                    <td colspan="4"><small class="text-muted"><i class="fas fa-plus-circle"></i> <?= $addon_text ?></small></td>
-                                </tr>
-                                <?php endif; ?>
                                 <?php endforeach; ?>
                             </tbody>
                             <tfoot>
                                 <tr class="table-active">
-                                    <th colspan="4" class="text-end">Total</th>
+                                    <th colspan="5" class="text-end">Total</th>
                                     <th class="text-end">Rp <?= number_format($transaksi->total_harga, 0, ',', '.') ?></th>
                                 </tr>
                             </tfoot>
@@ -121,10 +117,10 @@
                     </div>
 
                     <div class="d-flex gap-2 mt-4">
-                        <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $transaksi->id_transaksi) ?>" class="btn btn-success" target="_blank">
+                        <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $transaksi->id_transaksi) ?>" class="btn btn-success" style="color: #FFFFFF !important;" target="_blank">
                             <i class="fas fa-print"></i> Cetak Invoice
                         </a>
-                        <a href="<?= site_url('dashboard_cafe/lihat_transaksi') ?>" class="btn btn-secondary">
+                        <a href="<?= site_url('dashboard_cafe/lihat_transaksi') ?>" class="btn btn-secondary" style="color: #FFFFFF !important;">
                             <i class="fas fa-times"></i> Batal
                         </a>
                     </div>

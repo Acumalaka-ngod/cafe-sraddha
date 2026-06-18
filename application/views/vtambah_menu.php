@@ -16,13 +16,11 @@
                             </div>
                             <div class="form-group">
                                 <label>Kategori</label>
-                                <select class="form-control" name="kategori" required>
+                                <select class="form-control" name="id_kategori" required>
                                     <option value="">-- Pilih Kategori --</option>
-                                    <option value="Coffee">Coffee</option>
-                                    <option value="Non Coffee">Non Coffee</option>
-                                    <option value="Manual Brew">Manual Brew</option>
-                                    <option value="Tea">Tea</option>
-                                    <option value="Chocolate">Chocolate</option>
+                                    <?php foreach ($kategori_list as $k): ?>
+                                        <option value="<?= $k->id_kategori ?>"><?= $k->kategori ?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="form-group">
