@@ -16,18 +16,47 @@
                             </div>
                             <div class="form-group">
                                 <label>Kategori</label>
-                                <select class="form-control" name="kategori" required>
-                                    <option value="">-- Pilih Kategori --</option>
-                                    <option value="Coffee">Coffee</option>
-                                    <option value="Non Coffee">Non Coffee</option>
-                                    <option value="Manual Brew">Manual Brew</option>
-                                    <option value="Tea">Tea</option>
-                                    <option value="Chocolate">Chocolate</option>
+                                <select class="form-control" name="id_kategori" required>
+                                    <option value="" selected disabled>
+                                        -- Pilih Kategori --
+                                    </option>
+                                    <?php foreach ($kategori as $k) : ?>
+                                        <option value="<?= $k->id_kategori ?>">
+                                            <?= $k->nama_kategori ?>
+                                        </option>
+                                    <?php endforeach; ?>
                                 </select>
                             </div>
                             <div class="form-group">
                                 <label for="stok">Stok</label>
-                                <input type="text" class="form-control" id="stok" name="stok" required>
+                                <input type="number" class="form-control" id="stok" name="stok" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Add On</label>
+
+                                <div class="mt-2">
+
+                                    <?php foreach ($addons as $ad) : ?>
+
+                                        <div class="form-check mb-2">
+                                            <input
+                                                class="form-check-input"
+                                                type="checkbox"
+                                                name="addons[]"
+                                                value="<?= $ad->id_addon ?>"
+                                                id="addon<?= $ad->id_addon ?>">
+
+                                            <label
+                                                class="form-check-label"
+                                                for="addon<?= $ad->id_addon ?>">
+                                                <?= $ad->nama_addon ?>
+                                                (+Rp<?= number_format($ad->harga_addon, 0, ',', '.') ?>)
+                                            </label>
+                                        </div>
+
+                                    <?php endforeach; ?>
+
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="deskripsi">Deskripsi</label>
@@ -53,7 +82,7 @@
                     <script>
                         function previewImage(event) {
                             const reader = new FileReader();
-                            reader.onload = function () {
+                            reader.onload = function() {
                                 const preview = document.getElementById('preview');
                                 preview.src = reader.result;
                                 preview.style.display = 'block';

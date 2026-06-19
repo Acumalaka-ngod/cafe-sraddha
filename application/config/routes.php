@@ -53,6 +53,8 @@ $route['default_controller'] = 'dashboard_cafe/login';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 $route['menu'] = 'customers/Menu';
+$route['lihat_pembayaran'] = 'customers/Menu/lihat_pembayaran';
+
 $route['menu/set_meja/(:num)'] = 'customers/Menu/set_meja/$1';
 $route['menu/test'] = 'customers/Menu/test';
 $route['tambah-cart'] = 'customers/Menu/tambah_cart';

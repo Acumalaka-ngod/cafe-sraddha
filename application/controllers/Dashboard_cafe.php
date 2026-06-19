@@ -13,6 +13,7 @@ class Dashboard_cafe extends CI_Controller
         $this->load->model('Meja_model');
         $this->load->model('Transaksi_model');
         $this->load->model('Addons_model');
+        $this->load->model('Kategori_model');
 
         $this->load->helper('url');
         $this->load->library('session');
@@ -129,46 +130,56 @@ class Dashboard_cafe extends CI_Controller
 
     public function tambah_menu()
     {
+        $data['kategori'] = $this->Kategori_model->get_all();
+        $data['addons'] = $this->Addons_model->get_all();
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
-        $this->load->view('vtambah_menu');
+        $this->load->view('vtambah_menu', $data);
         $this->load->view('template/footer');
     }
 
     public function simpan_menu()
     {
         $config['upload_path'] = './assets/uploads/';
-        $config['allowed_types'] = 'gif|jpg|png|jpeg';          
+        $config['allowed_types'] = 'gif|jpg|png|jpeg';
         $config['max_size'] = 10000;
-        $config['max_width'] = 1028;
-        $config['max_height'] = 768;
+        $config['max_width'] = 1254;
+        $config['max_height'] = 1254;
 
         $this->load->library('upload', $config);
 
         if (!$this->upload->do_upload('gambar')) {
+
             $error = $this->upload->display_errors();
+
             echo '<div class="alert alert-danger">' . $error . '</div>';
             echo '<a href="' . site_url('dashboard_cafe/tambah_menu') . '" class="btn btn-primary">Kembali</a>';
             return;
         }
 
-        $nam = $this->input->post('nama_menu');
-        $kat = $this->input->post('kategori');
-        $stk = $this->input->post('stok');
-        $des = $this->input->post('deskripsi');
-        $har = $this->input->post('harga');
         $file = $this->upload->data();
-        $gam = $file['file_name'];
 
-        $this->Menu_model->simpan_data([
-            'nama_menu' => $nam,
-            'kategori' => $kat,
-            'stok' => $stk,
-            'deskripsi' => $des,
-            'harga' => $har,
-            'gambar' => $gam
-        ]);
+        $data_menu = [
+            'nama_menu'   => $this->input->post('nama_menu'),
+            'id_kategori' => $this->input->post('id_kategori'),
+            'stok'        => $this->input->post('stok'),
+            'deskripsi'   => $this->input->post('deskripsi'),
+            'harga'       => $this->input->post('harga'),
+            'gambar'      => $file['file_name']
+        ];
+
+        $id_menu = $this->Menu_model->simpan_data($data_menu);
+        $addons = $this->input->post('addons');
+
+        if (!empty($addons)) {
+
+            $this->Menu_model
+                ->simpan_addons_menu(
+                    $id_menu,
+                    $addons
+                );
+        }
 
         redirect('dashboard_cafe/lihat_menu');
     }
@@ -721,8 +732,7 @@ class Dashboard_cafe extends CI_Controller
     {
         $data = [
             'nama_addon' => $this->input->post('nama_addon'),
-            'harga' => $this->input->post('harga') ?: 0,
-            'kategori' => $this->input->post('kategori') ?: null
+            'harga_addon' => $this->input->post('harga') ?: 0,
         ];
 
         $this->Addons_model->simpan_data($data);
@@ -762,6 +772,4 @@ class Dashboard_cafe extends CI_Controller
         $this->session->set_flashdata('message', 'Addon berhasil diupdate!');
         redirect('dashboard_cafe/lihat_addons');
     }
-    
 }
-

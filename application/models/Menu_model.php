@@ -1,16 +1,38 @@
-<?php 
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
 
 class Menu_model extends CI_Model
 {
 	function lihat_data()
 	{
-		return $this->db->get('menu'); 
+		$this->db->select('menu.*, kategori.nama_kategori');
+		$this->db->from('menu');
+		$this->db->join(
+			'kategori',
+			'kategori.id_kategori = menu.id_kategori',
+			'left'
+		);
+
+		return $this->db->get();
+	}
+
+	function simpan_addons_menu($id_menu, $addons)
+	{
+		foreach ($addons as $id_addon) {
+
+			$this->db->insert('menu_addons', [
+
+				'id_menu'  => $id_menu,
+
+				'id_addon' => $id_addon
+
+			]);
+		}
 	}
 	function simpan_data($data)
 	{
-		$ins=$this->db->insert('menu',$data);
-		return $ins;
+		$this->db->insert('menu', $data);
+		return $this->db->insert_id();
 	}
 
 	function hapus_data($id_menu)
@@ -25,13 +47,13 @@ class Menu_model extends CI_Model
 		if ($tables > 0) {
 			$this->db->delete('detail_pesanan', ['id_menu' => $id_menu]);
 		}
-		
+
 		// Get image to delete
 		$menu = $this->db->get_where('menu', ['id_menu' => $id_menu])->row();
 		if ($menu && $menu->gambar && file_exists('./assets/uploads/' . $menu->gambar)) {
 			unlink('./assets/uploads/' . $menu->gambar);
 		}
-		
+
 		// Delete menu
 		return $this->db->delete('menu', ['id_menu' => $id_menu]);
 	}
@@ -40,12 +62,12 @@ class Menu_model extends CI_Model
 	{
 		return $this->db->get_where($table, $where);
 	}
-	function update_data ($where,$data, $table)
+	function update_data($where, $data, $table)
 	{
 		$this->db->where($where);
-		$this->db->update($table, $data);	
+		$this->db->update($table, $data);
 	}
-	
+
 	function get_stok($id_menu)
 	{
 		$this->db->select('stok');
@@ -53,7 +75,7 @@ class Menu_model extends CI_Model
 		$query = $this->db->get('menu');
 		return $query->row() ? (int)$query->row()->stok : 0;
 	}
-	
+
 	function kurangi_stok($id_menu, $jumlah)
 	{
 		$stok = $this->get_stok($id_menu);
@@ -64,7 +86,7 @@ class Menu_model extends CI_Model
 		$this->db->where('id_menu', $id_menu);
 		return $this->db->update('menu');
 	}
-	
+
 	function tambah_stok($id_menu, $jumlah)
 	{
 		$this->db->set('stok', 'stok + ' . $jumlah, FALSE);
@@ -72,5 +94,3 @@ class Menu_model extends CI_Model
 		return $this->db->update('menu');
 	}
 }
-?>
-

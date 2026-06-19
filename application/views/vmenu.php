@@ -1,17 +1,17 @@
 <div id="layoutSidenav_content">
     <main>
         <div class="container-fluid px-4">
-            <?php if(isset($message) && $message): ?>
-            <div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
-                <?php echo $message; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <?php if (isset($message) && $message): ?>
+                <div class="alert alert-success alert-dismissible fade show mx-3 mt-3" role="alert">
+                    <?php echo $message; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             <?php endif; ?>
-            <?php if(isset($error) && $error): ?>
-            <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
-                <?php echo $error; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <?php if (isset($error) && $error): ?>
+                <div class="alert alert-danger alert-dismissible fade show mx-3 mt-3" role="alert">
+                    <?php echo $error; ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
             <?php endif; ?>
             <div class="card mx-3 mt-3">
                 <div class="card-header">
@@ -36,12 +36,13 @@
                             <tbody>
                                 <?php
                                 $no = 1;
+                                $menu = $this->Menu_model->lihat_data()->result();
                                 foreach ($menu as $m) {
-                                    ?>
+                                ?>
                                     <tr>
                                         <td><?php echo $no++ ?></td>
                                         <td><?php echo $m->nama_menu ?></td>
-                                        <td><?php echo $m->kategori ?></td>
+                                        <td><?php echo $m->nama_kategori ?></td>
                                         <td><?php echo $m->stok ?></td>
                                         <td><?php echo $m->deskripsi ?></td>
                                         <td><?php echo "Rp. " . number_format($m->harga, 0, ',', '.'); ?></td>
@@ -71,7 +72,7 @@
 
     <!-- Script JS DataTable -->
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#dataTable').DataTable({
                 "language": {
                     "url": "//cdn.datatables.net/plug-ins/1.13.4/i18n/Indonesian.json"

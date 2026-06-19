@@ -1,3 +1,4 @@
+
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
@@ -8,6 +9,7 @@ class Menu extends CI_Controller
     {
         parent::__construct();
         $this->load->model('Customer_model');
+        $this->load->model('Kategori_model');
 
         $method = $this->router->fetch_method();
 
@@ -44,10 +46,11 @@ class Menu extends CI_Controller
 
     public function index()
     {
-        $data['menu'] = $this->Customer_model->get_menu()->result();
+        $data['menu'] = $this->Customer_model->get_menu();
+        $data['kategori'] = $this->Kategori_model->get_all();
+        $data['jam_operasional'] = $this->Customer_model->get_jam_hari_ini();
         $data['menu_andalan'] = $this->Customer_model->menu_andalan()->result();
-
-
+        
         $this->load->view('customers/vmenu', $data);
     }
 
@@ -115,4 +118,10 @@ class Menu extends CI_Controller
     //         'status' => true
     //     ]);
     // }
+
+
+    function lihat_pembayaran()
+    {
+        $this->load->view('customers/vsukses');
+    }
 }
