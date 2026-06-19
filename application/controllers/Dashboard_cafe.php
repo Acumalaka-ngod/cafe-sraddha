@@ -195,6 +195,7 @@ class Dashboard_cafe extends CI_Controller
     {
         $where = ['id_menu' => $idmenu];
         $data['menu'] = $this->Menu_model->edit_data($where, 'menu')->result();
+        $data['kategori'] = $this->Kategori_model->get_all();
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
@@ -224,7 +225,7 @@ class Dashboard_cafe extends CI_Controller
 
                 $data = [
                     'nama_menu' => $nama,
-                    'kategori' => $kat,
+                    'id_kategori' => $kat,
                     'stok' => $stok,
                     'deskripsi' => $des,
                     'harga' => $harga,
@@ -233,7 +234,7 @@ class Dashboard_cafe extends CI_Controller
             } else {
                 $data = [
                     'nama_menu' => $nama,
-                    'kategori' => $kat,
+                    'id_kategori' => $kat,
                     'stok' => $stok,
                     'deskripsi' => $des,
                     'harga' => $harga
@@ -242,7 +243,7 @@ class Dashboard_cafe extends CI_Controller
         } else {
             $data = [
                 'nama_menu' => $nama,
-                'kategori' => $kat,
+                'id_kategori' => $kat,
                 'stok' => $stok,
                 'deskripsi' => $des,
                 'harga' => $harga

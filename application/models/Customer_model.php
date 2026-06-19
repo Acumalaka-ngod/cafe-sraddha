@@ -57,4 +57,15 @@ class Customer_model extends CI_Model
             ->get('jam_operasional')
             ->row();
     }
+
+    public function get_addons_by_menu($id_menu)
+    {
+        return $this->db
+            ->select('a.*')
+            ->from('menu_addons ma')
+            ->join('addons a', 'a.id_addon = ma.id_addon')
+            ->where('ma.id_menu', (int)$id_menu)
+            ->get()
+            ->result();
+    }
 }
