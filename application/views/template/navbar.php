@@ -32,9 +32,6 @@
                         </span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" style="border-radius: 16px; border: 1px solid #E7D9C7; box-shadow: 0 8px 30px rgba(62,42,30,0.1);">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user fa-fw me-2"></i>Profile</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog fa-fw me-2"></i>Pengaturan</a></li>
-                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="<?php echo site_url('dashboard_cafe/logout') ?>"><i class="fas fa-sign-out-alt fa-fw me-2"></i>Logout</a></li>
                     </ul>
                 </li>

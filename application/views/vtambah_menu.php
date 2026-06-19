@@ -25,7 +25,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="stok">Stok</label>
-                                <input type="text" class="form-control" id="stok" name="stok" required>
+                                <input type="number" class="form-control" id="stok" name="stok" min="0" required oninput="validateStok(this)">
                             </div>
                             <div class="form-group">
                                 <label for="deskripsi">Deskripsi</label>
@@ -33,7 +33,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="harga">Harga</label>
-                                <input type="text" class="form-control" id="harga" name="harga" required>
+                                <input type="number" class="form-control" id="harga" name="harga" min="0" required oninput="validateHarga(this)">
                             </div>
                             <div class="form-group">
                                 <label for="gambar">Gambar Menu</label>
@@ -57,6 +57,18 @@
                                 preview.style.display = 'block';
                             }
                             reader.readAsDataURL(event.target.files[0]);
+                        }
+                        function validateStok(input) {
+                            if (parseInt(input.value) < 0) {
+                                alert('Stok tidak boleh negatif!');
+                                input.value = '';
+                            }
+                        }
+                        function validateHarga(input) {
+                            if (parseInt(input.value) < 0) {
+                                alert('Harga tidak boleh negatif!');
+                                input.value = '';
+                            }
                         }
                     </script>
                 </div>

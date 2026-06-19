@@ -67,7 +67,6 @@
                     <div class="card h-100">
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <span><i class="fas fa-chart-line me-2" style="color: #9B673A;"></i>Grafik Penjualan</span>
-                            <span class="badge bg-primary">Tahunan</span>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">

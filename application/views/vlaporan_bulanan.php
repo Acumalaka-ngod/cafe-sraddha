@@ -20,19 +20,20 @@
                                 <i class="fas fa-filter"></i> Tampilkan
                             </button>
                         </div>
-                        <div class="col-md-2 d-flex align-items-end">
-                            <a href="<?= site_url('dashboard_cafe/laporan_bulanan?tanggal_mulai=' . $tanggal_mulai . '&tanggal_selesai=' . $tanggal_selesai) ?>"
-                                class="btn btn-success w-100"
-                                onclick="window.open('<?= site_url('dashboard_cafe/laporan_bulanan?tanggal_mulai=' . $tanggal_mulai . '&tanggal_selesai=' . $tanggal_selesai) ?>', '_blank'); return false;">
-                                <i class="fas fa-print"></i> Print
-                            </a>
-                        </div>
                     </form>
 
                     <?php if ($total_pendapatan > 0): ?>
-                        <div class="row mb-4 justify-content-center">
-                            <div class="col-md-4">
-                                <div class="card bg-success text-white">
+                        <div class="d-flex justify-content-end mb-3">
+                            <a href="<?= site_url('dashboard_cafe/cetak_laporan?tanggal_mulai=' . $tanggal_mulai . '&tanggal_selesai=' . $tanggal_selesai) ?>"
+                                class="btn btn-success"
+                                onclick="window.open('<?= site_url('dashboard_cafe/cetak_laporan?tanggal_mulai=' . $tanggal_mulai . '&tanggal_selesai=' . $tanggal_selesai) ?>', '_blank'); return false;">
+                                <i class="fas fa-print"></i> Cetak Laporan
+                            </a>
+                        </div>
+
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3 mb-md-0">
+                                <div class="card text-white" style="background-color: #9b673a !important;">
                                     <div class="card-body text-center">
                                         <h5>Total Pendapatan</h5>
                                         <h3>Rp <?= number_format($total_pendapatan, 0, ',', '.') ?></h3>
@@ -40,8 +41,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <div class="card bg-info text-white">
+                            <div class="col-md-6">
+                                <div class="card text-white" style="background-color: #6B4F34 !important;">
                                     <div class="card-body text-center">
                                         <h5>Jumlah Transaksi</h5>
                                         <h3><?= count($transaksi) ?></h3>

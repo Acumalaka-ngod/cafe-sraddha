@@ -162,6 +162,11 @@ class Dashboard_cafe extends CI_Controller
         $file = $this->upload->data();
         $gam = $file['file_name'];
 
+        if ($stk < 0 || $har < 0) {
+            echo '<script>alert("Stok dan harga tidak boleh negatif!"); window.location="' . site_url('dashboard_cafe/tambah_menu') . '";</script>';
+            return;
+        }
+
         $kat_row = $this->db->get_where('kategori', ['id_kategori' => $id_kat])->row();
 
         $this->Menu_model->simpan_data([
@@ -204,6 +209,11 @@ class Dashboard_cafe extends CI_Controller
         $stok = $this->input->post('stok');
         $des = $this->input->post('deskripsi');
         $harga = $this->input->post('harga');
+
+        if ($stok < 0 || $harga < 0) {
+            echo '<script>alert("Stok dan harga tidak boleh negatif!"); window.location="' . site_url('dashboard_cafe/edit_menu/' . $id_menu) . '";</script>';
+            return;
+        }
 
         $kat_row = $this->db->get_where('kategori', ['id_kategori' => $id_kat])->row();
         $kat_nama = $kat_row ? $kat_row->kategori : $id_kat;
@@ -749,6 +759,34 @@ class Dashboard_cafe extends CI_Controller
         $this->load->view('template/sidebar');
         $this->load->view('vlaporan_bulanan', $data);
         $this->load->view('template/footer');
+    }
+
+    public function cetak_laporan()
+    {
+        $tanggal_mulai = $this->input->get('tanggal_mulai') ?: date('Y-m-01');
+        $tanggal_selesai = $this->input->get('tanggal_selesai') ?: date('Y-m-t');
+
+        $data['tanggal_mulai'] = $tanggal_mulai;
+        $data['tanggal_selesai'] = $tanggal_selesai;
+
+        $this->db->select('t.*, u.nama as nama_user, m.no_meja');
+        $this->db->from('transaksi t');
+        $this->db->join('user u', 't.id_user = u.id_user', 'left');
+        $this->db->join('meja m', 't.id_meja = m.id_meja', 'left');
+        $this->db->where('t.tanggal >=', $tanggal_mulai . ' 00:00:00');
+        $this->db->where('t.tanggal <=', $tanggal_selesai . ' 23:59:59');
+        $this->db->where('t.status_pembayaran', 'paid');
+        $this->db->order_by('t.tanggal', 'DESC');
+        $data['transaksi'] = $this->db->get()->result();
+
+        $this->db->select('SUM(total_harga) as total');
+        $this->db->from('transaksi');
+        $this->db->where('tanggal >=', $tanggal_mulai . ' 00:00:00');
+        $this->db->where('tanggal <=', $tanggal_selesai . ' 23:59:59');
+        $this->db->where('status_pembayaran', 'paid');
+        $data['total_pendapatan'] = $this->db->get()->row()->total ?: 0;
+
+        $this->load->view('vcetak_laporan', $data);
     }
 
     // -------------------- Addons CRUD --------------------

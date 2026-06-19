@@ -30,7 +30,7 @@
 
                                 <div class="form-group">
                                     <label>Stok</label>
-                                    <input type="number" class="form-control" name="stok" value="<?php echo $m->stok ?>">
+                                    <input type="number" class="form-control" name="stok" min="0" value="<?php echo $m->stok ?>" oninput="validateStok(this)">
                                 </div>
                                 <div class="form-group">
                                     <label>Deskripsi</label>
@@ -38,7 +38,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Harga</label>
-                                    <input type="number" class="form-control" name="harga" value="<?php echo $m->harga ?>">
+                                    <input type="number" class="form-control" name="harga" min="0" value="<?php echo $m->harga ?>" oninput="validateHarga(this)">
                                 </div>
                                 <div class="form-group mb-3">
                                     <label>Gambar saat ini</label><br>
@@ -66,6 +66,18 @@
                                 preview.style.display = 'block';
                             }
                             reader.readAsDataURL(event.target.files[0]);
+                        }
+                        function validateStok(input) {
+                            if (parseInt(input.value) < 0) {
+                                alert('Stok tidak boleh negatif!');
+                                input.value = '';
+                            }
+                        }
+                        function validateHarga(input) {
+                            if (parseInt(input.value) < 0) {
+                                alert('Harga tidak boleh negatif!');
+                                input.value = '';
+                            }
                         }
                         </script>
                     <?php else: ?>
