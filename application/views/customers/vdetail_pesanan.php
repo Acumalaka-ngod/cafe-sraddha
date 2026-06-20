@@ -294,7 +294,7 @@
             </div>
 
             <!-- Tombol -->
-            <a href="<?= site_url('Menu') ?>" class="btn-again">
+            <a href="<?= site_url('menu') ?>" class="btn-again">
                 Pesan Lainnya
             </a>
 

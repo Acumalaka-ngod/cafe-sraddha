@@ -327,6 +327,16 @@ class Menu extends CI_Controller
 
             $this->session->set_flashdata('success', 'Pesanan berhasil dibuat');
 
+            $metode = $this->input->post('payment_method');
+
+            // Kalau QRIS, langsung update status jadi lunas (sementara, sebelum integrasi Midtrans)
+            if ($metode === 'QRIS') {
+                $this->db->where('no_pesanan', $no_pesanan)->update('transaksi', [
+                    'status_pembayaran' => 'paid',
+                    'status_pesanan'    => 'diproses',
+                ]);
+            }
+
             //  Redirect ke METHOD controller, bukan langsung ke view
             redirect('Menu/sukses');
         }
