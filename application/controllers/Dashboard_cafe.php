@@ -102,7 +102,7 @@ class Dashboard_cafe extends CI_Controller
         $data['produk_terlaris'] = $this->db->get()->result();
 
         // Transaksi terbaru
-        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.status_pembayaran, t.total_harga, t.no_invoce');
+        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.status_pembayaran, t.total_harga, t.no_invoice');
         $this->db->from('transaksi t');
         $this->db->join('meja mj', 't.id_meja = mj.id_meja', 'left');
         $this->db->order_by('t.tanggal', 'DESC');
@@ -669,8 +669,28 @@ class Dashboard_cafe extends CI_Controller
         $this->db->from('detail_transaksi d');
         $this->db->join('menu mn', 'd.id_menu = mn.id_menu');
         $this->db->where('d.id_transaksi', $id);
-        $data['detail'] = $this->db->get()->result();
 
+        $detail = $this->db->get()->result();
+
+        foreach ($detail as $d) {
+            $this->db->select('
+        da.*,
+        a.nama_addon
+    ');
+            $this->db->from('detail_transaksi_addons da');
+            $this->db->join(
+                'addons a',
+                'a.id_addon = da.id_addon'
+            );
+            $this->db->where(
+                'da.id_detail',
+                $d->id_detail
+            );
+
+            $d->addons = $this->db->get()->result();
+        }
+
+        $data['detail'] = $detail;
         $this->load->view('vcetak_invoice', $data);
     }
 

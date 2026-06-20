@@ -10,6 +10,7 @@ class Menu extends CI_Controller
         parent::__construct();
         $this->load->model('Customer_model');
         $this->load->model('Kategori_model');
+        $this->load->model('Transaksi_Customer_model');
 
         $method = $this->router->fetch_method();
 
@@ -17,6 +18,8 @@ class Menu extends CI_Controller
             !$this->session->userdata('id_meja')
             && $method != 'set_meja'
             && $method != 'clear_cart'
+            && $method != 'sukses'
+            && $method != 'DetailPesanan'
         ) {
             show_error(
                 'Silakan scan QR meja terlebih dahulu.',
@@ -233,5 +236,168 @@ class Menu extends CI_Controller
 
         header('Content-Type: application/json');
         echo json_encode($addons);
+    }
+
+
+
+    // Transaksi
+    public function checkout()
+    {
+        $cart = $this->session->userdata('cart');
+
+        if (empty($cart)) {
+            show_error('Keranjang kosong');
+        }
+
+        $total_harga = 0;
+
+        foreach ($cart as $item) {
+
+            $subtotal = $item['harga'] * $item['qty'];
+
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $subtotal += $addon['harga_addon'] * $addon['qty'];
+                }
+            }
+
+            $total_harga += $subtotal;
+        }
+
+        $no_pesanan = $this->Transaksi_Customer_model->generate_no_pesanan();
+
+        $data_transaksi = [
+            'id_meja'           => $this->session->userdata('id_meja'),
+            'no_pesanan'        => $no_pesanan,
+            'no_invoice' => 'INV-' . date('Ymd') . '-' . rand(100000, 999999),
+            'tanggal'           => date('Y-m-d H:i:s'),
+            'catatan'           => $this->input->post('catatan'),
+            'metode_pembayaran' => $this->input->post('payment_method'),
+            'status_pembayaran' => 'pending',
+            'status_pesanan'    => 'diproses',
+            'total_harga'       => $total_harga
+        ];
+
+
+
+        $this->db->trans_begin();
+        $id_transaksi = $this->Transaksi_Customer_model->simpan_transaksi($data_transaksi);
+
+        foreach ($cart as $item) {
+            $subtotal = $item['harga'] * $item['qty'];
+
+            $data_detail = [
+                'id_transaksi' => $id_transaksi,
+                'id_menu'      => $item['id_menu'],
+                'jumlah'       => $item['qty'],
+                'harga'        => $item['harga'],
+                'subtotal'     => $subtotal
+            ];
+
+            $id_detail = $this->Transaksi_Customer_model
+                ->simpan_detail($data_detail);
+
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $data_addon = [
+                        'id_detail'      => $id_detail,
+                        'id_addon'       => $addon['id_addon'],
+                        'qty'            => $addon['qty'],
+                        'harga_addon'    => $addon['harga_addon'],
+                        'subtotal_addon' => $addon['harga_addon'] * $addon['qty']
+                    ];
+
+                    $this->Transaksi_Customer_model
+                        ->simpan_detail_addon($data_addon);
+                }
+            }
+        }
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->db->trans_rollback();
+
+            echo "<script>alert( 'Checkout gagal');</script>";
+        } else {
+            $this->db->trans_commit();
+
+            $this->session->unset_userdata('cart');
+
+            // Simpan no_pesanan ke session agar bisa diambil di halaman sukses
+            $this->session->set_userdata('no_pesanan', $no_pesanan);
+
+            $this->session->set_flashdata('success', 'Pesanan berhasil dibuat');
+
+            //  Redirect ke METHOD controller, bukan langsung ke view
+            redirect('Menu/sukses');
+        }
+    }
+
+    public function sukses()
+    {
+        $no_pesanan = $this->session->userdata('no_pesanan');
+
+        if (!$no_pesanan) {
+            redirect('Menu');
+            return;
+        }
+
+        $transaksi = $this->db
+            ->where('no_pesanan', $no_pesanan)
+            ->get('transaksi')
+            ->row();
+
+        if (!$transaksi) {
+            redirect('Menu');
+            return;
+        }
+
+        $this->session->unset_userdata('no_pesanan');
+
+        $data['no_pesanan'] = $transaksi->no_pesanan;
+        $this->load->view('customers/vsukses', $data);
+    }
+
+    public function DetailPesanan($no_pesanan)
+    {
+        if (!$no_pesanan) {
+            redirect('Menu');
+            return;
+        }
+
+        $transaksi = $this->db
+            ->where('no_pesanan', $no_pesanan)
+            ->get('transaksi')
+            ->row();
+
+        if (!$transaksi) {
+            show_404();
+            return;
+        }
+
+        // Ambil detail item pesanan beserta nama menu
+        $detail = $this->db
+            ->select('detail_transaksi.*, menu.nama_menu')
+            ->from('detail_transaksi')
+            ->join('menu', 'menu.id_menu = detail_transaksi.id_menu')
+            ->where('detail_transaksi.id_transaksi', $transaksi->id_transaksi)
+            ->get()
+            ->result();
+
+        // Ambil addon per detail
+        foreach ($detail as $item) {
+            $item->addons = $this->db
+                ->select('detail_transaksi_addons.*, addons.nama_addon')
+                ->from('detail_transaksi_addons')
+                ->join('addons', 'addons.id_addon = detail_transaksi_addons.id_addon')
+                ->where('detail_transaksi_addons.id_detail', $item->id_detail)
+                ->get()
+                ->result();
+        }
+
+        $data['transaksi'] = $transaksi;
+        $data['detail']    = $detail;
+        $data['service_fee'] = 1000;
+
+        $this->load->view('customers/vdetail_pesanan', $data);
     }
 }

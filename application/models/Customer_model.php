@@ -68,4 +68,5 @@ class Customer_model extends CI_Model
             ->get()
             ->result();
     }
+    
 }

@@ -1,48 +1,88 @@
+html,
 body {
-    background: #f5f5f5;
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
+	height: 100%;
+	margin: 0;
 }
-
+body {
+	background: #f5f5f5;
+	font-family: "Poppins", sans-serif;
+}
 .success-page {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 40px 16px;
 }
-
+@media (max-height: 700px) {
+	.success-page {
+		align-items: flex-start;
+		padding-top: 24px;
+	}
+}
 .success-content {
-    width: 100%;
-    max-width: 350px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+	width: 100%;
+	max-width: 420px;
+	background: #fff;
+	border-radius: 24px;
+	padding: 32px 24px;
+	text-align: center;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
-
 .success-icon {
-    width: 260px;
-    max-width: 100%;
-    margin-bottom: 20px;
+	width: 180px;
+	margin-bottom: 20px;
 }
-
 .success-title {
-    color: #00c89a;
-    font-weight: 700;
-    font-size: 2rem;
-    margin-bottom: 15px;
+	font-size: 32px;
+	font-weight: 700;
+	color: #2e7d32;
+	margin-bottom: 12px;
 }
-
 .success-desc {
-    color: #333;
-    font-size: 15px;
-    line-height: 1.8;
-    margin-bottom: 30px;
-    text-align: center;
+	color: #666;
+	font-size: 15px;
+	line-height: 1.7;
+	margin-bottom: 28px;
 }
-
+.order-number {
+	background: #f1f8e9;
+	border: 1px solid #c8e6c9;
+	border-radius: 16px;
+	padding: 14px;
+	margin-bottom: 24px;
+	color: #2e7d32;
+	font-size: 14px;
+}
+.order-number strong {
+	display: block;
+	font-size: 28px;
+	margin-top: 5px;
+	font-weight: 700;
+}
 .success-buttons {
-    width: 100%;
+	width: 100%;
+}
+.btn-order {
+	background: #2e7d32;
+	color: #fff;
+	border-radius: 14px;
+	padding: 14px;
+	font-weight: 600;
+	border: none;
+}
+.btn-order:hover {
+	background: #256628;
+	color: #fff;
+}
+.btn-again {
+	background: #f5f5f5;
+	color: #333;
+	border-radius: 14px;
+	padding: 14px;
+	font-weight: 600;
+	border: 1px solid #ddd;
+}
+.btn-again:hover {
+	background: #e9e9e9;
 }

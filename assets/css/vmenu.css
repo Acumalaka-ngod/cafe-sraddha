@@ -702,26 +702,11 @@ section[id^="kategori-"] {
 	font-weight: 500;
 }
 
-/* Notes section */
-.detail-modal__notes {
-	padding: 20px;
-	border-top: 0.5px solid #898989;
-}
-
-.detail-modal__notes-title {
-	font-size: 18px;
-	font-weight: 300;
-	margin-bottom: 12px;
-}
-
 /* Footer / order controls */
 .detail-modal__footer {
 	flex-shrink: 0;
-	position: sticky;
-	bottom: 0;
-	z-index: 10;
 
-	padding: 20px;
+	padding: 15px;
 	background: #fafafa;
 	border-top: 1px solid #e5e5e5;
 	border-radius: 16px 16px 0 0;
@@ -1081,6 +1066,57 @@ section[id^="kategori-"] {
 	.payment-method__label {
 		font-size: 16px;
 	}
+}
+
+/* Notes section */
+.detail-modal__notes {
+	padding: 20px;
+	border-top: 1px solid #e8e8e8;
+	background: #fafafa;
+}
+
+.detail-modal__notes-title {
+	display: block;
+	font-size: 18px;
+	font-weight: 500;
+	color: #222;
+	margin-bottom: 10px;
+}
+
+.detail-modal__notes-input {
+	width: 100%;
+	min-height: 90px;
+	padding: 14px 16px;
+
+	border: 1px solid #e2e2e2;
+	border-radius: 14px;
+
+	background: #fff;
+
+	font-size: 15px;
+	font-family: "Poppins", sans-serif;
+	color: #333;
+
+	resize: none;
+	outline: none;
+	transition: all 0.2s ease;
+}
+
+.detail-modal__notes-input:focus {
+	border-color: #9b8692;
+	box-shadow: 0 0 0 3px rgba(155, 134, 146, 0.12);
+}
+
+.detail-modal__notes-input::placeholder {
+	color: #9a9a9a;
+}
+
+.detail-modal__notes-hint {
+	display: block;
+	margin-top: 8px;
+
+	font-size: 12px;
+	color: #999;
 }
 
 /* Cart modal footer */

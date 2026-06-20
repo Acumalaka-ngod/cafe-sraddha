@@ -61,4 +61,7 @@ $route['tambah-cart'] = 'customers/Menu/tambah_cart';
 $route['Menu/get_addons'] = 'customers/Menu/get_addons';
 $route['Menu/get_cart'] = 'customers/Menu/get_cart';
 $route['Menu/update_cart'] = 'customers/Menu/update_cart';
+$route['checkout'] = 'customers/Menu/checkout';
+$route['Menu/sukses'] = 'customers/Menu/sukses';
+$route['customers/DetailPesanan/(:any)'] = 'customers/Menu/DetailPesanan/$1';
 // $route['kosongkan-cart'] = 'customers/Menu/kosongkan_cart';

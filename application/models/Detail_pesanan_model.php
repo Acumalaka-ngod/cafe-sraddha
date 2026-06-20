@@ -8,11 +8,11 @@ class Detail_pesanan_model extends CI_Model
         $this->db->select('dp.*, m.nama_menu as menu_dipesan, mj.no_meja, p.*');  // p.* if need from pesanan
         $this->db->from('detail_pesanan dp');
         $this->db->join('menu m', 'dp.id_menu = m.id_menu', 'left');
-// $this->db->join('meja mj', 'dp.id_meja = mj.id_meja', 'left');
+        // $this->db->join('meja mj', 'dp.id_meja = mj.id_meja', 'left');
         $this->db->join('pesanan p', 'dp.id_pesanan = p.id_pesanan', 'left');
         return $this->db->get();
     }
-    
+
     function simpan_data($data)
     {
         // Auto-fill menu_dipesan and total_pembayaran? Handled in controller
@@ -21,7 +21,7 @@ class Detail_pesanan_model extends CI_Model
 
     function hapus_data($id_detail)
     {
-$this->db->where('id_detail_pesanan', $id_detail);
+        $this->db->where('id_detail_pesanan', $id_detail);
         $this->db->delete('detail_pesanan');
     }
 
@@ -36,5 +36,3 @@ $this->db->where('id_detail_pesanan', $id_detail);
         $this->db->update($table, $data);
     }
 }
-?>
-

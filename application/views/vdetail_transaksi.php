@@ -16,7 +16,7 @@
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <th style="width: 140px;">No Invoice</th>
-                                    <td>: INV <strong><?= $transaksi->no_invoce ?></strong></td>
+                                    <td>: INV <strong><?= $transaksi->no_invoice ?></strong></td>
                                 </tr>
                                 <tr>
                                     <th>No Pesanan</th>

@@ -314,29 +314,23 @@
                                 </div>
                             </div>
 
-                            <div class="detail-modal__notes">
-                                <h4 class="detail-modal__notes-title mb-2">Catatan</h4>
-                                <textarea class="form-control" name="note"
-                                    placeholder="Contoh: Tambahkan sedikit gula"
-                                    rows="3"></textarea>
-                            </div>
 
-                            <div class="detail-modal__footer">
-                                <div class="detail-modal__qty-row">
-                                    <h4 class="detail-modal__qty-label">Jumlah Pesanan</h4>
-                                    <div class="detail-modal__qty-controls">
-                                        <button type="button" class="detail-modal__qty-btn btn-minus">-</button>
-                                        <span id="qty-text">1</span>
-                                        <button type="button" class="detail-modal__qty-btn btn-plus">+</button>
-                                    </div>
+
+                        </div>
+                        <div class="detail-modal__footer">
+                            <div class="detail-modal__qty-row">
+                                <h4 class="detail-modal__qty-label">Jumlah Pesanan</h4>
+                                <div class="detail-modal__qty-controls">
+                                    <button type="button" class="detail-modal__qty-btn btn-minus">-</button>
+                                    <span id="qty-text">1</span>
+                                    <button type="button" class="detail-modal__qty-btn btn-plus">+</button>
                                 </div>
-
-                                <button type="submit" class="btn-add w-100">
-                                    Tambah ke Pesanan -
-                                    <span class="detail-modal__submit-price">Rp 0</span>
-                                </button>
                             </div>
 
+                            <button type="submit" class="btn-add w-100">
+                                Tambah ke Pesanan -
+                                <span class="detail-modal__submit-price">Rp 0</span>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -350,7 +344,7 @@
             <div class="modal-dialog modal-dialog-bottom modal-fullscreen-sm-down modal-dialog-scrollable">
                 <div class="modal-content">
 
-                    <form id="checkout-form" action="/checkout" method="POST">
+                    <form id="checkout-form" action="<?= site_url('checkout') ?>" method="POST">
 
                         <!-- Header -->
                         <div class="modal-header cart-modal__header">
@@ -432,7 +426,7 @@
                                     <label class="form-label fw-semibold">Metode Pembayaran</label>
                                     <div class="row g-3">
                                         <div class="col-6">
-                                            <input type="radio" class="btn-check" name="payment_method" id="payment-qris" value="qris" required>
+                                            <input type="radio" class="btn-check" name="payment_method" id="payment-qris" value="QRIS" required>
                                             <label class="payment-method__card" for="payment-qris">
                                                 <div class="payment-method__icon">
                                                     <img src="<?= base_url('assets/assets/icons/paymentIcons.svg') ?>" alt="QRIS">
@@ -441,7 +435,7 @@
                                             </label>
                                         </div>
                                         <div class="col-6">
-                                            <input type="radio" class="btn-check" name="payment_method" id="payment-cashier" value="cashier" required>
+                                            <input type="radio" class="btn-check" name="payment_method" id="payment-cashier" value="Tunai" required>
                                             <label class="payment-method__card" for="payment-cashier">
                                                 <div class="payment-method__icon">
                                                     <img src="<?= base_url('assets/assets/icons/payIcons.svg') ?>" alt="Bayar di Kasir">
@@ -450,6 +444,20 @@
                                             </label>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="detail-modal__notes">
+                                    <label class="detail-modal__notes-title">
+                                        Catatan
+                                        <small class="detail-modal__notes-hint">
+                                            Opsional
+                                        </small>
+                                    </label>
+
+                                    <textarea
+                                        name="catatan"
+                                        class="detail-modal__notes-input"
+                                        rows="4"
+                                        placeholder="Contoh: Tambahkan sedikit gula, tanpa es, sambal dipisah"></textarea>
                                 </div>
                             </div>
 
@@ -760,7 +768,14 @@
                 const row = $(this).closest('.addon-row');
                 const input = row.find('.addon-input');
                 const count = row.find('.addon-row__count');
-                const newQty = parseInt(input.val()) + 1;
+                const currentQty = parseInt(input.val()) || 0;
+
+
+                const harga = parseInt(input.data('price')) || 0;
+                if (harga === 0 && currentQty >= 1) {
+                    return;
+                }
+                const newQty = currentQty + 1;
                 input.val(newQty);
                 count.text(newQty);
                 updateTotal();

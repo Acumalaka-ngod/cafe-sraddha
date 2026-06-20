@@ -132,7 +132,7 @@
                             <tbody>
                                 <?php foreach ($transaksi ?? [] as $t): ?>
                                 <tr>
-                                    <td><strong><?= $t->no_invoce ?: 'INV-' . str_pad($t->id_transaksi, 4, '0', STR_PAD_LEFT) ?></strong></td>
+                                    <td><strong><?= $t->no_invoice ?: 'INV-' . str_pad($t->id_transaksi, 4, '0', STR_PAD_LEFT) ?></strong></td>
                                     <td>Meja <?= $t->no_meja ?></td>
                                     <td><?= date('d/m/Y H:i', strtotime($t->tanggal)) ?></td>
                                     <td>
