@@ -533,6 +533,61 @@ class Dashboard_cafe extends CI_Controller
         exit;
     }
 
+    public function quick_update_status()
+    {
+        $id = $this->input->post('id');
+        $field = $this->input->post('field');
+        $value = $this->input->post('value');
+        $pay_value = $this->input->post('pay_value');
+
+        $allowed_fields = ['status_pesanan', 'status_pembayaran'];
+        $allowed_status = ['diproses', 'selesai', 'dibatalkan'];
+        $allowed_payment = ['pending', 'paid'];
+
+        if (!$id || !in_array($field, $allowed_fields)) {
+            echo 'invalid';
+            return;
+        }
+
+        if ($field === 'status_pesanan' && !in_array($value, $allowed_status)) {
+            echo 'invalid';
+            return;
+        }
+        if ($field === 'status_pembayaran' && !in_array($value, $allowed_payment)) {
+            echo 'invalid';
+            return;
+        }
+
+        // If setting selesai together with payment
+        if ($field === 'status_pesanan' && $value === 'selesai' && $pay_value === 'paid') {
+            $this->db->update('transaksi', [
+                'status_pesanan' => 'selesai',
+                'status_pembayaran' => 'paid',
+                'id_user' => $this->session->userdata('id_user')
+            ], ['id_transaksi' => $id]);
+            echo 'ok';
+            return;
+        }
+
+        // Prevent "selesai" if payment not paid and not setting it together
+        if ($field === 'status_pesanan' && $value === 'selesai') {
+            $trx = $this->db->get_where('transaksi', ['id_transaksi' => $id])->row();
+            if (!$trx || $trx->status_pembayaran !== 'paid') {
+                echo 'bayar_dulu';
+                return;
+            }
+            $this->db->update('transaksi', [
+                $field => $value,
+                'id_user' => $this->session->userdata('id_user')
+            ], ['id_transaksi' => $id]);
+            echo 'ok';
+            return;
+        }
+
+        $this->db->update('transaksi', [$field => $value], ['id_transaksi' => $id]);
+        echo 'ok';
+    }
+
     public function detail_transaksi($id)
     {
         $this->db->select('t.*, u.nama as nama_user, m.no_meja');

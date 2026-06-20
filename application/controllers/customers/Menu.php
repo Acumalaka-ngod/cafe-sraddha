@@ -130,6 +130,73 @@ class Menu extends CI_Controller
         ]);
     }
 
+    public function checkout()
+    {
+        $cart = $this->session->userdata('cart') ?? [];
+        if (empty($cart)) {
+            show_error('Cart kosong, silakan pesan menu terlebih dahulu.');
+        }
+
+        $id_meja = $this->session->userdata('id_meja');
+        if (!$id_meja) {
+            show_error('Silakan scan QR meja terlebih dahulu.');
+        }
+
+        $metode = $this->input->post('metode_pembayaran') ?: $this->input->post('payment_method');
+        if (in_array($metode, ['qris', 'QRIS'])) {
+            $metode = 'QRIS';
+        } elseif (in_array($metode, ['cashier', 'Tunai'])) {
+            $metode = 'Tunai';
+        } else {
+            $metode = null;
+        }
+
+        $total_harga = 0;
+        foreach ($cart as $item) {
+            $total_harga += (float)$item['harga'] * $item['qty'];
+        }
+
+        $no_pesanan = 'PSN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+        $no_invoce = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+
+        $this->db->trans_start();
+
+        $this->db->insert('transaksi', [
+            'id_user' => null,
+            'id_meja' => $id_meja,
+            'no_pesanan' => $no_pesanan,
+            'no_invoce' => $no_invoce,
+            'tanggal' => date('Y-m-d H:i:s'),
+            'metode_pembayaran' => $metode,
+            'status_pembayaran' => 'pending',
+            'status_pesanan' => 'diproses',
+            'total_harga' => $total_harga
+        ]);
+        $id_transaksi = $this->db->insert_id();
+
+        foreach ($cart as $item) {
+            $subtotal = (float)$item['harga'] * $item['qty'];
+            $this->db->insert('detail_transaksi', [
+                'id_transaksi' => $id_transaksi,
+                'id_menu' => $item['id_menu'],
+                'jumlah' => $item['qty'],
+                'harga' => $item['harga'],
+                'subtotal' => $subtotal
+            ]);
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === false) {
+            show_error('Gagal menyimpan pesanan, silakan coba lagi.');
+        }
+
+        $this->session->unset_userdata('cart');
+
+        $data['no_pesanan'] = $no_pesanan;
+        $data['no_meja'] = $this->session->userdata('no_meja');
+        $this->load->view('customers/vsukses', $data);
+    }
 
     // public function kosongkan_cart()
     // {
