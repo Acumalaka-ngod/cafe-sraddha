@@ -16,7 +16,7 @@
 			$this->db->join('meja mj', 't.id_meja = mj.id_meja', 'left');
 			$this->db->join('user u', 't.id_user = u.id_user', 'left');
 			$this->db->join('detail_transaksi dt', 't.id_transaksi = dt.id_transaksi', 'left');
-			$this->db->join('detail_addons da', 'dt.id_detail = da.id_detail', 'left');
+			$this->db->join('detail_transaksi_addons da', 'dt.id_detail = da.id_detail', 'left');
 			$this->db->join('menu m', 'dt.id_menu = m.id_menu', 'left');
 			$this->db->group_by('t.id_transaksi');
 

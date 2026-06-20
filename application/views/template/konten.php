@@ -116,13 +116,13 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>Invoice</th>
                                     <th>Meja</th>
                                     <th>Tanggal</th>
-                                    <th>Status</th>
+                                    <th>Status Pesanan</th>
                                     <th>Pembayaran</th>
                                     <th class="text-end">Total</th>
                                     <th>Aksi</th>
@@ -135,27 +135,25 @@
                                     <td>Meja <?= $t->no_meja ?></td>
                                     <td><?= date('d/m/Y H:i', strtotime($t->tanggal)) ?></td>
                                     <td>
-                                        <?php if ($t->status_pesanan == 'selesai'): ?>
-                                            <span class="badge bg-success">Selesai</span>
-                                        <?php elseif ($t->status_pesanan == 'diproses'): ?>
-                                            <span class="badge bg-warning">Diproses</span>
-                                        <?php elseif ($t->status_pesanan == 'dibatalkan'): ?>
-                                            <span class="badge bg-danger">Dibatalkan</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-secondary"><?= $t->status_pesanan ?></span>
-                                        <?php endif; ?>
+                                        <select class="form-select form-select-sm status-select" data-id="<?= $t->id_transaksi ?>" data-field="status_pesanan" style="min-width:100px;">
+                                            <option value="diproses" <?= $t->status_pesanan == 'diproses' ? 'selected' : '' ?>>Diproses</option>
+                                            <option value="selesai" <?= $t->status_pesanan == 'selesai' ? 'selected' : '' ?>>Selesai</option>
+                                            <option value="dibatalkan" <?= $t->status_pesanan == 'dibatalkan' ? 'selected' : '' ?>>Dibatalkan</option>
+                                        </select>
                                     </td>
                                     <td>
-                                        <?php if ($t->status_pembayaran == 'paid'): ?>
-                                            <span class="badge bg-success">Lunas</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-warning">Pending</span>
-                                        <?php endif; ?>
+                                        <select class="form-select form-select-sm status-select" data-id="<?= $t->id_transaksi ?>" data-field="status_pembayaran" style="min-width:100px;">
+                                            <option value="pending" <?= $t->status_pembayaran == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                            <option value="paid" <?= $t->status_pembayaran == 'paid' ? 'selected' : '' ?>>Lunas</option>
+                                        </select>
                                     </td>
                                     <td class="text-end fw-bold">Rp <?= number_format($t->total_harga, 0, ',', '.') ?></td>
                                     <td>
-                                        <a href="<?php echo site_url('dashboard_cafe/edit_transaksi/' . $t->id_transaksi); ?>" class="btn btn-info btn-sm">
-                                            <i class="fas fa-sync"></i> Update Status
+                                        <a href="<?= site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi) ?>" class="btn btn-info btn-sm" title="Detail">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $t->id_transaksi) ?>" target="_blank" class="btn btn-success btn-sm" title="Cetak Invoice">
+                                            <i class="fas fa-print"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -169,6 +167,160 @@
         </div>
     </main>
 
+<script>
+document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('status-select')) {
+        const id = e.target.dataset.id;
+        const field = e.target.dataset.field;
+        const value = e.target.value;
+        const row = e.target.closest('tr');
+
+        if (field === 'status_pesanan' && value === 'selesai') {
+            const paySelect = row.querySelector('.status-select[data-field="status_pembayaran"]');
+            if (paySelect && paySelect.value !== 'paid') {
+                if (!confirm('Apakah sudah dibayar?')) {
+                    e.target.value = e.target.querySelector('[selected]') ? e.target.querySelector('[selected]').value : 'diproses';
+                    return;
+                }
+                fetch('<?= site_url('dashboard_cafe/quick_update_status') ?>', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'id=' + id + '&field=status_pesanan&value=selesai&pay_value=paid'
+                })
+                .then(r => r.text())
+                .then(res => { location.reload(); });
+                return;
+            }
+            fetch('<?= site_url('dashboard_cafe/quick_update_status') ?>', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                body: 'id=' + id + '&field=status_pesanan&value=selesai'
+            })
+            .then(r => r.text())
+            .then(res => { location.reload(); });
+            return;
+        }
+
+        // Payment status change — silent update, no reload
+        fetch('<?= site_url('dashboard_cafe/quick_update_status') ?>', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'id=' + id + '&field=' + field + '&value=' + value
+        });
+    }
+});
+</script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+<style>
+#dataTable_wrapper {
+    padding: 16px 12px;
+}
+#dataTable_filter {
+    margin-bottom: 12px;
+}
+#dataTable_length {
+    margin-bottom: 12px;
+}
+/* ini teksnya */
+#dataTable thead th {
+    background-color: #945916 !important;
+    color: #ffffff;
+    padding: 14px 18px !important;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    border-bottom: none;
+}
+
+#dataTable tbody td {
+    padding: 14px 18px !important;
+    vertical-align: middle;
+    font-size: 14px;
+    border-bottom: 1px solid #6e3f0a;
+    color: #3d2e1e;
+}
+#dataTable tbody tr {
+    background-color: #fff;
+}
+#dataTable tbody tr:nth-child(even) {
+    background-color: #fdfaf6;
+}
+#dataTable tbody tr:hover {
+    background-color: #f5ede3;
+    transition: background-color 0.2s ease;
+}
+#dataTable {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100% !important;
+}
+#dataTable_info,
+#dataTable_paginate {
+    padding: 12px 18px 6px;
+    font-size: 13px;
+    color: #5a4a3a;
+}
+#dataTable_paginate .paginate_button {
+    padding: 6px 14px;
+    margin: 0 2px;
+    border-radius: 6px;
+    border: 1px solid #c4b09a;
+    background: #f5ede3;
+    color: #5a4a3a !important;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+#dataTable_paginate .paginate_button:hover {
+    background: #9B673A;
+    border-color: #9B673A;
+    color: #fff !important;
+}
+#dataTable_paginate .paginate_button.current {
+    background: #9B673A;
+    border-color: #9B673A;
+    color: #fff !important;
+}
+#dataTable_filter input {
+    border: 1px solid #dccfc0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 13px;
+    outline: none;
+    transition: border 0.2s ease;
+    background: #fdfaf6;
+}
+#dataTable_filter input:focus {
+    border-color: #9B673A;
+    box-shadow: 0 0 0 3px rgba(155, 103, 58, 0.12);
+}
+#dataTable_length select {
+    border: 1px solid #dccfc0;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    outline: none;
+    background: #fdfaf6;
+}
+</style>
+
+<script>
+    $('#dataTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [10],
+        language: {
+            url: "//cdn.datatables.net/plug-ins/1.13.4/i18n/Indonesian.json"
+        },
+        dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
+             '<"row"<"col-sm-12"tr>>' +
+             '<"row"<"col-sm-5"i><"col-sm-7"p>>'
+    });
+</script>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
 (function() {
@@ -181,9 +333,6 @@
         labels.push(monthNames[row.month - 1] + ' ' + row.year);
         values.push(parseFloat(row.sales) || 0);
     });
-
-    labels.reverse();
-    values.reverse();
 
     if (values.length === 0) {
         labels = monthNames;

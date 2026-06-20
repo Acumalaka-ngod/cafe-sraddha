@@ -19,7 +19,7 @@
                                 <select class="form-control" name="id_kategori" required>
                                     <option value="">-- Pilih Kategori --</option>
                                     <?php foreach ($kategori_list as $k): ?>
-                                        <option value="<?= $k->id_kategori ?>"><?= $k->kategori ?></option>
+                                        <option value="<?= $k->id_kategori ?>"><?= $k->nama_kategori ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>

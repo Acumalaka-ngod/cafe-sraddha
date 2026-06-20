@@ -94,11 +94,11 @@
         <table>
             <tr>
                 <td>No Invoice</td>
-                <td>: NV <?= $transaksi->no_invoce ?></td>
+                <td>: <?= $transaksi->no_invoce ?></td>
             </tr>
             <tr>
                 <td>No Pesanan</td>
-                <td>: SHD <?= $transaksi->no_pesanan ?></td>
+                <td>: <?= $transaksi->no_pesanan ?></td>
             </tr>
             <tr>
                 <td>Tanggal</td>
@@ -118,40 +118,42 @@
     <table class="items">
         <thead>
             <tr>
-                <th>Menu</th>
-                <th>Addons</th>
-                <th class="text-center">Qty</th>
-                <th class="text-right">Harga</th>
-                <th class="text-right">Subtotal</th>
+                <th style="width:44%;">Pesanan</th>
+                <th class="text-right" style="width:26%;">Harga</th>
+                <th class="text-right" style="width:30%;">Total</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($detail as $d): 
+            <?php 
+            $grand_total = 0;
+            foreach ($detail as $d): 
                 $addon_list = $addon_map[$d->id_detail] ?? [];
-                $addon_text = '-';
                 $addon_total = 0;
                 if ($addon_list) {
-                    $parts = [];
                     foreach ($addon_list as $a) {
-                        $parts[] = $a->nama_addon . ($a->harga > 0 ? ' (+Rp ' . number_format($a->harga, 0, ',', '.') . ')' : '');
-                        $addon_total += $a->harga;
+                        $addon_total += $a->harga_addon * $d->jumlah;
                     }
-                    $addon_text = implode(', ', $parts);
                 }
+                $item_total = $d->subtotal + $addon_total;
+                $grand_total += $item_total;
             ?>
             <tr>
-                <td><?= $d->nama_menu ?></td>
-                <td style="font-size:16px;"><?= $addon_text ?></td>
-                <td class="text-center"><?= $d->jumlah ?></td>
-                <td class="text-right">Rp <?= number_format($d->harga, 0, ',', '.') ?></td>
-                <td class="text-right">Rp <?= number_format($d->subtotal + ($addon_total * $d->jumlah), 0, ',', '.') ?></td>
+                <td>
+                    <div><?= $d->nama_menu ?> <strong>x<?= $d->jumlah ?></strong></div>
+                    <?php if ($addon_list): foreach ($addon_list as $a): ?>
+                        <div style="font-size:16px; padding-left:12px;">+ <?= $a->nama_addon ?></div>
+                        <?php if ($a->harga_addon > 0): ?><div style="font-size:16px; padding-left:24px; color:#555;">Rp <?= number_format($a->harga_addon, 0, ',', '.') ?></div><?php endif; ?>
+                    <?php endforeach; endif; ?>
+                </td>
+                <td class="text-right" style="vertical-align:middle; padding-right:16px;">Rp <?= number_format($d->harga, 0, ',', '.') ?></td>
+                <td class="text-right" style="vertical-align:middle;">Rp <?= number_format($item_total, 0, ',', '.') ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
 
     <div class="total">
-        Total: Rp <?= number_format($transaksi->total_harga, 0, ',', '.') ?>
+        Grand Total: Rp <?= number_format($grand_total, 0, ',', '.') ?>
     </div>
 
     <div style="margin-top: 10px; font-size: 17px;">

@@ -48,7 +48,7 @@
                                 <select name="metode_pembayaran" class="form-control" required>
                                     <option value="">-- Pilih Metode --</option>
                                     <option value="Tunai" <?= $detail->metode_pembayaran == 'Tunai' ? 'selected' : '' ?>>Tunai</option>
-                                    <option value="Qris" <?= $detail->metode_pembayaran == 'Qris' ? 'selected' : '' ?>>QRIS</option>
+                                    <option value="QRIS" <?= $detail->metode_pembayaran == 'QRIS' ? 'selected' : '' ?>>QRIS</option>
                                 </select>
                             </div>
                             <div class="form-group mb-3">

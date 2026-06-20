@@ -15,11 +15,11 @@
                         </div>
                         <div class="form-group mb-3">
                             <label>Harga Tambahan</label>
-                            <input type="number" name="harga" class="form-control" min="0" value="0">
+                            <input type="number" name="harga_addon" class="form-control" min="0" value="0">
                         </div>
                         <div class="form-group mb-3">
-                            <label>Kategori</label>
-                            <input type="text" name="kategori" class="form-control" placeholder="misal: minuman, coffee, topping">
+                            <label>Stok Addon</label>
+                            <input type="number" name="stok_addon" class="form-control" min="0" value="0">
                         </div>
                         <div class="form-group mt-3">
                             <button type="submit" class="btn btn-primary">Simpan</button>

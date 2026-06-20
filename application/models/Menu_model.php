@@ -5,7 +5,10 @@ class Menu_model extends CI_Model
 {
 	function lihat_data()
 	{
-		return $this->db->get('menu'); 
+		$this->db->select('menu.*, kategori.nama_kategori as kategori');
+		$this->db->from('menu');
+		$this->db->join('kategori', 'menu.id_kategori = kategori.id_kategori', 'left');
+		return $this->db->get();
 	}
 	function simpan_data($data)
 	{
@@ -15,16 +18,16 @@ class Menu_model extends CI_Model
 
 	function hapus_data($id_menu)
 	{
-		// Delete related records first.
-		// Relasi menu -> transaksi terjadi lewat detail_transaksi (bukan kolom id_menu di tabel transaksi).
-		$this->db->delete('detail_transaksi', ['id_menu' => $id_menu]);
-		// detail_pesanan tidak selalu ada di skema DB target, jadi buat aman.
-		// Jika tabel tidak ada, operasi ini akan tetap gagal dengan error DB.
-		// Untuk menghindari error, kita hanya jalankan penghapusan ketika tabel ada.
-		$tables = $this->db->query("SHOW TABLES LIKE 'detail_pesanan'")->num_rows();
-		if ($tables > 0) {
-			$this->db->delete('detail_pesanan', ['id_menu' => $id_menu]);
+		// Delete related records first (FK chain: menu → menu_addons, detail_transaksi → detail_transaksi_addons)
+		$this->db->delete('menu_addons', ['id_menu' => $id_menu]);
+
+		$detail_rows = $this->db->get_where('detail_transaksi', ['id_menu' => $id_menu])->result();
+		$detail_ids = array_map(function($d) { return $d->id_detail; }, $detail_rows);
+		if (!empty($detail_ids)) {
+			$this->db->where_in('id_detail', $detail_ids);
+			$this->db->delete('detail_transaksi_addons');
 		}
+		$this->db->delete('detail_transaksi', ['id_menu' => $id_menu]);
 		
 		// Get image to delete
 		$menu = $this->db->get_where('menu', ['id_menu' => $id_menu])->row();

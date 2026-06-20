@@ -16,11 +16,11 @@
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <th style="width: 140px;">No Invoice</th>
-                                    <td>: INV <strong><?= $transaksi->no_invoce ?></strong></td>
+                                    <td>: <strong><?= $transaksi->no_invoce ?></strong></td>
                                 </tr>
                                 <tr>
                                     <th>No Pesanan</th>
-                                    <td>: SHD <strong><?= $transaksi->no_pesanan ?></strong></td>
+                                    <td>: <strong><?= $transaksi->no_pesanan ?></strong></td>
                                 </tr>
                                 <tr>
                                     <th>Tanggal</th>
@@ -91,8 +91,8 @@
                                     if ($addon_list) {
                                         $parts = [];
                                         foreach ($addon_list as $a) {
-                                            $parts[] = $a->nama_addon . ($a->harga > 0 ? ' (+Rp ' . number_format($a->harga, 0, ',', '.') . ')' : '');
-                                            $addon_total += $a->harga;
+                                            $parts[] = $a->nama_addon . ($a->harga_addon > 0 ? ' (+Rp ' . number_format($a->harga_addon, 0, ',', '.') . ')' : '');
+                                            $addon_total += $a->harga_addon;
                                         }
                                         $addon_text = implode('<br>', $parts);
                                     }

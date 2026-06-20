@@ -21,6 +21,15 @@
                                 <?php } ?>
                             </select>
                         </div>
+
+                        <div class="form-group mb-4">
+                            <label>Metode Pembayaran <span class="text-danger">*</span></label>
+                            <select name="metode_pembayaran" class="form-control" required>
+                                <option value="">-- Pilih --</option>
+                                <option value="Tunai">Tunai</option>
+                                <option value="QRIS">QRIS</option>
+                            </select>
+                        </div>
                         
                         <!-- Add Item Section -->
                         <div class="row mb-3">
@@ -88,6 +97,7 @@
                     
                     <script>
                     const allAddons = <?= json_encode($addons ?? []) ?>;
+                    const menuAddons = <?= json_encode($menu_addons ?? []) ?>;
                     let cart = [];
 
                     document.getElementById('cart_menu').addEventListener('change', function() {
@@ -103,18 +113,24 @@
                     }
 
                     function renderAddonCheckboxes() {
-                        const menuId = document.getElementById('cart_menu').value;
+                        const menuId = parseInt(document.getElementById('cart_menu').value);
                         const container = document.getElementById('addonCheckboxes');
                         const section = document.getElementById('addonSection');
                         if (!menuId || !allAddons.length) {
                             section.style.display = 'none';
                             return;
                         }
+                        const allowedIds = menuAddons.filter(ma => ma.id_menu == menuId).map(ma => ma.id_addon);
+                        const filtered = allowedIds.length ? allAddons.filter(a => allowedIds.includes(a.id_addon)) : allAddons;
+                        if (!filtered.length) {
+                            section.style.display = 'none';
+                            return;
+                        }
                         section.style.display = 'block';
-                        container.innerHTML = allAddons.map(a => `
+                        container.innerHTML = filtered.map(a => `
                             <label class="form-check-label d-flex align-items-center gap-1" style="cursor:pointer;">
-                                <input type="checkbox" class="form-check-input addon-cb" value="${a.id_addon}" data-nama="${a.nama_addon}" data-harga="${a.harga}">
-                                ${a.nama_addon} ${a.harga > 0 ? '(+Rp ' + a.harga.toLocaleString() + ')' : ''}
+                                <input type="checkbox" class="form-check-input addon-cb" value="${a.id_addon}" data-nama="${a.nama_addon}" data-harga="${a.harga_addon}">
+                                ${a.nama_addon} ${a.harga_addon > 0 ? '(+Rp ' + a.harga_addon.toLocaleString() + ')' : ''}
                             </label>
                         `).join('');
                     }

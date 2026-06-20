@@ -22,7 +22,7 @@
                                         <option value="">-- Pilih Kategori --</option>
                                         <?php foreach ($kategori_list as $k): ?>
                                             <option value="<?= $k->id_kategori ?>" <?= ($m->id_kategori == $k->id_kategori) ? 'selected' : '' ?>>
-                                                <?= $k->kategori ?>
+                                                <?= $k->nama_kategori ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>

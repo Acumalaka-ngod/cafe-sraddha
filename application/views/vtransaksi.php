@@ -69,7 +69,7 @@
                                     ?>
                                     <tr>
                                         <td><?php echo $no++; ?></td>
-                                        <td><?php echo "SHD - " . $t->no_pesanan; ?></td>
+                                        <td><?php echo $t->no_pesanan; ?></td>
                                         <td><?php echo date('d/m/Y', strtotime($t->tanggal)); ?></td>
                                         <td><?php echo $t->no_meja; ?></td>
                                         <td><?php echo $t->nama_user; ?></td>
