@@ -133,16 +133,6 @@ class Menu extends CI_Controller
         ]);
     }
 
-
-    // public function kosongkan_cart()
-    // {
-    //     $this->session->unset_userdata('cart');
-
-    //     echo json_encode([
-    //         'status' => true
-    //     ]);
-    // }
-
     public function get_cart()
     {
         $cart        = $this->session->userdata('cart') ?? [];
@@ -395,6 +385,7 @@ class Menu extends CI_Controller
         foreach ($cart as $item) {
             $item_subtotal = $item['harga'] * $item['qty'];
 
+            // ✅ Hapus $this->db->insert manual, pakai model saja biar dapat $id_detail
             $data_detail = [
                 'id_transaksi' => $id_transaksi,
                 'id_menu'      => $item['id_menu'],
@@ -402,7 +393,6 @@ class Menu extends CI_Controller
                 'harga'        => $item['harga'],
                 'subtotal'     => $item_subtotal,
             ];
-
             $id_detail = $this->Transaksi_Customer_model->simpan_detail($data_detail);
 
             $this->db->set('stok', 'stok - ' . (int)$item['qty'], FALSE);
@@ -411,6 +401,7 @@ class Menu extends CI_Controller
 
             if (!empty($item['addons'])) {
                 foreach ($item['addons'] as $addon) {
+                    // ✅ Hapus $this->db->insert manual, pakai model saja
                     $data_addon = [
                         'id_detail'      => $id_detail,
                         'id_addon'       => $addon['id_addon'],
