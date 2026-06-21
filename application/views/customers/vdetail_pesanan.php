@@ -289,7 +289,7 @@
                 </div>
                 <div class="total-row grand">
                     <span>Total</span>
-                    <span>Rp <?= number_format($transaksi->total_harga + $service_fee, 0, ',', '.') ?></span>
+                    <span>Rp <?= number_format($transaksi->total_harga , 0, ',', '.') ?></span>
                 </div>
             </div>
 

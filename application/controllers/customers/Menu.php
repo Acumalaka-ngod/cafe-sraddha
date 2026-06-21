@@ -284,9 +284,6 @@ class Menu extends CI_Controller
 
             ],
 
-           
-
-
             'customer_details' => [
                 'first_name' => 'Meja ' . $this->session->userdata('no_meja'),
             ],
