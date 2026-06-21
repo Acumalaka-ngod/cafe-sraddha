@@ -909,7 +909,6 @@ class Dashboard_cafe extends CI_Controller
         $this->db->join('meja m', 't.id_meja = m.id_meja', 'left');
         $this->db->where('t.tanggal >=', $tanggal_mulai . ' 00:00:00');
         $this->db->where('t.tanggal <=', $tanggal_selesai . ' 23:59:59');
-        $this->db->where('t.status_pembayaran', 'paid');
         $this->db->order_by('t.tanggal', 'DESC');
         $data['transaksi'] = $this->db->get()->result();
 
@@ -941,7 +940,6 @@ class Dashboard_cafe extends CI_Controller
         $this->db->join('meja m', 't.id_meja = m.id_meja', 'left');
         $this->db->where('t.tanggal >=', $tanggal_mulai . ' 00:00:00');
         $this->db->where('t.tanggal <=', $tanggal_selesai . ' 23:59:59');
-        $this->db->where('t.status_pembayaran', 'paid');
         $this->db->order_by('t.tanggal', 'DESC');
         $data['transaksi'] = $this->db->get()->result();
 
