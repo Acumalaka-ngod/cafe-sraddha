@@ -32,7 +32,7 @@
                 <a href="<?= site_url('customers/DetailPesanan/' . htmlspecialchars($no_pesanan)) ?>" class="btn btn-order">
                     Lihat Pesanan
                 </a>
-                <a href="<?= site_url('customers/Menu') ?>" class="btn btn-again">
+                <a href="<?= site_url('customers/menu') ?>" class="btn btn-again">
                     Pesan Lainnya
                 </a>
             </div>

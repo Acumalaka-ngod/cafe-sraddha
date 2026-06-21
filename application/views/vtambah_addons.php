@@ -10,12 +10,16 @@
                 <div class="card-body">
                     <form action="<?= site_url('dashboard_cafe/simpan_addons') ?>" method="post">
                         <div class="form-group mb-3">
-                            <label>Nama Addon <span class="text-danger">*</span></label>
+                            <label>Nama Add on <span class="text-danger">*</span></label>
                             <input type="text" name="nama_addon" class="form-control" required>
                         </div>
                         <div class="form-group mb-3">
-                            <label>Harga Tambahan</label>
+                            <label>Harga add on</label>
                             <input type="number" name="harga" class="form-control" min="0" value="0">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Stok</label>
+                            <input type="number" name="stok_addon" class="form-control" min="0" value="0">
                         </div>
                         <div class="form-group mt-3">
                             <button type="submit" class="btn btn-primary">Simpan</button>
@@ -26,3 +30,10 @@
             </div>
         </div>
     </main>
+    <script>
+        document.querySelectorAll('input[type="number"][min="0"]').forEach(function(input) {
+            input.addEventListener('input', function() {
+                if (this.value < 0) this.value = 0;
+            });
+        });
+    </script>

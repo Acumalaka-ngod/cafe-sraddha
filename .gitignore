@@ -30,3 +30,14 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-project
 /tests/tests/
 /tests/results/
+
+# Config sensitif
+application/config/database.php
+application/config/midtrans.php
+
+# Upload files (kalau ada)
+uploads/
+assets/uploads/
+
+# OS Windows
+Thumbs.db

@@ -17,6 +17,30 @@
 
     <div class="container-fluid p-0">
 
+        <!--  Notifikasi stok error -->
+        <?php if ($this->session->flashdata('stok_errors')): ?>
+            <div class="alert alert-danger mx-3 mt-3">
+                <strong><i class="fas fa-exclamation-triangle me-1"></i> Pesanan gagal:</strong>
+                <ul class="mb-0 mt-1">
+                    <?php foreach ($this->session->flashdata('stok_errors') as $err): ?>
+                        <li><?= $err ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
+
+        <!-- Toast Notifikasi QRIS -->
+        <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 9999">
+            <div id="app-toast" class="toast align-items-center text-white border-0" role="alert">
+                <div class="d-flex">
+                    <div class="toast-body" id="app-toast-body">
+                        Pesan notifikasi
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            </div>
+        </div>
+
         <!-- ================================================================
              HEADER
              ================================================================ -->
@@ -245,13 +269,27 @@
              CART BAR  (fixed bottom)
              ================================================================ -->
         <?php
-        $cart       = $this->session->userdata('cart') ?? [];
+        $cart        = $this->session->userdata('cart') ?? [];
         $total_harga = 0;
         $total_qty   = 0;
+
         foreach ($cart as $item) {
             $total_qty   += $item['qty'];
-            $total_harga += ((float)$item['harga'] * $item['qty']);
+            $item_subtotal = (float)$item['harga'] * $item['qty'];
+
+            // Tambahkan addon
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $item_subtotal += (float)$addon['harga_addon'] * $addon['qty'];
+                }
+            }
+
+            $total_harga += $item_subtotal;
         }
+
+        // Tambahkan service fee
+        $service_fee  = !empty($cart) ? 1000 : 0;
+        $total_harga += $service_fee;
         ?>
 
         <div id="cart-bar"
@@ -366,7 +404,7 @@
                             <div class="mb-4">
                                 <label class="cart-modal__table-label">Nomor meja</label>
                                 <div class="cart-modal__table-box">
-                                    <img src="assets/assets/icons/tableIcons.svg" alt="Table Icon" class="cart-modal__table-icon">
+                                    <img src="<?= base_url('assets/assets/icons/tableIcons.svg') ?>" alt="Table Icon" class="cart-modal__table-icon">
                                     <span id="cart-no-meja">-</span>
                                     <input type="hidden" name="table_number" id="cart-input-meja">
                                 </div>
@@ -486,7 +524,9 @@
          ==================================================================== -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="<?= $this->config->item('client_key'); ?>">
+    </script>
     <script>
         // Search
         document.getElementById('toggleSearch').addEventListener('click', function() {
@@ -579,13 +619,14 @@
                 dataType: 'json',
                 success: function(res) {
                     if (!res.status) return;
-
+                    const fmt = n => 'Rp' + Number(n).toLocaleString('id-ID');
                     $('#cart-no-meja').text(res.no_meja ?? res.id_meja);
                     $('#cart-input-meja').val(res.id_meja);
                     $('#cart-total-qty').text(res.total_qty);
                     $('#summary-qty').text(res.total_qty);
+                    $('.cart-bar__info-total').text(fmt(res.total));
 
-                    const fmt = n => 'Rp' + Number(n).toLocaleString('id-ID');
+
                     $('#summary-subtotal').text(fmt(res.subtotal));
                     $('#summary-service-fee').text(fmt(res.service_fee));
                     $('#summary-total').text(fmt(res.total));
@@ -839,6 +880,106 @@
                     },
                     error: function(xhr) {
                         console.error('Gagal tambah cart:', xhr.status, xhr.responseText);
+                    }
+                });
+            });
+
+        });
+
+        // aksi Midtrans
+        function showToast(pesan, tipe = 'danger') {
+            const toastEl = document.getElementById('app-toast');
+            const toastBody = document.getElementById('app-toast-body');
+
+            // Set warna sesuai tipe
+            toastEl.classList.remove('bg-danger', 'bg-success', 'bg-warning');
+            toastEl.classList.add('bg-' + tipe);
+
+            toastBody.innerHTML = pesan;
+
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: 4000
+            });
+            toast.show();
+        }
+        $(document).ready(function() {
+
+            $('#checkout-form').on('submit', function(e) {
+                const metode = $('input[name="payment_method"]:checked').val();
+
+                if (!metode) {
+                    e.preventDefault();
+                    showToast('Pilih metode pembayaran terlebih dahulu.', 'warning');
+                    return;
+                }
+
+                if (metode !== 'QRIS') {
+                    e.preventDefault();
+
+                    $.ajax({
+                        url: "<?= site_url('cek-stok') ?>",
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(res) {
+                            if (!res.status) {
+                                showToast('<strong>Pesanan gagal:</strong><br>' + res.errors.join('<br>'), 'danger');
+                                return;
+                            }
+                            $('#checkout-form').off('submit').submit();
+                        },
+                        error: function(xhr) {
+                            showToast('Gagal validasi stok. Coba lagi.', 'danger');
+                        }
+                    });
+
+                    return;
+                }
+
+                e.preventDefault();
+
+                $.ajax({
+                    url: "<?= site_url('cek-stok') ?>",
+                    type: 'POST',
+                    dataType: 'json',
+                    success: function(res) {
+                        if (!res.status) {
+                            showToast('<strong>Pesanan gagal:</strong><br>' + res.errors.join('<br>'), 'danger');
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "<?= site_url('midtrans/token') ?>",
+                            type: 'POST',
+                            dataType: 'json',
+                            success: function(res) {
+                                if (!res.status) {
+                                    showToast(res.message || 'Gagal membuat transaksi.', 'danger');
+                                    return;
+                                }
+
+                                snap.pay(res.token, {
+                                    onSuccess: function(result) {
+                                        console.log('SUCCESS', result);
+                                        $('#checkout-form').off('submit').submit();
+                                    },
+                                    onPending: function(result) {
+                                        showToast('Pembayaran pending. Selesaikan pembayaran Anda.', 'warning');
+                                    },
+                                    onError: function(result) {
+                                        showToast('Pembayaran gagal: ' + (result.status_message || 'Error'), 'danger');
+                                    },
+                                    onClose: function() {
+                                        console.log('Popup ditutup');
+                                    }
+                                });
+                            },
+                            error: function(xhr) {
+                                showToast('Gagal mengambil token Midtrans. Coba lagi.', 'danger');
+                            }
+                        });
+                    },
+                    error: function(xhr) {
+                        showToast('Gagal validasi stok. Coba lagi.', 'danger');
                     }
                 });
             });

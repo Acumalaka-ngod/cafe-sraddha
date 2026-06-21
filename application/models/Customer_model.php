@@ -65,8 +65,8 @@ class Customer_model extends CI_Model
             ->from('menu_addons ma')
             ->join('addons a', 'a.id_addon = ma.id_addon')
             ->where('ma.id_menu', (int)$id_menu)
+            ->where('a.stok_addon >', 0)
             ->get()
             ->result();
     }
-    
 }

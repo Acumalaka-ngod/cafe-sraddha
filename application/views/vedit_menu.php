@@ -27,7 +27,31 @@
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
+                                </div>
 
+                                <div class="form-group">
+                                    <label>Add On</label>
+
+                                    <div class="mt-2">
+
+                                        <?php foreach ($addons as $ad): ?>
+                                            <div class="form-check mb-2">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    name="addons[]"
+                                                    value="<?= $ad->id_addon ?>"
+                                                    id="addon<?= $ad->id_addon ?>"
+                                                    <?= in_array($ad->id_addon, $selected_addons) ? 'checked' : '' ?>>
+
+                                                <label class="form-check-label" for="addon<?= $ad->id_addon ?>">
+                                                    <?= $ad->nama_addon ?>
+                                                    (+Rp<?= number_format($ad->harga_addon, 0, ',', '.') ?>)
+                                                </label>
+                                            </div>
+                                        <?php endforeach; ?>
+
+                                    </div>
                                 </div>
 
                                 <div class="form-group">

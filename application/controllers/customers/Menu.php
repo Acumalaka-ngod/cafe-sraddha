@@ -12,7 +12,10 @@ class Menu extends CI_Controller
         $this->load->model('Kategori_model');
         $this->load->model('Transaksi_Customer_model');
 
+        $this->load->config('midtrans');
+        $this->load->library('Midtrans');
         $method = $this->router->fetch_method();
+
 
         if (
             !$this->session->userdata('id_meja')
@@ -147,15 +150,17 @@ class Menu extends CI_Controller
         $total_qty   = 0;
 
         foreach ($cart as $item) {
-            $total_qty   += $item['qty'];
-            $total_harga += $item['harga'] * $item['qty'];
+            $total_qty     += $item['qty'];
+            $item_subtotal  = $item['harga'] * $item['qty'];
 
-            foreach (($item['addons'] ?? []) as $addon) { // ← fix
-                $total_harga += $addon['harga_addon'] * $addon['qty'] * $item['qty'];
+            foreach (($item['addons'] ?? []) as $addon) {
+                $item_subtotal += $addon['harga_addon'] * $addon['qty'];
             }
+
+            $total_harga += $item_subtotal;
         }
 
-        $service_fee = 1000;
+        $service_fee = !empty($cart) ? 1000 : 0;
         $total       = $total_harga + $service_fee;
 
         echo json_encode([
@@ -165,8 +170,8 @@ class Menu extends CI_Controller
             'subtotal'    => $total_harga,
             'service_fee' => $service_fee,
             'total'       => $total,
-            'id_meja'     => $this->session->userdata('id_meja'), // ← tambah ini
-            'no_meja'     => $this->session->userdata('no_meja')  // ← dan ini
+            'id_meja'     => $this->session->userdata('id_meja'),
+            'no_meja'     => $this->session->userdata('no_meja'),
         ]);
     }
 
@@ -241,6 +246,71 @@ class Menu extends CI_Controller
 
 
     // Transaksi
+    public function get_snap_token()
+    {
+        $this->load->library('Midtrans');
+
+        $cart = $this->session->userdata('cart');
+
+        if (empty($cart)) {
+            echo json_encode(['status' => false, 'message' => 'Keranjang kosong']);
+            return;
+        }
+
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $item_subtotal = $item['harga'] * $item['qty'];
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $item_subtotal += $addon['harga_addon'] * $addon['qty'];
+                }
+            }
+            $subtotal += $item_subtotal;
+        }
+
+        $service_fee = 1000;
+        $total = $subtotal + $service_fee;
+
+        // Generate order ID
+        $order_id = 'ORD-' . time();
+        // ✅ Simpan ke session
+        $this->session->set_userdata('midtrans_order_id', $order_id);
+
+        $params = [
+            'transaction_details' => [
+                'order_id'     => $order_id,
+                'gross_amount' => (int) $total,
+
+
+            ],
+
+           
+
+
+            'customer_details' => [
+                'first_name' => 'Meja ' . $this->session->userdata('no_meja'),
+            ],
+        ];
+
+        try {
+            $token = \Midtrans\Snap::getSnapToken($params);
+
+            // ✅ Kirim order_id dan total ke frontend
+            echo json_encode([
+                'status'   => true,
+                'token'    => $token,
+                'order_id' => $order_id,
+                'total'    => $total,
+            ]);
+        } catch (Exception $e) {
+            log_message('error', 'Midtrans error: ' . $e->getMessage());
+            echo json_encode([
+                'status'  => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
     public function checkout()
     {
         $cart = $this->session->userdata('cart');
@@ -249,53 +319,98 @@ class Menu extends CI_Controller
             show_error('Keranjang kosong');
         }
 
-        $total_harga = 0;
-
+        // ── Validasi stok ────────────────────────────────────────────────
+        $stok_errors = [];
         foreach ($cart as $item) {
+            $menu = $this->db->select('nama_menu, stok')
+                ->where('id_menu', $item['id_menu'])
+                ->get('menu')->row();
 
-            $subtotal = $item['harga'] * $item['qty'];
+            if ($menu && $item['qty'] > $menu->stok) {
+                $stok_errors[] = "'{$menu->nama_menu}' hanya tersisa {$menu->stok} stok.";
+            }
 
             if (!empty($item['addons'])) {
                 foreach ($item['addons'] as $addon) {
-                    $subtotal += $addon['harga_addon'] * $addon['qty'];
+                    $ad = $this->db->select('nama_addon, stok_addon')
+                        ->where('id_addon', $addon['id_addon'])
+                        ->get('addons')->row();
+
+                    if ($ad && $addon['qty'] > $ad->stok_addon) {
+                        $stok_errors[] = "Add-on '{$ad->nama_addon}' hanya tersisa {$ad->stok_addon} stok.";
+                    }
                 }
             }
-
-            $total_harga += $subtotal;
         }
+
+        if (!empty($stok_errors)) {
+            $this->session->set_flashdata('stok_errors', $stok_errors);
+            redirect('customers/Menu');
+            return;
+        }
+
+        // ── Hitung total ─────────────────────────────────────────────────
+        $subtotal = 0;
+        foreach ($cart as $item) {
+            $item_subtotal = $item['harga'] * $item['qty'];
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $item_subtotal += $addon['harga_addon'] * $addon['qty'];
+                }
+            }
+            $subtotal += $item_subtotal;
+        }
+
+        $service_fee = (int) $this->input->post('service_fee');
+        $total_harga = (int) $this->input->post('total');
+
+        if ($total_harga <= 0) {
+            $service_fee = 1000;
+            $total_harga = $subtotal + $service_fee;
+        }
+
+        $metode_pembayaran = $this->input->post('payment_method');
+        $status_pembayaran = ($metode_pembayaran === 'QRIS') ? 'paid' : 'pending';
 
         $no_pesanan = $this->Transaksi_Customer_model->generate_no_pesanan();
 
+        // Ambil dari session yang disimpan saat get_snap_token
+        // Fallback ke generate baru kalau tidak ada (misal metode Tunai)
+        $midtrans_order_id = $this->session->userdata('midtrans_order_id');
+        $no_invoice = $midtrans_order_id ?: 'ORD-' . time();
         $data_transaksi = [
             'id_meja'           => $this->session->userdata('id_meja'),
             'no_pesanan'        => $no_pesanan,
-            'no_invoice' => 'INV-' . date('Ymd') . '-' . rand(100000, 999999),
+            'no_invoice'        => $no_invoice,
             'tanggal'           => date('Y-m-d H:i:s'),
             'catatan'           => $this->input->post('catatan'),
-            'metode_pembayaran' => $this->input->post('payment_method'),
-            'status_pembayaran' => 'pending',
+            'metode_pembayaran' => $metode_pembayaran,
+            'status_pembayaran' => $status_pembayaran,
             'status_pesanan'    => 'diproses',
-            'total_harga'       => $total_harga
+            'total_harga'       => $total_harga,
         ];
 
-
-
+        // ── Simpan transaksi ─────────────────────────────────────────────
         $this->db->trans_begin();
+
         $id_transaksi = $this->Transaksi_Customer_model->simpan_transaksi($data_transaksi);
 
         foreach ($cart as $item) {
-            $subtotal = $item['harga'] * $item['qty'];
+            $item_subtotal = $item['harga'] * $item['qty'];
 
             $data_detail = [
                 'id_transaksi' => $id_transaksi,
                 'id_menu'      => $item['id_menu'],
                 'jumlah'       => $item['qty'],
                 'harga'        => $item['harga'],
-                'subtotal'     => $subtotal
+                'subtotal'     => $item_subtotal,
             ];
 
-            $id_detail = $this->Transaksi_Customer_model
-                ->simpan_detail($data_detail);
+            $id_detail = $this->Transaksi_Customer_model->simpan_detail($data_detail);
+
+            $this->db->set('stok', 'stok - ' . (int)$item['qty'], FALSE);
+            $this->db->where('id_menu', $item['id_menu']);
+            $this->db->update('menu');
 
             if (!empty($item['addons'])) {
                 foreach ($item['addons'] as $addon) {
@@ -304,31 +419,68 @@ class Menu extends CI_Controller
                         'id_addon'       => $addon['id_addon'],
                         'qty'            => $addon['qty'],
                         'harga_addon'    => $addon['harga_addon'],
-                        'subtotal_addon' => $addon['harga_addon'] * $addon['qty']
+                        'subtotal_addon' => $addon['harga_addon'] * $addon['qty'],
                     ];
+                    $this->Transaksi_Customer_model->simpan_detail_addon($data_addon);
 
-                    $this->Transaksi_Customer_model
-                        ->simpan_detail_addon($data_addon);
+                    $this->db->set('stok_addon', 'stok_addon - ' . (int)$addon['qty'], FALSE);
+                    $this->db->where('id_addon', $addon['id_addon']);
+                    $this->db->update('addons');
                 }
             }
         }
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
-
-            echo "<script>alert( 'Checkout gagal');</script>";
+            $this->session->set_flashdata('checkout_error', 'Checkout gagal, silakan coba lagi.');
+            redirect('customers/Menu');
         } else {
             $this->db->trans_commit();
-
             $this->session->unset_userdata('cart');
-
-            // Simpan no_pesanan ke session agar bisa diambil di halaman sukses
+            $this->session->unset_userdata('midtrans_order_id');
             $this->session->set_userdata('no_pesanan', $no_pesanan);
-
             $this->session->set_flashdata('success', 'Pesanan berhasil dibuat');
-
-            //  Redirect ke METHOD controller, bukan langsung ke view
             redirect('Menu/sukses');
+        }
+    }
+
+    public function cek_stok()
+    {
+        $cart = $this->session->userdata('cart');
+
+        if (empty($cart)) {
+            echo json_encode(['status' => false, 'errors' => ['Keranjang kosong']]);
+            return;
+        }
+
+        $errors = [];
+
+        foreach ($cart as $item) {
+            $menu = $this->db->select('nama_menu, stok')
+                ->where('id_menu', $item['id_menu'])
+                ->get('menu')->row();
+
+            if ($menu && $item['qty'] > $menu->stok) {
+                $errors[] = "'{$menu->nama_menu}' hanya tersisa {$menu->stok} stok.";
+            }
+
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $ad = $this->db->select('nama_addon, stok_addon')
+                        ->where('id_addon', $addon['id_addon'])
+                        ->get('addons')->row();
+
+                    if ($ad && $addon['qty'] > $ad->stok_addon) {
+                        $errors[] = "Add-on '{$ad->nama_addon}' hanya tersisa {$ad->stok_addon} stok.";
+                    }
+                }
+            }
+        }
+
+        if (!empty($errors)) {
+            echo json_encode(['status' => false, 'errors' => $errors]);
+        } else {
+            echo json_encode(['status' => true]);
         }
     }
 

@@ -74,6 +74,8 @@ class Dashboard_cafe extends CI_Controller
         $data['total_pelanggan'] = $this->db->count_all('transaksi');
 
 
+
+
         $today = date('Y-m-d');
         $data['pendapatan_hari_ini'] = $this->db->select('SUM(total_harga) as total')->from('transaksi')->where('DATE(tanggal)', $today)->get()->row()->total ?: 0;
         $data['pesanan_hari_ini'] = $this->db->from('transaksi')->where('DATE(tanggal)', $today)->count_all_results();
@@ -102,11 +104,12 @@ class Dashboard_cafe extends CI_Controller
         $data['produk_terlaris'] = $this->db->get()->result();
 
         // Transaksi terbaru
-        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.status_pembayaran, t.total_harga, t.no_invoice');
-        $this->db->from('transaksi t');
-        $this->db->join('meja mj', 't.id_meja = mj.id_meja', 'left');
-        $this->db->order_by('t.tanggal', 'DESC');
-        $this->db->limit(10);
+        $this->db->select('t.*, m.no_meja')
+            ->from('transaksi t')
+            ->join('meja m', 'm.id_meja = t.id_meja')
+            ->where_in('t.status_pesanan', ['diproses']) // hanya yang aktif
+            ->order_by('t.tanggal', 'ASC') // terlama di atas
+            ->limit(10);
         $data['transaksi'] = $this->db->get()->result();
 
         $this->load->view('template/head');
@@ -196,6 +199,18 @@ class Dashboard_cafe extends CI_Controller
         $where = ['id_menu' => $idmenu];
         $data['menu'] = $this->Menu_model->edit_data($where, 'menu')->result();
         $data['kategori'] = $this->Kategori_model->get_all();
+        $data['addons'] = $this->Addons_model->get_all();
+
+        $rows = $this->db->select('id_addon')
+            ->where('id_menu', $idmenu)
+            ->get('menu_addons')
+            ->result();
+
+        $data['selected_addons'] = array_column(
+            array_map(fn($r) => (array)$r, $rows),
+            'id_addon'
+        );
+
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
@@ -206,52 +221,64 @@ class Dashboard_cafe extends CI_Controller
     public function update_menu()
     {
         $id_menu = $this->input->post('id_menu');
-        $nama = $this->input->post('nama_menu');
-        $kat = $this->input->post('kategori');
-        $stok = $this->input->post('stok');
-        $des = $this->input->post('deskripsi');
-        $harga = $this->input->post('harga');
+        $nama    = $this->input->post('nama_menu');
+        $kat     = $this->input->post('kategori');
+        $stok    = $this->input->post('stok');
+        $des     = $this->input->post('deskripsi');
+        $harga   = $this->input->post('harga');
 
         if (!empty($_FILES['gambar']['name'])) {
-            $config['upload_path'] = 'assets/uploads/';
+            $config['upload_path']   = 'assets/uploads/';
             $config['allowed_types'] = 'gif|jpg|png';
-            $config['max_size'] = 20000;
+            $config['max_size']      = 20000;
 
             $this->load->library('upload', $config);
 
             if ($this->upload->do_upload('gambar')) {
-                $file = $this->upload->data();
+                $file   = $this->upload->data();
                 $gambar = $file['file_name'];
 
                 $data = [
-                    'nama_menu' => $nama,
+                    'nama_menu'   => $nama,
                     'id_kategori' => $kat,
-                    'stok' => $stok,
-                    'deskripsi' => $des,
-                    'harga' => $harga,
-                    'gambar' => $gambar
+                    'stok'        => $stok,
+                    'deskripsi'   => $des,
+                    'harga'       => $harga,
+                    'gambar'      => $gambar
                 ];
             } else {
                 $data = [
-                    'nama_menu' => $nama,
+                    'nama_menu'   => $nama,
                     'id_kategori' => $kat,
-                    'stok' => $stok,
-                    'deskripsi' => $des,
-                    'harga' => $harga
+                    'stok'        => $stok,
+                    'deskripsi'   => $des,
+                    'harga'       => $harga
                 ];
             }
         } else {
             $data = [
-                'nama_menu' => $nama,
+                'nama_menu'   => $nama,
                 'id_kategori' => $kat,
-                'stok' => $stok,
-                'deskripsi' => $des,
-                'harga' => $harga
+                'stok'        => $stok,
+                'deskripsi'   => $des,
+                'harga'       => $harga
             ];
         }
 
         $where = ['id_menu' => $id_menu];
         $this->Menu_model->update_data($where, $data, 'menu');
+
+        // ✅ Update menu_addons: hapus lama, insert baru
+        $this->db->where('id_menu', $id_menu)->delete('menu_addons');
+
+        $addons = $this->input->post('addons') ?? [];
+        foreach ($addons as $id_addon) {
+            $this->db->insert('menu_addons', [
+                'id_menu'  => (int)$id_menu,
+                'id_addon' => (int)$id_addon
+            ]);
+        }
+
         redirect('dashboard_cafe/lihat_menu');
     }
 
@@ -533,6 +560,52 @@ class Dashboard_cafe extends CI_Controller
         exit;
     }
 
+    public function quick_update_transaksi()
+    {
+        $id_transaksi = $this->input->post('id_transaksi');
+        $id_user      = $this->session->userdata('id_user');
+
+        $transaksi = $this->db->get_where('transaksi', ['id_transaksi' => $id_transaksi])->row();
+
+        if (!$transaksi) {
+            echo json_encode(['status' => 'error', 'message' => 'Transaksi tidak ditemukan.']);
+            return;
+        }
+
+        $data_update = [];
+
+        // Khusus Tunai: update bertahap
+        if ($transaksi->metode_pembayaran === 'Tunai') {
+            if ($transaksi->status_pembayaran !== 'paid') {
+                // Tahap 1: bayar dulu, pesanan belum selesai
+                $data_update = ['status_pembayaran' => 'paid'];
+                $next_step   = 'confirm_selesai'; // kasih tahu frontend masih ada step 2
+            } else {
+                // Tahap 2: pesanan selesai
+                $data_update = ['status_pesanan' => 'selesai', 'id_user' => $id_user];
+                $next_step   = 'done';
+            }
+        } else {
+            // Non-Tunai (QRIS, dll): langsung selesai, status_pembayaran tidak diubah
+            $data_update = ['status_pesanan' => 'selesai', 'id_user' => $id_user];
+            $next_step   = 'done';
+        }
+
+        $this->db->where('id_transaksi', $id_transaksi);
+        $this->db->update('transaksi', $data_update);
+
+        if ($this->db->affected_rows() > 0) {
+            echo json_encode([
+                'status'    => 'success',
+                'next_step' => $next_step,
+                'message'   => $next_step === 'confirm_selesai'
+                    ? 'Pembayaran diterima. Klik lagi untuk selesaikan pesanan.'
+                    : 'Status transaksi berhasil diperbarui.',
+            ]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Gagal memperbarui transaksi.']);
+        }
+    }
     public function detail_transaksi($id)
     {
         $this->db->select('t.*, u.nama as nama_user, m.no_meja');
@@ -754,6 +827,7 @@ class Dashboard_cafe extends CI_Controller
         $data = [
             'nama_addon' => $this->input->post('nama_addon'),
             'harga_addon' => $this->input->post('harga') ?: 0,
+            'stok_addon' => $this->input->post('stok_addon') ?: 0
         ];
 
         $this->Addons_model->simpan_data($data);

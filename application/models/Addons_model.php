@@ -15,6 +15,8 @@ class Addons_model extends CI_Model
 
     function hapus_data($id)
     {
+        $this->db->delete('detail_transaksi_addons', ['id_addon' => $id]);
+        $this->db->delete('menu_addons', ['id_addon' => $id]);
         $this->db->delete('addons', ['id_addon' => $id]);
     }
 

@@ -23,6 +23,7 @@
                                     <th>No</th>
                                     <th>Nama Addon</th>
                                     <th>Harga</th>
+                                    <th>Stok</th>
                                     <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
@@ -32,6 +33,7 @@
                                     <td><?= $no++ ?></td>
                                     <td><?= $a->nama_addon ?></td>
                                     <td>Rp <?= number_format($a->harga_addon, 0, ',', '.') ?></td>
+                                    <td><?= $a->stok_addon ?></td>
                                     <td class="text-center">
                                         <a href="<?= site_url('dashboard_cafe/edit_addons/' . $a->id_addon) ?>" class="btn btn-warning btn-sm">
                                             <i class="fas fa-edit"></i>
