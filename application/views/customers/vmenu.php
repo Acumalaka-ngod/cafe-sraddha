@@ -129,7 +129,7 @@
                 <?php foreach ($menu_andalan as $m): ?>
                     <div class="card menu-card">
                         <img src="<?= base_url('assets/uploads/' . $m->gambar) ?>" class="card-img-top menu-image" alt="Menu">
-                        <div class="card-body" data-bs-toggle="modal" data-bs-target="#detailMenuModal">
+                        <div class="card-body" data-bs-toggle="modal" data-bs-target="#detailMenuModal" data-id="<?= $m->id_menu ?>">
                             <h5 class="menu-title mb-1">
                                 <?= $m->nama_menu ?>
                             </h5>
@@ -326,158 +326,46 @@
             <div class="modal-dialog modal-dialog-bottom modal-fullscreen-sm-down modal-dialog-scrollable">
                 <div class="modal-content custom-modal">
 
-                    <form action="<?= base_url('customer/add_to_cart') ?>" method="post">
+                    <form id="menuDetailForm" action="<?= base_url('tambah-cart') ?>" method="post">
 
-                        <!-- data menu -->
-                        <input type="hidden" name="menu_id" value="1">
-                        <input type="hidden" name="menu_name" value="MALA">
-                        <input type="hidden" name="menu_price" value="28000">
-                        <input type="hidden" name="qty" id="qty" value="1">
+                        <input type="hidden" name="menu_id" id="modalMenuId" value="">
+                        <input type="hidden" name="qty" id="modalQty" value="1">
                         <div class="modal-body p-0">
 
                             <div class="modal-img">
-                                <img src="<?php echo base_url('assets/assets/img/mala.png') ?>" alt="Menu Image" class="img-fluid">
+                                <img id="modalMenuImage" src="" alt="Menu Image" class="img-fluid">
                             </div>
-
 
                             <div class="menu-detail-card">
-                                <h3 class="menu-detail-title mb-1">
-                                    MALA
-                                </h3>
-                                <p class="menu-detail-price mb-2">
-                                    Rp 28.000
-                                </p>
-                                <p class="menu-detail-description mb-4">
-                                    MALA adalah Matcha Latte. Rasanya Lembut , creamy , dan penuh energi untuk setiap momen santai
-                                </p>
+                                <h3 class="menu-detail-title mb-1" id="modalMenuName"></h3>
+                                <p class="menu-detail-price mb-2" id="modalMenuPrice"></p>
+                                <p class="menu-detail-description mb-4" id="modalMenuDesc"></p>
                             </div>
 
-                            <div class="menu-addons-card">
-
-                                <h4 class="menu-addons-title">
-                                    Add-ons
-                                </h4>
-
-                                <div class="addon-item">
-
-                                    <div class="addon-left">
-
-                                        <h5 class="addon-name">
-                                            Ice
-                                        </h5>
-
-                                        <span class="addon-price">
-                                            (+Rp2.000)
-                                        </span>
-
-                                    </div>
-
-                                    <div class="addon-qty">
-
-                                        <input type="hidden" name="addon_ice" value="0">
-
-                                        <button type="button" class="addon-btn">
-                                            -
-                                        </button>
-
-                                        <span class="addon-count">
-                                            0
-                                        </span>
-
-                                        <button type="button" class="addon-btn">
-                                            +
-                                        </button>
-
-                                    </div>
-                                </div>
-
-                                <div class="addon-item">
-
-                                    <div class="addon-left">
-
-                                        <h5 class="addon-name">
-                                            Ice
-                                        </h5>
-
-                                        <span class="addon-price">
-                                            (+Rp2.000)
-                                        </span>
-
-                                    </div>
-
-                                    <div class="addon-qty">
-
-                                        <input type="hidden" name="addon_ice2" value="0">
-
-                                        <button type="button" class="addon-btn">
-                                            -
-                                        </button>
-
-                                        <span class="addon-count">
-                                            0
-                                        </span>
-
-                                        <button type="button" class="addon-btn">
-                                            +
-                                        </button>
-
-                                    </div>
-                                </div>
-
+                            <div class="menu-addons-card" id="modalAddonsSection" style="display:none;">
+                                <h4 class="menu-addons-title">Add-ons</h4>
+                                <div id="modalAddonsContainer"></div>
                             </div>
 
                             <div class="menu-note-card">
-                                <h4 class="menu-note-title mb-2">
-                                    Catatan
-                                </h4>
-
+                                <h4 class="menu-note-title mb-2">Catatan</h4>
                                 <div class="input-group">
-                                    <textarea
-                                        class="form-control"
-                                        name="note"
-                                        placeholder="Contoh: Tambahkan sedikit gula"
-                                        rows="3"></textarea>
+                                    <textarea class="form-control" name="note" placeholder="Contoh: Tambahkan sedikit gula" rows="3"></textarea>
                                 </div>
-
                             </div>
 
                             <div class="menu-footer-card">
-
                                 <div class="footer-qty">
-
-                                    <h4 class="footer-title">
-                                        Jumlah Pesanan
-                                    </h4>
-
+                                    <h4 class="footer-title">Jumlah Pesanan</h4>
                                     <div class="footer-action">
-
-                                        <button type="button" class="footer-btn btn-minus">
-                                            -
-                                        </button>
-
-                                        <span class="footer-count" id="qty-text">
-                                            1
-                                        </span>
-
-                                        <button type="button" class="footer-btn btn-plus">
-                                            +
-                                        </button>
-
+                                        <button type="button" class="footer-btn btn-minus">-</button>
+                                        <span class="footer-count" id="modalQtyText">1</span>
+                                        <button type="button" class="footer-btn btn-plus">+</button>
                                     </div>
-
                                 </div>
-
-                                <!-- <div class="footer-btn-add"> -->
-
                                 <button type="submit" class="btn btn-tambah w-100">
-                                    Tambah ke Pesanan -
-                                    <span class="footer-total-price">
-                                        Rp 30.000
-                                    </span>
+                                    Tambah ke Pesanan - <span class="footer-total-price" id="modalTotalPrice">Rp 0</span>
                                 </button>
-
-                                <!-- </div> -->
-
                             </div>
 
                         </div>
@@ -494,7 +382,7 @@
             <div class="modal-dialog modal-dialog-bottom modal-fullscreen-sm-down modal-dialog-scrollable">
                 <div class="modal-content">
 
-                    <form id="checkoutForm" action="/checkout" method="POST">
+                    <form id="checkoutForm" action="<?= base_url('checkout') ?>" method="POST">
 
                         <!-- Header -->
                         <div class="modal-header">
@@ -672,13 +560,13 @@
                                 </div>
 
                                 <!-- Catatan -->
-                                <!-- <div class="mb-3">
+                                <div class="mb-3">
                                     <label class="form-label">Catatan Pesanan</label>
                                     <textarea class="form-control"
-                                        name="notes"
+                                        name="catatan"
                                         rows="3"
                                         placeholder="Tambahkan catatan jika ada"></textarea>
-                                </div> -->
+                                </div>
 
                             </div>
 
@@ -712,6 +600,8 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
+        const menuData = <?= json_encode($menu) ?>;
+
         // Cart
         $(document).on('click', '.btn-tambah', function() {
 
@@ -818,6 +708,135 @@
                 });
             });
 
+            // Detail Menu Modal — populate on show
+            const detailModal = document.getElementById('detailMenuModal');
+            if (detailModal) {
+                detailModal.addEventListener('show.bs.modal', function(e) {
+                    const trigger = e.relatedTarget;
+                    const id = trigger ? parseInt(trigger.dataset.id) : null;
+                    if (!id) return;
+
+                    const menu = menuData.find(m => parseInt(m.id_menu) === id);
+                    if (!menu) return;
+
+                    document.getElementById('modalMenuId').value = menu.id_menu;
+                    document.getElementById('modalMenuName').textContent = menu.nama_menu;
+                    document.getElementById('modalMenuPrice').textContent = 'Rp ' + Number(menu.harga).toLocaleString('id-ID');
+                    document.getElementById('modalMenuDesc').textContent = menu.deskripsi || '';
+                    document.getElementById('modalMenuImage').src = '<?= base_url('assets/uploads/') ?>' + (menu.gambar || 'default.png');
+                    document.getElementById('modalQty').value = 1;
+                    document.getElementById('modalQtyText').textContent = '1';
+
+                    // Fetch addons via AJAX
+                    const addonSection = document.getElementById('modalAddonsSection');
+                    const addonContainer = document.getElementById('modalAddonsContainer');
+                    addonSection.style.display = 'none';
+                    addonContainer.innerHTML = '';
+
+                    $.ajax({
+                        url: '<?= base_url('menu/get_addons_by_menu/') ?>' + menu.id_menu,
+                        type: 'GET',
+                        dataType: 'json',
+                        success: function(addons) {
+                            if (!addons || !addons.length) return;
+                            addonSection.style.display = 'block';
+                            addonContainer.innerHTML = addons.map(a =>
+                                `<div class="addon-item">
+                                    <div class="addon-left">
+                                        <h5 class="addon-name">${a.nama_addon}</h5>
+                                        <span class="addon-price">(+Rp${Number(a.harga_addon).toLocaleString('id-ID')})</span>
+                                    </div>
+                                    <div class="addon-qty">
+                                        <input type="hidden" name="addon_${a.id_addon}" value="0" class="addon-hidden" data-harga="${a.harga_addon}">
+                                        <button type="button" class="addon-btn addon-minus">-</button>
+                                        <span class="addon-count">0</span>
+                                        <button type="button" class="addon-btn addon-plus">+</button>
+                                    </div>
+                                </div>`
+                            ).join('');
+                            updateTotal(id);
+                        }
+                    });
+                });
+            }
+
+            // Qty controls in footer
+            document.querySelector('#detailMenuModal').addEventListener('click', function(e) {
+                const target = e.target;
+                const qtyInput = document.getElementById('modalQty');
+                const qtyText = document.getElementById('modalQtyText');
+                let qty = parseInt(qtyInput.value) || 1;
+
+                if (target.classList.contains('btn-minus') && target.closest('.footer-action')) {
+                    if (qty > 1) { qty--; }
+                } else if (target.classList.contains('btn-plus') && target.closest('.footer-action')) {
+                    qty++;
+                } else if (target.classList.contains('addon-minus')) {
+                    const container = target.closest('.addon-qty');
+                    if (!container) return;
+                    const hidden = container.querySelector('.addon-hidden');
+                    const count = container.querySelector('.addon-count');
+                    let val = parseInt(hidden.value) || 0;
+                    if (val > 0) { val--; }
+                    hidden.value = val;
+                    count.textContent = val;
+                    updateTotal(parseInt(document.getElementById('modalMenuId').value));
+                    return;
+                } else if (target.classList.contains('addon-plus')) {
+                    const container = target.closest('.addon-qty');
+                    if (!container) return;
+                    const hidden = container.querySelector('.addon-hidden');
+                    const count = container.querySelector('.addon-count');
+                    let val = parseInt(hidden.value) || 0;
+                    val++;
+                    hidden.value = val;
+                    count.textContent = val;
+                    updateTotal(parseInt(document.getElementById('modalMenuId').value));
+                    return;
+                } else {
+                    return;
+                }
+
+                qtyInput.value = qty;
+                qtyText.textContent = qty;
+                updateTotal(parseInt(document.getElementById('modalMenuId').value));
+            });
+
+            function updateTotal(menuId) {
+                const menu = menuData.find(m => parseInt(m.id_menu) === menuId);
+                if (!menu) return;
+                const qty = parseInt(document.getElementById('modalQty').value) || 1;
+                let total = menu.harga * qty;
+                document.querySelectorAll('.addon-hidden').forEach(function(el) {
+                    total += (parseInt(el.dataset.harga) || 0) * (parseInt(el.value) || 0) * qty;
+                });
+                document.getElementById('modalTotalPrice').textContent = 'Rp ' + total.toLocaleString('id-ID');
+            }
+
+            // Form submit — AJAX
+            document.getElementById('menuDetailForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const form = this;
+                const btn = form.querySelector('button[type="submit"]');
+                btn.disabled = true;
+                $.ajax({
+                    url: form.action,
+                    type: 'POST',
+                    data: $(form).serialize(),
+                    dataType: 'json',
+                    success: function(res) {
+                        if (res.status) {
+                            $('#checkoutCart').removeClass('d-none');
+                            $('.total-hrg').text('Rp' + res.total_harga);
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('detailMenuModal'));
+                            if (modal) modal.hide();
+                        }
+                    },
+                    complete: function() {
+                        btn.disabled = false;
+                    }
+                });
+            });
         });
     </script>
 

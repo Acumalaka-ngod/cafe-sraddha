@@ -21,6 +21,15 @@
                             <label>Stok Addon</label>
                             <input type="number" name="stok_addon" class="form-control" min="0" value="0">
                         </div>
+                        <div class="form-group mb-3">
+                            <label>Grup <span class="text-danger">*</span></label>
+                            <select name="grup" class="form-control" required>
+                                <option value="">— Pilih Grup —</option>
+                                <option value="Makanan">Makanan</option>
+                                <option value="Minuman">Minuman</option>
+                                <option value="Snack">Snack</option>
+                            </select>
+                        </div>
                         <div class="form-group mt-3">
                             <button type="submit" class="btn btn-primary">Simpan</button>
                             <a href="<?= site_url('dashboard_cafe/lihat_addons') ?>" class="btn btn-secondary">Batal</a>

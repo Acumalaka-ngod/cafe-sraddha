@@ -109,7 +109,7 @@
             </div>
 
             <!-- Tabel Pesanan Terbaru -->
-            <div class="card mb-4">
+            <div class="card mb-4" id="pesanan-terbaru">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span><i class="fas fa-clock me-2" style="color: #9B673A;"></i>Pesanan Terbaru</span>
                     <!-- <a href="<?= site_url('dashboard_cafe/lihat_transaksi') ?>" class="btn btn-outline-primary btn-sm">
@@ -129,7 +129,7 @@
                                     <th>Pembayaran</th>
                                     <th class="text-end">Total</th>
                                     <th>Update Status</th>
-                                    <!-- <th>Aksi</th> -->
+                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -163,7 +163,7 @@
                                         <td>
                                             <?php if ($t->status_pesanan !== 'selesai' && $t->status_pesanan !== 'dibatalkan'): ?>
                                                 <?php if ($t->metode_pembayaran === 'Tunai' && $t->status_pembayaran === 'pending'): ?>
-                                                    <a href="<?= site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi) ?>"
+                                                    <a href="<?= site_url('dashboard_cafe/detail_pesanan_masuk/' . $t->id_transaksi) ?>"
                                                         class="btn btn-warning btn-sm">
                                                         <i class="fas fa-cash-register"></i> Selesaikan Pembayaran
                                                     </a>
@@ -177,16 +177,16 @@
                                                 <span class="text-muted small">—</span>
                                             <?php endif; ?>
                                         </td>
-                                        <!-- <td style="white-space:nowrap;">
-                                            <a href="<?= site_url('dashboard_cafe/detail_transaksi/' . $t->id_transaksi) ?>"
+                                        <td style="white-space:nowrap;">
+                                            <a href="<?= site_url('dashboard_cafe/detail_pesanan_masuk/' . $t->id_transaksi) ?>"
                                                 class="btn btn-info btn-sm me-1" title="Detail">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $t->id_transaksi) ?>"
+                                            <!-- <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $t->id_transaksi) ?>"
                                                 target="_blank" class="btn btn-success btn-sm" title="Cetak Invoice">
                                                 <i class="fas fa-print"></i>
-                                            </a>
-                                        </td> -->
+                                            </a> -->
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>

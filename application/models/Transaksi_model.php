@@ -19,6 +19,7 @@
 			$this->db->join('detail_transaksi_addons da', 'dt.id_detail = da.id_detail', 'left');
 			$this->db->join('menu m', 'dt.id_menu = m.id_menu', 'left');
 			$this->db->group_by('t.id_transaksi');
+			$this->db->order_by('t.tanggal', 'DESC');
 
 			return $this->db->get();
 		}

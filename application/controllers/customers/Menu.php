@@ -53,7 +53,7 @@ class Menu extends CI_Controller
 
     public function tambah_cart()
     {
-        $id_menu = $this->input->post('id_menu');
+        $id_menu = $this->input->post('id_menu') ?: $this->input->post('menu_id');
 
         $menu = $this->db
             ->where('id_menu', $id_menu)
@@ -67,19 +67,39 @@ class Menu extends CI_Controller
             return;
         }
 
+        $qty = (int)($this->input->post('qty') ?: 1);
+
         $cart = $this->session->userdata('cart') ?? [];
 
         if (isset($cart[$id_menu])) {
-
-            $cart[$id_menu]['qty']++;
+            $cart[$id_menu]['qty'] += $qty;
         } else {
-
             $cart[$id_menu] = [
                 'id_menu' => $menu->id_menu,
                 'nama'    => $menu->nama_menu,
                 'harga'   => $menu->harga,
-                'qty'     => 1
+                'qty'     => $qty
             ];
+        }
+
+        // Process addons
+        $addon_list = [];
+        foreach ($this->input->post() as $key => $val) {
+            if (strpos($key, 'addon_') === 0 && (int)$val > 0) {
+                $addon_id = (int)str_replace('addon_', '', $key);
+                $addon = $this->db->get_where('addons', ['id_addon' => $addon_id])->row();
+                if ($addon) {
+                    $addon_list[] = [
+                        'id'    => $addon->id_addon,
+                        'nama'  => $addon->nama_addon,
+                        'harga' => (int)$addon->harga_addon,
+                        'qty'   => (int)$val
+                    ];
+                }
+            }
+        }
+        if (!empty($addon_list)) {
+            $cart[$id_menu]['addons'] = $addon_list;
         }
 
         $this->session->set_userdata('cart', $cart);
@@ -88,22 +108,19 @@ class Menu extends CI_Controller
         $total_harga = 0;
 
         foreach ($cart as $item) {
-
             $total_qty += $item['qty'];
-
-            $total_harga +=
-                ($item['harga'] * $item['qty']);
+            $total_harga += ($item['harga'] * $item['qty']);
+            if (!empty($item['addons'])) {
+                foreach ($item['addons'] as $addon) {
+                    $total_harga += ($addon['harga'] * $addon['qty']);
+                }
+            }
         }
 
         echo json_encode([
             'status' => true,
             'total_qty' => $total_qty,
-            'total_harga' => number_format(
-                $total_harga,
-                0,
-                ',',
-                '.'
-            )
+            'total_harga' => number_format($total_harga, 0, ',', '.')
         ]);
     }
 
@@ -159,6 +176,7 @@ class Menu extends CI_Controller
             'no_pesanan'        => $no_pesanan,
             'no_invoice'        => $no_invoice,
             'tanggal'           => date('Y-m-d H:i:s'),
+            'catatan'           => $this->input->post('catatan'),
             'metode_pembayaran' => $metode,
             'status_pembayaran' => ($metode === 'QRIS') ? 'paid' : 'pending',
             'status_pesanan'    => 'diproses',
@@ -212,6 +230,27 @@ class Menu extends CI_Controller
         ]);
 
         redirect('menu/checkout_success');
+    }
+
+    public function get_addons_by_menu($id_menu)
+    {
+        $menu = $this->db->get_where('menu', ['id_menu' => $id_menu])->row();
+        if (!$menu || !$menu->id_kategori) {
+            echo json_encode([]);
+            return;
+        }
+
+        $this->config->load('kategori_grup');
+        $kategori_grup = $this->config->item('kategori_grup');
+        $grup = $kategori_grup[$menu->id_kategori] ?? '';
+
+        if (!$grup) {
+            echo json_encode([]);
+            return;
+        }
+
+        $addons = $this->db->get_where('addons', ['grup' => $grup])->result();
+        echo json_encode($addons);
     }
 
     public function checkout_success()

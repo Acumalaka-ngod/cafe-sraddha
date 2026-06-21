@@ -5,7 +5,9 @@ class Addons_model extends CI_Model
 {
     function lihat_data()
     {
-        return $this->db->get('addons');
+        $this->db->select('addons.*');
+        $this->db->from('addons');
+        return $this->db->get();
     }
 
     function simpan_data($data)
@@ -22,7 +24,8 @@ class Addons_model extends CI_Model
 
     function edit_data($where)
     {
-        return $this->db->get_where('addons', $where);
+        $this->db->where($where);
+        return $this->db->get('addons');
     }
 
     function update_data($where, $data)
@@ -34,5 +37,15 @@ class Addons_model extends CI_Model
     function get_all()
     {
         return $this->db->get('addons')->result();
+    }
+
+    function get_by_kategori($id_kategori)
+    {
+        return $this->db->get_where('addons', ['id_kategori' => $id_kategori])->result();
+    }
+
+    function get_by_grup($grup)
+    {
+        return $this->db->get_where('addons', ['grup' => $grup])->result();
     }
 }

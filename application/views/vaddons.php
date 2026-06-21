@@ -22,6 +22,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Nama Addon</th>
+                                    <th>Grup</th>
                                     <th>Harga</th>
                                     <th>Stok</th>
                                     <th class="text-center">Aksi</th>
@@ -32,6 +33,7 @@
                                 <tr>
                                     <td><?= $no++ ?></td>
                                     <td><?= $a->nama_addon ?></td>
+                                    <td><?= $a->grup ?: '-' ?></td>
                                     <td>Rp <?= number_format($a->harga_addon, 0, ',', '.') ?></td>
                                     <td><?= $a->stok_addon ?></td>
                                     <td class="text-center">
@@ -46,7 +48,7 @@
                                 <?php endforeach; ?>
                                 <?php if (empty($addons)): ?>
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">Belum ada addon.</td>
+                                    <td colspan="6" class="text-center text-muted">Belum ada addon.</td>
                                 </tr>
                                 <?php endif; ?>
                             </tbody>

@@ -344,11 +344,12 @@ class Dashboard_cafe extends CI_Controller
 
     public function tambah_transaksi()
     {
+        $this->config->load('kategori_grup');
         $data['menu'] = $this->Menu_model->lihat_data()->result();
         $data['user'] = $this->User_model->lihat_data()->result();
         $data['meja'] = $this->Meja_model->lihat_data()->result();
         $data['addons'] = $this->Addons_model->get_all();
-        $data['menu_addons'] = $this->db->get('menu_addons')->result();
+        $data['kategori_grup'] = $this->config->item('kategori_grup');
 
         $this->load->view('template/head');
         $this->load->view('template/navbar');
@@ -390,6 +391,7 @@ class Dashboard_cafe extends CI_Controller
             'no_pesanan' => 'PSN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6)),
             'no_invoice' => $no_inv,
             'tanggal' => date('Y-m-d H:i:s'),
+            'catatan' => $this->input->post('catatan'),
             'metode_pembayaran' => $this->input->post('metode_pembayaran'),
             'status_pembayaran' => 'paid',
             'status_pesanan' => 'diproses',
@@ -648,6 +650,7 @@ class Dashboard_cafe extends CI_Controller
 
         $this->db->update('transaksi', [
             'status_pesanan' => 'selesai',
+            'tanggal' => date('Y-m-d H:i:s'),
             'id_user' => $this->session->userdata('id_user')
         ], ['id_transaksi' => $id]);
 
@@ -691,6 +694,41 @@ class Dashboard_cafe extends CI_Controller
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
         $this->load->view('vdetail_transaksi', $data);
+        $this->load->view('template/footer');
+    }
+
+    public function detail_pesanan_masuk($id)
+    {
+        $this->db->select('t.*, u.nama as nama_user, m.no_meja');
+        $this->db->from('transaksi t');
+        $this->db->join('user u', 't.id_user = u.id_user', 'left');
+        $this->db->join('meja m', 't.id_meja = m.id_meja', 'left');
+        $this->db->where('t.id_transaksi', $id);
+        $data['transaksi'] = $this->db->get()->row();
+
+        $this->db->select('d.*, m.nama_menu');
+        $this->db->from('detail_transaksi d');
+        $this->db->join('menu m', 'd.id_menu = m.id_menu');
+        $this->db->where('d.id_transaksi', $id);
+        $data['detail'] = $this->db->get()->result();
+
+        $detail_ids = array_map(function($d) { return $d->id_detail; }, $data['detail']);
+        $data['addon_map'] = [];
+        if (!empty($detail_ids)) {
+            $this->db->select('da.id_detail, a.nama_addon, da.harga_addon');
+            $this->db->from('detail_transaksi_addons da');
+            $this->db->join('addons a', 'da.id_addon = a.id_addon');
+            $this->db->where_in('da.id_detail', $detail_ids);
+            $addons = $this->db->get()->result();
+            foreach ($addons as $a) {
+                $data['addon_map'][$a->id_detail][] = $a;
+            }
+        }
+
+        $this->load->view('template/head');
+        $this->load->view('template/navbar');
+        $this->load->view('template/sidebar');
+        $this->load->view('vdetail_pesanan_masuk', $data);
         $this->load->view('template/footer');
     }
 
@@ -767,10 +805,11 @@ class Dashboard_cafe extends CI_Controller
     public function tambah_pesanan()
     {
         // Samakan UI pesanan dengan transaksi
+        $this->config->load('kategori_grup');
         $data['menu'] = $this->Menu_model->lihat_data()->result();
         $data['meja'] = $this->Meja_model->lihat_data()->result();
         $data['addons'] = $this->Addons_model->get_all();
-        $data['menu_addons'] = $this->db->get('menu_addons')->result();
+        $data['kategori_grup'] = $this->config->item('kategori_grup');
 
         $this->load->view('template/head');
         $this->load->view('template/navbar');
@@ -916,7 +955,8 @@ class Dashboard_cafe extends CI_Controller
         $data = [
             'nama_addon' => $this->input->post('nama_addon'),
             'harga_addon' => $this->input->post('harga_addon') ?: 0,
-            'stok_addon' => $this->input->post('stok_addon') ?: 0
+            'stok_addon' => $this->input->post('stok_addon') ?: 0,
+            'grup' => $this->input->post('grup')
         ];
 
         $this->Addons_model->simpan_data($data);
@@ -949,7 +989,8 @@ class Dashboard_cafe extends CI_Controller
         $data = [
             'nama_addon' => $this->input->post('nama_addon'),
             'harga_addon' => $this->input->post('harga_addon') ?: 0,
-            'stok_addon' => $this->input->post('stok_addon') ?: 0
+            'stok_addon' => $this->input->post('stok_addon') ?: 0,
+            'grup' => $this->input->post('grup')
         ];
 
         $this->Addons_model->update_data(['id_addon' => $id], $data);

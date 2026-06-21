@@ -38,7 +38,7 @@
                                 <select id="cart_menu" class="form-control">
                                     <option value="">-- Pilih Menu --</option>
                                     <?php foreach ($menu as $m) { ?>
-                                        <option value="<?= $m->id_menu ?>" data-harga="<?= $m->harga ?>"><?= $m->nama_menu ?> (Rp <?= number_format($m->harga) ?>)</option>
+                                        <option value="<?= $m->id_menu ?>" data-harga="<?= $m->harga ?>" data-kategori="<?= $m->id_kategori ?>"><?= $m->nama_menu ?> (Rp <?= number_format($m->harga) ?>)</option>
                                     <?php } ?>
                                 </select>
                             </div>
@@ -84,7 +84,12 @@
                                 <p id="emptyCart" class="text-muted">Keranjang kosong. Tambahkan item terlebih dahulu.</p>
                             </div>
                         </div>
-                        
+
+                        <div class="form-group mb-3">
+                            <label>Catatan</label>
+                            <textarea name="catatan" class="form-control" rows="2" placeholder="Catatan untuk pesanan ini (opsional)"></textarea>
+                        </div>
+
                         <div class="form-group mt-3">
                             <?php if (empty($meja) || empty($menu)): ?>
                                 <div class="alert alert-warning">Tambahkan data meja dan menu terlebih dahulu.</div>
@@ -97,7 +102,7 @@
                     
                     <script>
                     const allAddons = <?= json_encode($addons ?? []) ?>;
-                    const menuAddons = <?= json_encode($menu_addons ?? []) ?>;
+                    const kategoriGrup = <?= json_encode($kategori_grup ?? []) ?>;
                     let cart = [];
 
                     document.getElementById('cart_menu').addEventListener('change', function() {
@@ -113,15 +118,17 @@
                     }
 
                     function renderAddonCheckboxes() {
-                        const menuId = parseInt(document.getElementById('cart_menu').value);
+                        const sel = document.getElementById('cart_menu');
+                        const menuId = parseInt(sel.value);
                         const container = document.getElementById('addonCheckboxes');
                         const section = document.getElementById('addonSection');
                         if (!menuId || !allAddons.length) {
                             section.style.display = 'none';
                             return;
                         }
-                        const allowedIds = menuAddons.filter(ma => ma.id_menu == menuId).map(ma => ma.id_addon);
-                        const filtered = allowedIds.length ? allAddons.filter(a => allowedIds.includes(a.id_addon)) : allAddons;
+                        const kategoriId = parseInt(sel.options[sel.selectedIndex].dataset.kategori);
+                        const grup = kategoriGrup[kategoriId] || '';
+                        const filtered = allAddons.filter(a => a.grup === grup);
                         if (!filtered.length) {
                             section.style.display = 'none';
                             return;
