@@ -262,7 +262,7 @@ class Menu extends CI_Controller
         }
 
         $no_pesanan = 'PSN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
-        $no_invoce  = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+        $no_invoice  = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
 
         $this->db->trans_begin();
 
@@ -270,7 +270,7 @@ class Menu extends CI_Controller
             'id_user'           => null,
             'id_meja'           => $id_meja,
             'no_pesanan'        => $no_pesanan,
-            'no_invoce'         => $no_invoce,
+            'no_invoice'         => $no_invoice,
             'tanggal'           => date('Y-m-d H:i:s'),
             'metode_pembayaran' => $metode,
             'status_pembayaran' => 'pending',
