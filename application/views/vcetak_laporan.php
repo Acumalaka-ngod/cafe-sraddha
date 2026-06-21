@@ -49,7 +49,7 @@
             <?php $no = 1; foreach ($transaksi as $t): ?>
             <tr>
                 <td class="text-center"><?= $no++ ?></td>
-                <td><?= $t->no_invoce ?></td>
+                <td><?= $t->no_invoice ?></td>
                 <td><?= date('d/m/Y H:i', strtotime($t->tanggal)) ?></td>
                 <td><?= $t->no_meja ?></td>
                 <td><?= $t->nama_user ?></td>

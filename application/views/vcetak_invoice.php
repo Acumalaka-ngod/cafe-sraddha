@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - <?= $transaksi->no_invoce ?></title>
+    <title>Invoice - <?= $transaksi->no_invoice ?></title>
     <style>
         body {
             font-family: 'Courier New', monospace;
@@ -94,7 +94,7 @@
         <table>
             <tr>
                 <td>No Invoice</td>
-                <td>: <?= $transaksi->no_invoce ?></td>
+                <td>: <?= $transaksi->no_invoice ?></td>
             </tr>
             <tr>
                 <td>No Pesanan</td>
@@ -142,11 +142,11 @@
                     <div><?= $d->nama_menu ?> <strong>x<?= $d->jumlah ?></strong></div>
                     <?php if ($addon_list): foreach ($addon_list as $a): ?>
                         <div style="font-size:16px; padding-left:12px;">+ <?= $a->nama_addon ?></div>
-                        <?php if ($a->harga_addon > 0): ?><div style="font-size:16px; padding-left:24px; color:#555;">Rp <?= number_format($a->harga_addon, 0, ',', '.') ?></div><?php endif; ?>
+                        <?php if ($a->harga_addon > 0): ?><div style="font-size:16px; padding-left:24px; color:#555;"><?= number_format($a->harga_addon, 0, ',', '.') ?></div><?php endif; ?>
                     <?php endforeach; endif; ?>
                 </td>
-                <td class="text-right" style="vertical-align:middle; padding-right:16px;">Rp <?= number_format($d->harga, 0, ',', '.') ?></td>
-                <td class="text-right" style="vertical-align:middle;">Rp <?= number_format($item_total, 0, ',', '.') ?></td>
+                <td class="text-right" style="vertical-align:middle; padding-right:16px;"><?= number_format($d->harga, 0, ',', '.') ?></td>
+                <td class="text-right" style="vertical-align:middle;"><?= number_format($item_total, 0, ',', '.') ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

@@ -16,7 +16,7 @@
                             <table class="table table-sm table-borderless">
                                 <tr>
                                     <th style="width: 140px;">No Invoice</th>
-                                    <td>: <strong><?= $transaksi->no_invoce ?></strong></td>
+                                    <td>: <strong><?= $transaksi->no_invoice ?></strong></td>
                                 </tr>
                                 <tr>
                                     <th>No Pesanan</th>
@@ -117,14 +117,89 @@
                     </div>
 
                     <div class="d-flex gap-2 mt-4">
-                        <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $transaksi->id_transaksi) ?>" class="btn btn-success" style="color: #FFFFFF !important;" target="_blank">
-                            <i class="fas fa-print"></i> Cetak Invoice
+                        <?php if ($transaksi->status_pesanan !== 'selesai' && $transaksi->status_pesanan !== 'dibatalkan'): ?>
+                            <?php if ($transaksi->metode_pembayaran === 'Tunai' && $transaksi->status_pembayaran === 'pending'): ?>
+                                <button class="btn btn-warning btn-pay-print"
+                                    data-id="<?= $transaksi->id_transaksi ?>">
+                                    <i class="fas fa-cash-register"></i> Selesaikan Pembayaran
+                                </button>
+                            <?php else: ?>
+                                <button class="btn btn-success btn-finish-order"
+                                    data-id="<?= $transaksi->id_transaksi ?>">
+                                    <i class="fas fa-check"></i> Selesaikan Pesanan
+                                </button>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <a href="<?= site_url('dashboard_cafe/cetak_invoice/' . $transaksi->id_transaksi) ?>"
+                            class="btn btn-success" style="color: #FFFFFF !important;" target="_blank">
+                            <i class="fas fa-print"></i> Cetak Struk
                         </a>
                         <a href="<?= site_url('dashboard_cafe/lihat_transaksi') ?>" class="btn btn-secondary" style="color: #FFFFFF !important;">
-                            <i class="fas fa-times"></i> Batal
+                            <i class="fas fa-times"></i> Tutup
                         </a>
                     </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <script>
+        document.querySelector('.btn-pay-print')?.addEventListener('click', function() {
+            if (!confirm('Konfirmasi pembayaran tunai?')) return;
+            var btn = this;
+            var id = btn.dataset.id;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+            fetch('<?= site_url('dashboard_cafe/quick_update_transaksi') ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+                body: 'id_transaksi=' + id
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.status === 'success') {
+                    window.open('<?= site_url('dashboard_cafe/cetak_invoice') ?>/' + id, '_blank');
+                    window.location.href = '<?= site_url('dashboard_cafe') ?>';
+                } else {
+                    alert(data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-cash-register"></i> Selesaikan Pembayaran';
+                }
+            })
+            .catch(function() {
+                alert('Terjadi kesalahan');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-cash-register"></i> Selesaikan Pembayaran';
+            });
+        });
+
+        document.querySelector('.btn-finish-order')?.addEventListener('click', function() {
+            if (!confirm('Konfirmasi pesanan selesai?')) return;
+            var btn = this;
+            var id = btn.dataset.id;
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+            fetch('<?= site_url('dashboard_cafe/quick_update_transaksi') ?>', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'X-Requested-With': 'XMLHttpRequest' },
+                body: 'id_transaksi=' + id
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.status === 'success') {
+                    window.location.href = '<?= site_url('dashboard_cafe') ?>';
+                } else {
+                    alert(data.message);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Selesaikan Pesanan';
+                }
+            })
+            .catch(function() {
+                alert('Terjadi kesalahan');
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-check"></i> Selesaikan Pesanan';
+            });
+        });
+    </script>

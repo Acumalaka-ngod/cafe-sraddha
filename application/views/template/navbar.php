@@ -1,7 +1,7 @@
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand">
         <div class="container-fluid px-4">
-            <a class="navbar-brand ps-2 fw-bold" href="index.html">
+            <a class="navbar-brand ps-2 fw-bold">
                 <i class="fas fa-mug-hot me-2"></i>Sraddha Coffee
             </a>
             <button class="btn btn-link btn-sm order-1 order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!">

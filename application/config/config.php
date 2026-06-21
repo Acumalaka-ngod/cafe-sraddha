@@ -25,6 +25,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 
 $config['base_url'] = 'http://localhost/pwl24/cafe-sraddha/';
+date_default_timezone_set('Asia/Jakarta');
 
 /*
 |--------------------------------------------------------------------------

@@ -101,7 +101,7 @@ class Dashboard_cafe extends CI_Controller
         $data['produk_terlaris'] = $this->db->get()->result();
 
         // Transaksi (hanya yg belum selesai) — pagination via DataTables
-        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.status_pesanan, t.status_pembayaran, t.total_harga, t.no_invoce');
+        $this->db->select('t.id_transaksi, mj.no_meja, t.tanggal, t.metode_pembayaran, t.status_pesanan, t.status_pembayaran, t.total_harga, t.no_invoice');
         $this->db->from('transaksi t');
         $this->db->join('meja mj', 't.id_meja = mj.id_meja', 'left');
         $this->db->where('t.status_pesanan !=', 'selesai');
@@ -388,7 +388,7 @@ class Dashboard_cafe extends CI_Controller
             'id_user' => $id_user,
             'id_meja' => $this->input->post('meja'),
             'no_pesanan' => 'PSN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6)),
-            'no_invoce' => $no_inv,
+            'no_invoice' => $no_inv,
             'tanggal' => date('Y-m-d H:i:s'),
             'metode_pembayaran' => $this->input->post('metode_pembayaran'),
             'status_pembayaran' => 'paid',
@@ -600,7 +600,8 @@ class Dashboard_cafe extends CI_Controller
         if ($field === 'status_pesanan' && $value === 'selesai' && $pay_value === 'paid') {
             $this->db->update('transaksi', [
                 'status_pesanan' => 'selesai',
-                'status_pembayaran' => 'paid'
+                'status_pembayaran' => 'paid',
+                'id_user' => $this->session->userdata('id_user')
             ], ['id_transaksi' => $id]);
             echo 'ok';
             return;
@@ -617,6 +618,44 @@ class Dashboard_cafe extends CI_Controller
 
         $this->db->update('transaksi', [$field => $value], ['id_transaksi' => $id]);
         echo 'ok';
+    }
+
+    public function quick_update_transaksi()
+    {
+        $id = $this->input->post('id_transaksi');
+        if (!$id) {
+            echo json_encode(['status' => 'error', 'message' => 'ID transaksi tidak ditemukan']);
+            return;
+        }
+
+        $trx = $this->db->get_where('transaksi', ['id_transaksi' => $id])->row();
+        if (!$trx || $trx->status_pesanan === 'selesai') {
+            echo json_encode(['status' => 'error', 'message' => 'Transaksi sudah selesai']);
+            return;
+        }
+
+        if ($trx->status_pembayaran === 'pending') {
+            $this->db->update('transaksi', [
+                'status_pembayaran' => 'paid'
+            ], ['id_transaksi' => $id]);
+            echo json_encode([
+                'status' => 'success',
+                'next_step' => 'confirm_selesai',
+                'message' => 'Pembayaran dikonfirmasi'
+            ]);
+            return;
+        }
+
+        $this->db->update('transaksi', [
+            'status_pesanan' => 'selesai',
+            'id_user' => $this->session->userdata('id_user')
+        ], ['id_transaksi' => $id]);
+
+        echo json_encode([
+            'status' => 'success',
+            'next_step' => 'selesai',
+            'message' => 'Pesanan selesai'
+        ]);
     }
 
     public function detail_transaksi($id)
