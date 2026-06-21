@@ -756,6 +756,11 @@ class Dashboard_cafe extends CI_Controller
     {
         $nom = $this->input->post('no_meja');
 
+        if ((int)$nom > 20) {
+            $this->session->set_flashdata('error', 'Meja tidak boleh lebih dari 20!');
+            redirect('dashboard_cafe/tambah_meja');
+        }
+
         $cek = $this->db->get_where('meja', ['no_meja' => $nom])->row();
         if ($cek) {
             $this->session->set_flashdata('error', 'Meja sudah ada!');
@@ -789,6 +794,11 @@ class Dashboard_cafe extends CI_Controller
     {
         $id_meja = $this->input->post('id_meja');
         $no_meja = $this->input->post('no_meja');
+
+        if ((int)$no_meja > 20) {
+            $this->session->set_flashdata('error', 'Meja tidak boleh lebih dari 20!');
+            redirect('dashboard_cafe/edit_meja/' . $id_meja);
+        }
 
         $cek = $this->db->where('no_meja', $no_meja)->where('id_meja !=', $id_meja)->get('meja')->row();
         if ($cek) {
