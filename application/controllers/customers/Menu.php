@@ -130,83 +130,6 @@ class Menu extends CI_Controller
         ]);
     }
 
-    public function checkout()
-    {
-        $cart = $this->session->userdata('cart') ?? [];
-        if (empty($cart)) {
-            show_error('Cart kosong, silakan pesan menu terlebih dahulu.');
-        }
-
-        $id_meja = $this->session->userdata('id_meja');
-        if (!$id_meja) {
-            show_error('Silakan scan QR meja terlebih dahulu.');
-        }
-
-        $metode = $this->input->post('metode_pembayaran') ?: $this->input->post('payment_method');
-        if (in_array($metode, ['qris', 'QRIS'])) {
-            $metode = 'QRIS';
-        } elseif (in_array($metode, ['cashier', 'Tunai'])) {
-            $metode = 'Tunai';
-        } else {
-            $metode = null;
-        }
-
-        $total_harga = 0;
-        foreach ($cart as $item) {
-            $total_harga += (float)$item['harga'] * $item['qty'];
-        }
-
-        $no_pesanan = 'PSN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
-        $no_invoce = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
-
-        $this->db->trans_start();
-
-        $this->db->insert('transaksi', [
-            'id_user' => null,
-            'id_meja' => $id_meja,
-            'no_pesanan' => $no_pesanan,
-            'no_invoce' => $no_invoce,
-            'tanggal' => date('Y-m-d H:i:s'),
-            'metode_pembayaran' => $metode,
-            'status_pembayaran' => 'pending',
-            'status_pesanan' => 'diproses',
-            'total_harga' => $total_harga
-        ]);
-        $id_transaksi = $this->db->insert_id();
-
-        foreach ($cart as $item) {
-            $subtotal = (float)$item['harga'] * $item['qty'];
-            $this->db->insert('detail_transaksi', [
-                'id_transaksi' => $id_transaksi,
-                'id_menu' => $item['id_menu'],
-                'jumlah' => $item['qty'],
-                'harga' => $item['harga'],
-                'subtotal' => $subtotal
-            ]);
-        }
-
-        $this->db->trans_complete();
-
-        if ($this->db->trans_status() === false) {
-            show_error('Gagal menyimpan pesanan, silakan coba lagi.');
-        }
-
-        $this->session->unset_userdata('cart');
-
-        $data['no_pesanan'] = $no_pesanan;
-        $data['no_meja'] = $this->session->userdata('no_meja');
-        $this->load->view('customers/vsukses', $data);
-    }
-
-    // public function kosongkan_cart()
-    // {
-    //     $this->session->unset_userdata('cart');
-
-    //     echo json_encode([
-    //         'status' => true
-    //     ]);
-    // }
-
     public function get_cart()
     {
         $cart        = $this->session->userdata('cart') ?? [];
@@ -319,92 +242,75 @@ class Menu extends CI_Controller
         $total_harga = 0;
 
         foreach ($cart as $item) {
-
             $subtotal = $item['harga'] * $item['qty'];
-
             if (!empty($item['addons'])) {
                 foreach ($item['addons'] as $addon) {
                     $subtotal += $addon['harga_addon'] * $addon['qty'];
                 }
             }
-
             $total_harga += $subtotal;
         }
 
-        $no_pesanan = $this->Transaksi_Customer_model->generate_no_pesanan();
+        $id_meja = $this->session->userdata('id_meja');
+        $metode  = $this->input->post('payment_method') ?: $this->input->post('metode_pembayaran');
+        if (in_array($metode, ['qris', 'QRIS'])) {
+            $metode = 'QRIS';
+        } elseif (in_array($metode, ['cashier', 'Tunai'])) {
+            $metode = 'Tunai';
+        } else {
+            $metode = null;
+        }
 
-        $data_transaksi = [
-            'id_meja'           => $this->session->userdata('id_meja'),
+        $no_pesanan = 'PSN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+        $no_invoce  = 'INV-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -6));
+
+        $this->db->trans_begin();
+
+        $this->db->insert('transaksi', [
+            'id_user'           => null,
+            'id_meja'           => $id_meja,
             'no_pesanan'        => $no_pesanan,
-            'no_invoice' => 'INV-' . date('Ymd') . '-' . rand(100000, 999999),
+            'no_invoce'         => $no_invoce,
             'tanggal'           => date('Y-m-d H:i:s'),
-            'catatan'           => $this->input->post('catatan'),
-            'metode_pembayaran' => $this->input->post('payment_method'),
+            'metode_pembayaran' => $metode,
             'status_pembayaran' => 'pending',
             'status_pesanan'    => 'diproses',
             'total_harga'       => $total_harga
-        ];
-
-
-
-        $this->db->trans_begin();
-        $id_transaksi = $this->Transaksi_Customer_model->simpan_transaksi($data_transaksi);
+        ]);
+        $id_transaksi = $this->db->insert_id();
 
         foreach ($cart as $item) {
             $subtotal = $item['harga'] * $item['qty'];
 
-            $data_detail = [
+            $this->db->insert('detail_transaksi', [
                 'id_transaksi' => $id_transaksi,
                 'id_menu'      => $item['id_menu'],
                 'jumlah'       => $item['qty'],
                 'harga'        => $item['harga'],
                 'subtotal'     => $subtotal
-            ];
-
-            $id_detail = $this->Transaksi_Customer_model
-                ->simpan_detail($data_detail);
+            ]);
+            $id_detail = $this->db->insert_id();
 
             if (!empty($item['addons'])) {
                 foreach ($item['addons'] as $addon) {
-                    $data_addon = [
+                    $this->db->insert('detail_transaksi_addons', [
                         'id_detail'      => $id_detail,
                         'id_addon'       => $addon['id_addon'],
                         'qty'            => $addon['qty'],
                         'harga_addon'    => $addon['harga_addon'],
                         'subtotal_addon' => $addon['harga_addon'] * $addon['qty']
-                    ];
-
-                    $this->Transaksi_Customer_model
-                        ->simpan_detail_addon($data_addon);
+                    ]);
                 }
             }
         }
 
         if ($this->db->trans_status() === FALSE) {
             $this->db->trans_rollback();
-
-            echo "<script>alert( 'Checkout gagal');</script>";
+            echo "<script>alert('Checkout gagal'); window.location='" . site_url('menu') . "';</script>";
         } else {
             $this->db->trans_commit();
-
             $this->session->unset_userdata('cart');
-
-            // Simpan no_pesanan ke session agar bisa diambil di halaman sukses
             $this->session->set_userdata('no_pesanan', $no_pesanan);
-
-            $this->session->set_flashdata('success', 'Pesanan berhasil dibuat');
-
-            $metode = $this->input->post('payment_method');
-
-            // Kalau QRIS, langsung update status jadi lunas (sementara, sebelum integrasi Midtrans)
-            if ($metode === 'QRIS') {
-                $this->db->where('no_pesanan', $no_pesanan)->update('transaksi', [
-                    'status_pembayaran' => 'paid',
-                    'status_pesanan'    => 'diproses',
-                ]);
-            }
-
-            //  Redirect ke METHOD controller, bukan langsung ke view
             redirect('Menu/sukses');
         }
     }
