@@ -755,13 +755,22 @@ class Dashboard_cafe extends CI_Controller
     public function simpan_meja()
     {
         $nom = $this->input->post('no_meja');
+
+        $cek = $this->db->get_where('meja', ['no_meja' => $nom])->row();
+        if ($cek) {
+            $this->session->set_flashdata('error', 'Meja sudah ada!');
+            redirect('dashboard_cafe/tambah_meja');
+        }
+
         $this->Meja_model->simpan_data(['no_meja' => $nom]);
+        $this->session->set_flashdata('message', 'Meja berhasil ditambahkan!');
         redirect('dashboard_cafe/lihat_meja');
     }
 
     public function hapus_meja($id_meja)
     {
         $this->Meja_model->hapus_data($id_meja);
+        $this->session->set_flashdata('message', 'Meja berhasil dihapus!');
         redirect('dashboard_cafe/lihat_meja');
     }
 
@@ -780,10 +789,18 @@ class Dashboard_cafe extends CI_Controller
     {
         $id_meja = $this->input->post('id_meja');
         $no_meja = $this->input->post('no_meja');
+
+        $cek = $this->db->where('no_meja', $no_meja)->where('id_meja !=', $id_meja)->get('meja')->row();
+        if ($cek) {
+            $this->session->set_flashdata('error', 'No meja sudah digunakan meja lain!');
+            redirect('dashboard_cafe/edit_meja/' . $id_meja);
+        }
+
         $where = ['id_meja' => $id_meja];
         $data = ['no_meja' => $no_meja];
 
         $this->Meja_model->update_data($where, $data, 'meja');
+        $this->session->set_flashdata('message', 'Meja berhasil diupdate!');
         redirect('dashboard_cafe/lihat_meja');
     }
 

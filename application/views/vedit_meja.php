@@ -7,6 +7,12 @@
                         class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
                 </div>
                 <div class="card-body">
+                    <?php if ($error = $this->session->flashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= $error ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
                     <?php foreach ($meja as $mj) { ?>
                     <form action="<?php echo site_url('dashboard_cafe/update_meja') ?>" method="post">
                         <input type="hidden" name="id_meja" value="<?php echo $mj->id_meja ?>">

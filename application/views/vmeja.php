@@ -7,6 +7,18 @@
                         class="btn btn-outline-primary btn-sm"> <i class="fas fa-plus"></i> Tambah Meja</a>
                 </div>
                 <div class="card-body">
+                    <?php if ($message = $this->session->flashdata('message')): ?>
+                        <div class="alert alert-success alert-dismissible fade show">
+                            <?= $message ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
+                    <?php if ($error = $this->session->flashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= $error ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
                     <div class="table-responsive">
                         <table class="table table-hover" id="dataTable" width="100%" cellspacing="0">
                             <thead>

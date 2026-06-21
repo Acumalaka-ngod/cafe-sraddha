@@ -7,6 +7,12 @@
                         class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
                 </div>
                 <div class="card-body">
+                    <?php if ($error = $this->session->flashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show">
+                            <?= $error ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
                     <form action="<?php echo site_url('dashboard_cafe/simpan_meja') ?>" method="post">
                         <div class="form-group">
                             <label for="no_meja">No Meja</label>
