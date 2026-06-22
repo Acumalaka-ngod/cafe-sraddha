@@ -5,7 +5,11 @@ class Menu_model extends CI_Model
 {
 	function lihat_data()
 	{
-		$this->db->select('menu.*, kategori.nama_kategori as kategori');
+		$this->db->select("menu.*, kategori.nama_kategori as kategori,
+			(SELECT GROUP_CONCAT(a.nama_addon SEPARATOR ', ')
+			 FROM menu_addons ma
+			 JOIN addons a ON ma.id_addon = a.id_addon
+			 WHERE ma.id_menu = menu.id_menu) as addons_list");
 		$this->db->from('menu');
 		$this->db->join('kategori', 'menu.id_kategori = kategori.id_kategori', 'left');
 		return $this->db->get();

@@ -51,6 +51,13 @@
                                     <img id="preview-edit" class="mt-2" style="max-width: 200px; max-height: 200px; display: none;">
                                 </div>
 
+                                <div class="form-group mb-3">
+                                    <label>Addons</label>
+                                    <div id="addonCheckboxes" class="border p-3 rounded" style="min-height: 50px;">
+                                        <small class="text-muted">Pilih kategori terlebih dahulu</small>
+                                    </div>
+                                </div>
+
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-warning btn-sm me-2">Update</button>
                                     <button type="reset" class="btn btn-secondary btn-sm">Batal</button>
@@ -58,6 +65,34 @@
                             </form>
                         <?php endforeach; ?>
                         <script>
+                        const allAddons = <?= json_encode($addons_list) ?>;
+                        const kategoriGrup = <?= json_encode($kategori_grup) ?>;
+                        const selectedAddons = <?= json_encode($menu_addons_selected) ?>;
+
+                        function renderAddonCheckboxes() {
+                            const kid = parseInt(document.querySelector('[name="id_kategori"]').value);
+                            const grup = kategoriGrup[kid] || '';
+                            const container = document.getElementById('addonCheckboxes');
+                            const filtered = allAddons.filter(a => a.grup === grup);
+                            if (!filtered.length) {
+                                container.innerHTML = '<small class="text-muted">Tidak ada addon untuk kategori ini</small>';
+                                return;
+                            }
+                            container.innerHTML = filtered.map(a =>
+                                `<label class="form-check-label me-3" style="cursor:pointer;font-weight:normal;">
+                                    <input type="checkbox" name="addons[]" value="${a.id_addon}" class="form-check-input" ${selectedAddons.includes(a.id_addon) ? 'checked' : ''}>
+                                    ${a.nama_addon} (+Rp${Number(a.harga_addon).toLocaleString('id-ID')})
+                                </label>`
+                            ).join('');
+                        }
+
+                        document.querySelector('[name="id_kategori"]').addEventListener('change', function() {
+                            // Clear selections when kategori changes — keep old selections for items that still match
+                            renderAddonCheckboxes();
+                        });
+
+                        renderAddonCheckboxes();
+
                         function previewNewImage(event) {
                             const reader = new FileReader();
                             reader.onload = function() {

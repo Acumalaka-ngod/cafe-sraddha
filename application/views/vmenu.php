@@ -29,6 +29,7 @@
                                     <th>Stok</th>
                                     <th>Deskripsi</th>
                                     <th>Harga</th>
+                                    <th>Addons</th>
                                     <th>Gambar</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -45,6 +46,7 @@
                                         <td><?php echo $m->stok ?></td>
                                         <td><?php echo $m->deskripsi ?></td>
                                         <td><?php echo "Rp. " . number_format($m->harga, 0, ',', '.'); ?></td>
+                                        <td><?= $m->addons_list ?: '-' ?></td>
                                         <td><img src="<?php echo base_url('/assets/uploads/' . $m->gambar) ?>" width="100"
                                                 height="100"></td>
                                         <td>

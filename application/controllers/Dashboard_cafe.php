@@ -129,7 +129,10 @@ class Dashboard_cafe extends CI_Controller
 
     public function tambah_menu()
     {
+        $this->config->load('kategori_grup');
         $data['kategori_list'] = $this->db->get('kategori')->result();
+        $data['addons_list'] = $this->Addons_model->get_all();
+        $data['kategori_grup'] = $this->config->item('kategori_grup');
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
@@ -176,6 +179,14 @@ class Dashboard_cafe extends CI_Controller
             'gambar' => $gam
         ]);
 
+        $id_menu = $this->db->insert_id();
+
+        // Save addons
+        $addons = $this->input->post('addons') ?: [];
+        foreach ($addons as $id_addon) {
+            $this->db->insert('menu_addons', ['id_menu' => $id_menu, 'id_addon' => $id_addon]);
+        }
+
         redirect('dashboard_cafe/lihat_menu');
     }
 
@@ -188,9 +199,17 @@ class Dashboard_cafe extends CI_Controller
 
     public function edit_menu($idmenu)
     {
+        $this->config->load('kategori_grup');
         $where = ['id_menu' => $idmenu];
         $data['menu'] = $this->Menu_model->edit_data($where, 'menu')->result();
         $data['kategori_list'] = $this->db->get('kategori')->result();
+        $data['addons_list'] = $this->Addons_model->get_all();
+        $data['kategori_grup'] = $this->config->item('kategori_grup');
+
+        // Get selected addons for this menu
+        $selected = $this->db->get_where('menu_addons', ['id_menu' => $idmenu])->result();
+        $data['menu_addons_selected'] = array_map(function($s) { return $s->id_addon; }, $selected);
+
         $this->load->view('template/head');
         $this->load->view('template/navbar');
         $this->load->view('template/sidebar');
@@ -252,6 +271,14 @@ class Dashboard_cafe extends CI_Controller
 
         $where = ['id_menu' => $id_menu];
         $this->Menu_model->update_data($where, $data, 'menu');
+
+        // Update addons
+        $this->db->delete('menu_addons', ['id_menu' => $id_menu]);
+        $addons = $this->input->post('addons') ?: [];
+        foreach ($addons as $id_addon) {
+            $this->db->insert('menu_addons', ['id_menu' => $id_menu, 'id_addon' => $id_addon]);
+        }
+
         redirect('dashboard_cafe/lihat_menu');
     }
 
