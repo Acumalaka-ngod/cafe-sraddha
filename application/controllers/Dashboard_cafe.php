@@ -142,28 +142,32 @@ class Dashboard_cafe extends CI_Controller
 
     public function simpan_menu()
     {
-        $config['upload_path'] = './assets/uploads/';
-        $config['allowed_types'] = 'gif|jpg|png|jpeg';          
-        $config['max_size'] = 10000;
-        $config['max_width'] = 1028;
-        $config['max_height'] = 768;
-
-        $this->load->library('upload', $config);
-
-        if (!$this->upload->do_upload('gambar')) {
-            $error = $this->upload->display_errors();
-            echo '<div class="alert alert-danger">' . $error . '</div>';
-            echo '<a href="' . site_url('dashboard_cafe/tambah_menu') . '" class="btn btn-primary">Kembali</a>';
-            return;
-        }
-
         $nam = $this->input->post('nama_menu');
         $id_kat = $this->input->post('id_kategori');
         $stk = $this->input->post('stok');
         $des = $this->input->post('deskripsi');
         $har = $this->input->post('harga');
-        $file = $this->upload->data();
-        $gam = $file['file_name'];
+
+        if ($stk < 0 || $har < 0) {
+            echo '<script>alert("Stok dan harga tidak boleh negatif!"); window.location="' . site_url('dashboard_cafe/tambah_menu') . '";</script>';
+            return;
+        }
+
+        $gam = 'default.png';
+        if (!empty($_FILES['gambar']['name'])) {
+            $config['upload_path'] = './assets/uploads/';
+            $config['allowed_types'] = 'gif|jpg|png|jpeg';
+            $config['max_size'] = 10000;
+            $config['max_width'] = 1028;
+            $config['max_height'] = 768;
+
+            $this->load->library('upload', $config);
+
+            if ($this->upload->do_upload('gambar')) {
+                $file = $this->upload->data();
+                $gam = $file['file_name'];
+            }
+        }
 
         if ($stk < 0 || $har < 0) {
             echo '<script>alert("Stok dan harga tidak boleh negatif!"); window.location="' . site_url('dashboard_cafe/tambah_menu') . '";</script>';

@@ -51,12 +51,12 @@
                                     <img id="preview-edit" class="mt-2" style="max-width: 200px; max-height: 200px; display: none;">
                                 </div>
 
-                                <div class="form-group mb-3">
+                                <!-- <div class="form-group mb-3">
                                     <label>Addons</label>
                                     <div id="addonCheckboxes" class="border p-3 rounded" style="min-height: 50px;">
                                         <small class="text-muted">Pilih kategori terlebih dahulu</small>
                                     </div>
-                                </div>
+                                </div> -->
 
                                 <div class="form-group">
                                     <button type="submit" class="btn btn-warning btn-sm me-2">Update</button>

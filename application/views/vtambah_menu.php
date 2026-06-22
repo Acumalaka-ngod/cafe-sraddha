@@ -43,12 +43,12 @@
                                 <img id="preview" class="mt-2"
                                     style="max-width: 200px; max-height: 200px; display: none;">
                             </div>
-                            <div class="form-group mt-3">
+                            <!-- <div class="form-group mt-3">
                                 <label>Addons</label>
                                 <div id="addonCheckboxes" class="border p-3 rounded" style="min-height: 50px;">
                                     <small class="text-muted">Pilih kategori terlebih dahulu</small>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="form-group"></br>
                                 <button type="submit" class="btn btn-primary">Tambah</button>
                                 <button type="reset" class="btn btn-secondary">Batal</button>
