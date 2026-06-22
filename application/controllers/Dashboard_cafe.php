@@ -235,42 +235,32 @@ class Dashboard_cafe extends CI_Controller
             return;
         }
 
+        $data = [
+            'nama_menu' => $nama,
+            'id_kategori' => $id_kat,
+            'stok' => $stok,
+            'deskripsi' => $des,
+            'harga' => $harga
+        ];
+
         if (!empty($_FILES['gambar']['name'])) {
-            $config['upload_path'] = 'assets/uploads/';
-            $config['allowed_types'] = 'gif|jpg|png';
-            $config['max_size'] = 20000;
+            $config['upload_path'] = './assets/uploads/';
+            $config['allowed_types'] = 'gif|jpg|jpeg|png|webp';
+            $config['max_size'] = 10000;
+            $config['max_width'] = 2048;
+            $config['max_height'] = 2048;
 
             $this->load->library('upload', $config);
 
             if ($this->upload->do_upload('gambar')) {
                 $file = $this->upload->data();
-                $gambar = $file['file_name'];
-
-                $data = [
-                    'nama_menu' => $nama,
-                    'id_kategori' => $id_kat,
-                    'stok' => $stok,
-                    'deskripsi' => $des,
-                    'harga' => $harga,
-                    'gambar' => $gambar
-                ];
+                $data['gambar'] = $file['file_name'];
             } else {
-                $data = [
-                    'nama_menu' => $nama,
-                    'id_kategori' => $id_kat,
-                    'stok' => $stok,
-                    'deskripsi' => $des,
-                    'harga' => $harga
-                ];
+                $error = $this->upload->display_errors();
+                $this->session->set_flashdata('error', strip_tags($error));
+                redirect('dashboard_cafe/edit_menu/' . $id_menu);
+                return;
             }
-        } else {
-            $data = [
-                'nama_menu' => $nama,
-                'id_kategori' => $id_kat,
-                'stok' => $stok,
-                'deskripsi' => $des,
-                'harga' => $harga
-            ];
         }
 
         $where = ['id_menu' => $id_menu];

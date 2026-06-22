@@ -7,6 +7,12 @@
                         class="btn btn-outline-primary btn-sm"><i class="fas fa-arrow-left"></i> Kembali</a>
                 </div>
                 <div class="card-body">
+                    <?php if ($this->session->flashdata('error')): ?>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <?= $this->session->flashdata('error') ?>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    <?php endif; ?>
                     <?php if (!empty($menu)): ?>
                         <?php foreach ($menu as $m): ?>
                             <form action="<?php echo site_url('dashboard_cafe/update_menu') ?>" method="post" enctype="multipart/form-data">
